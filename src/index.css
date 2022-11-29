@@ -1,0 +1,283 @@
+@import url("https://fonts.googleapis.com/css?family=Lato");
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Lato", "Roboto", "Segoe UI",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: #f4f6f8;
+  height: 100%;
+  width: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.MuiTable-root {
+  border-collapse: separate;
+  border-spacing: 15px 0;
+  border-collapse: separate;
+  border-spacing: 0 15px;
+}
+
+.MuiTableRow-root {
+  /* border-collapse: separate; */
+  /* border: 1px solid black; */
+  padding: 50px;
+}
+
+.MuiTableCell-root {
+  margin: 10px 0;
+  /* border: 1px solid;
+  box-shadow: inset; */
+  font-size: 1.15rem;
+  /* font-weight: medium; */
+}
+
+/* 
+.MuiTableRow-root.Mui-selected,
+.MuiTableRow-root.Mui-selected:hover {
+  border-left: 6px solid #009688;
+
+} 
+*/
+/* 
+html, body, #root, .App {
+  height: 100%;
+} */
+/* body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+  background: #EEEEEE;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+
+img {
+  display: block;
+  width: 120px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+}
+
+h2 {
+  font-weight: normal;
+  color: #616161;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  padding: 0 30px;
+  color: #848484;
+  font-weight: lighter;
+ }
+
+ .form {
+   display: flex;
+   justify-content: center;
+   margin-top: 30px;
+ }
+
+.form input {
+  background: #FAFAFA;
+  border: 1px solid #C7C7C7;
+  border-radius: 2px;
+  height: 30px;
+  width: 180px;
+  font-size: 14px;
+  margin-right: 20px;
+  color: #848484;
+  outline: none;
+  padding-left: 7px;
+}
+
+.form button {
+  background: #F76C6C;
+  box-shadow: 0 16px 18px 0 rgba(0,0,0,0.13), 0 4px 6px 0 rgba(0,0,0,0.16);
+  border-radius: 2px;
+  border: none;
+  color: #fff;
+  padding: 10px 15px;
+  outline: none;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 150ms ease-in-out;
+}
+
+.form button:hover {
+  opacity: 0.9;
+} */
+
+.SlideIn-appear {
+  transform: translateX(30px);
+  -webkit-transform: translateX(30px);
+  -moz-transform: translateX(30px);
+  -o-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+  opacity: 0;
+}
+
+.SlideIn-appear.SlideIn-appear-active {
+  opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0);
+  transition: all 0.6s linear;
+}
+.SlideIn-enter {
+  opacity: 0;
+  transform: translateX(30px);
+  -webkit-transform: translateX(30px);
+  -moz-transform: translateX(30px);
+  -o-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+}
+.SlideIn-enter.SlideIn-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0);
+  transition: all 0.2s linear 0.4s;
+}
+.SlideIn-leave {
+  /* opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0); */
+
+  opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0);
+}
+.SlideIn-leave.SlideIn-leave-active {
+  /* opacity: 0;
+  position: absolute;
+  width: 100%;
+  transform: translateX(-30px);
+  -webkit-transform: translateX(-30px);
+  -moz-transform: translateX(-30px);
+  -o-transform: translateX(-30px);
+  -ms-transform: translateX(-30px);
+  transition: all 0.2s linear; */
+
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  transform: translateX(30px);
+  -webkit-transform: translateX(30px);
+  -moz-transform: translateX(30px);
+  -o-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+  transition: all 0.2s linear;
+}
+
+.SlideOut-appear {
+  transform: translateX(-30px);
+  -webkit-transform: translateX(-30px);
+  -moz-transform: translateX(-30px);
+  -o-transform: translateX(-30px);
+  -ms-transform: translateX(-30px);
+  opacity: 0;
+}
+
+.SlideOut-appear.SlideOut-appear-active {
+  opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0);
+  transition: all 0.6s linear;
+}
+.SlideOut-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+  -webkit-transform: translateX(-30px);
+  -moz-transform: translateX(-30px);
+  -o-transform: translateX(-30px);
+  -ms-transform: translateX(-30px);
+}
+.SlideOut-enter.SlideOut-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0);
+  transition: all 0.2s linear 0.4s;
+}
+.SlideOut-leave {
+  opacity: 1;
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -o-transform: translateX(0);
+  -ms-transform: translateX(0);
+}
+.SlideOut-leave.SlideOut-leave-active {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  transform: translateX(30px);
+  -webkit-transform: translateX(30px);
+  -moz-transform: translateX(30px);
+  -o-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+  transition: all 0.2s linear;
+}
+
+.list-enter {
+  opacity: 0.01;
+}
+
+.list-enter.list-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.list-leave {
+  opacity: 1;
+}
+
+.list-leave.list-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

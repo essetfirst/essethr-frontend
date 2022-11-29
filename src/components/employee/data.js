@@ -1,0 +1,122 @@
+import * as Yup from "yup";
+
+export const employeeFormFields = [
+  {
+    label: "Employee Id",
+    name: "employeeId",
+    required: true,
+    validation: Yup.string().required("'Employee id' is required"),
+    GridProps: { sm: 12 },
+  },
+  {
+    label: "First name",
+    name: "firstName",
+    required: true,
+    validation: Yup.string().required("'First name' is required"),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Middle name",
+    name: "surName",
+    required: true,
+    validation: Yup.string().required("'Father's name' is required"),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Last name",
+    name: "lastName",
+    required: true,
+    validation: Yup.string().required("'Last name' is required"),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Date of Birth",
+    name: "birthDay",
+    required: true,
+    validation: Yup.date("'Date of birth' is required"),
+    defaultValue: "2000-01-01",
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Gender",
+    name: "gender",
+    required: true,
+    validation: Yup.string("Gender is required")
+      .oneOf(["Male", "male", "female", "Female"])
+      .required("Gender is required"),
+    select: true,
+    selectOptions: [
+      { value: "Female", label: "Female" },
+      { value: "Male", label: "Male" },
+    ],
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "National ID",
+    name: "nationalID",
+    validation: Yup.number(),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Phone",
+    name: "phone",
+    required: true,
+    validation: Yup.string("Phone is required"),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Address",
+    name: "address",
+    required: true,
+    validation: Yup.string("Address is required"),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Email (Optional)",
+    name: "email",
+    validation: Yup.string().email("Must be a valid email").max(255),
+    GridProps: { sm: 12, md: 6, lg: 4 },
+  },
+  {
+    label: "Department",
+    name: "department",
+    required: true,
+    validation: Yup.string("'Department' is required"),
+    select: true,
+    selectOptions: (org.departments || []).map(({ _id, name }) => ({
+      label: name,
+      value: _id,
+    })),
+    GridProps: { sm: 12, md: 6, lg: 6 },
+  },
+  {
+    label: "Job title",
+    name: "position",
+    required: true,
+    select: true,
+    validation: Yup.string("'Job title' is required"),
+    selectOptions: (org.positions || []).map(({ _id, title }) => ({
+      label: title,
+      value: _id,
+    })),
+    GridProps: { sm: 12, md: 6, lg: 6 },
+  },
+  {
+    label: "Hire date",
+    name: "hireDate",
+    required: true,
+    validation: Yup.date().required("'Hire date' is required"),
+    type: "date",
+    // defaultValue: new Date().toISOString().slice(0, 10),
+    GridProps: { sm: 12, md: 6, lg: 6 },
+  },
+  {
+    label: "Work start date",
+    name: "startDate",
+    required: true,
+    validation: Yup.date().required("'Start date' is required"),
+    type: "date",
+    // defaultValue: new Date().toISOString().slice(0, 10),
+    GridProps: { sm: 12, md: 6, lg: 6 },
+  },
+];

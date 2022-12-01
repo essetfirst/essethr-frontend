@@ -39,7 +39,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(9),
+    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -164,7 +164,9 @@ const SignUp = () => {
               lastName: "",
               user_email: "",
               password: "",
+              c_password: "",
               showPassword: false,
+              showC_Password: false,
             }}
             validationSchema={Yup.object({
               org_name: Yup.string()
@@ -190,6 +192,9 @@ const SignUp = () => {
                 .email("Enter a valid email")
                 .required("Email is required"),
               password: Yup.string().min(6).required("Password is required"),
+              c_password: Yup.string()
+                .oneOf([Yup.ref("password"), null], "Passwords must match")
+                .required("Confirm password is required"),
             })}
             onSubmit={(values) => {
               const signupInfo = {
@@ -204,6 +209,7 @@ const SignUp = () => {
                   lastName: values.lastName,
                   email: values.user_email,
                   password: values.password,
+                  c_password: values.c_password,
                 },
               };
               console.log(signupInfo);
@@ -351,7 +357,7 @@ const SignUp = () => {
                           onBlur={handleBlur}
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item xs={12} sm={6}>
                         <TextField
                           InputProps={{
                             endAdornment: (
@@ -382,6 +388,43 @@ const SignUp = () => {
                           label="Password"
                           id="password"
                           value={values.password}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputProps={{
+                            endAdornment: (
+                              <LoginIcon
+                                onClick={() =>
+                                  setFieldValue(
+                                    "showC_Password",
+                                    !values.showC_Password
+                                  )
+                                }
+                                icon={
+                                  values.showC_Password ? (
+                                    <Visibility />
+                                  ) : (
+                                    <VisibilityOff />
+                                  )
+                                }
+                              />
+                            ),
+                          }}
+                          type={values.showC_Password ? "text" : "password"}
+                          error={Boolean(
+                            touched.c_password && errors.c_password
+                          )}
+                          helperText={touched.c_password && errors.c_password}
+                          name="c_password"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          label="Confirm Password"
+                          id="c_password"
+                          value={values.c_password}
                           onChange={handleChange}
                           onBlur={handleBlur}
                         />

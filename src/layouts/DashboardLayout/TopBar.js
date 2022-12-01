@@ -136,7 +136,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
                 size="small"
               >
                 {orgs.map(({ _id, name, branch }) => (
-                  <MenuItem value={_id} key={_id}>
+                  <MenuItem style={{color: '#fff'}} value={_id} key={_id}>
                     {branch || name}
                   </MenuItem>
                 ))}

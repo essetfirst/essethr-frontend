@@ -1,41 +1,35 @@
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import { Formik } from "formik";
 import * as Yup from "yup";
-
+import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Alert } from "@material-ui/lab";
+import CheckIcon from "@material-ui/icons/Check";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Page from "../../components/Page";
+import API from "../../api/auth";
 import {
   Avatar,
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Container,
   CssBaseline,
   Divider,
-  FormControlLabel,
   Grid,
   Link,
   makeStyles,
   TextField,
   Typography,
+  IconButton,
 } from "@material-ui/core";
-
-import { Alert } from "@material-ui/lab";
-
-import CheckIcon from "@material-ui/icons/Check";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-
-import Page from "../../components/Page";
-import API from "../../api/auth";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
-        etHR
+        essetHR
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -45,13 +39,14 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(9),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    height: "75vh",
   },
   avatar: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(2),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
@@ -61,7 +56,18 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  iconButton: {
+    padding: 5,
+  },
 }));
+const LoginIcon = ({ icon, ...props }) => {
+  const classes = useStyles();
+  return (
+    <IconButton className={classes.iconButton} {...props}>
+      {icon}
+    </IconButton>
+  );
+};
 
 const types = {
   REQUESTING: "REQUESTING",
@@ -104,11 +110,10 @@ const SignUp = () => {
   const handleSignup = (info) => {
     dispatch({ type: types.REQUESTING });
     API.signup(info)
-
       .then(({ success, message, error }) => {
         if (success) {
           dispatch({ type: types.REQUEST_SUCCESS, payload: message });
-          navigate("/signup/success");
+          navigate("/login");
         } else {
           console.error(error);
           dispatch({ type: types.REQUEST_ERROR, error });
@@ -128,7 +133,7 @@ const SignUp = () => {
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h4">
+          <Typography component="h1" variant="h2">
             Sign up
           </Typography>
           <Typography component="h1" variant="h6" gutterBottom>
@@ -159,13 +164,18 @@ const SignUp = () => {
               lastName: "",
               user_email: "",
               password: "",
+              showPassword: false,
             }}
             validationSchema={Yup.object({
               org_name: Yup.string()
                 .min(3, "Organization name must be at least 3 characters long")
                 .required("Organization name is required"),
-              org_email: Yup.string().email("Enter a valid email"),
-              org_phone: Yup.string(),
+              org_email: Yup.string()
+                .email("Enter a valid email")
+                .required("Organization email is required"),
+              org_phone: Yup.string().required(
+                "Organization Phone is required"
+              ),
               org_address: Yup.string(),
 
               firstName: Yup.string()
@@ -196,9 +206,7 @@ const SignUp = () => {
                   password: values.password,
                 },
               };
-
               console.log(signupInfo);
-
               handleSignup(signupInfo);
             }}
           >
@@ -209,14 +217,15 @@ const SignUp = () => {
               handleChange,
               handleBlur,
               handleSubmit,
+              setFieldValue,
             }) => (
               <form className={classes.form} onSubmit={handleSubmit} noValidate>
                 <Box display="flex">
                   <Box p={2}>
                     <Grid container spacing={2}>
                       <Grid item xs={12}>
-                        <Typography variant="h5" gutterBottom>
-                          Organization
+                        <Typography varaint="h5" gutterBottom>
+                          Organization Info.
                         </Typography>
                         <Divider />
                       </Grid>
@@ -285,13 +294,13 @@ const SignUp = () => {
                     </Grid>
                   </Box>
 
-                  <Box flexGrow={1} mb={2} />
+                  <Box flexGrow={1} mb={2} style={{ marginBottom: "auto" }} />
                   <Divider orientation="vertical" />
                   <Box p={2}>
                     <Grid container spacing={2}>
                       <Grid item xs={12}>
                         <Typography varaint="h5" gutterBottom>
-                          User account
+                          User account Info.
                         </Typography>
                         <Divider />
                       </Grid>
@@ -344,6 +353,26 @@ const SignUp = () => {
                       </Grid>
                       <Grid item xs={12}>
                         <TextField
+                          InputProps={{
+                            endAdornment: (
+                              <LoginIcon
+                                onClick={() =>
+                                  setFieldValue(
+                                    "showPassword",
+                                    !values.showPassword
+                                  )
+                                }
+                                icon={
+                                  values.showPassword ? (
+                                    <Visibility />
+                                  ) : (
+                                    <VisibilityOff />
+                                  )
+                                }
+                              />
+                            ),
+                          }}
+                          type={values.showPassword ? "text" : "password"}
                           error={Boolean(touched.password && errors.password)}
                           helperText={touched.password && errors.password}
                           name="password"
@@ -351,67 +380,70 @@ const SignUp = () => {
                           required
                           fullWidth
                           label="Password"
-                          type="password"
                           id="password"
                           value={values.password}
                           onChange={handleChange}
                           onBlur={handleBlur}
                         />
                       </Grid>
-                      <Grid item xs={12}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              value="allowExtraEmails"
-                              color="primary"
-                            />
-                          }
-                          label="I want to receive inspiration, marketing promotions and updates via email."
-                          name="allowExtraEmails"
-                          value={values.allowExtraEmails}
-                          onChange={handleChange}
-                        />
-                      </Grid>
                     </Grid>
                   </Box>
                 </Box>
 
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color={
-                    !state.requesting
-                      ? state.message
-                        ? "success"
-                        : "primary"
-                      : "primary"
-                  }
-                  className={classes.submit}
-                  disabled={state.requesting}
-                >
-                  {state.requesting ? (
-                    <CircularProgress color="inherit" />
-                  ) : state.message ? (
-                    <CheckIcon color="inherit" />
-                  ) : (
-                    "Sign Up"
-                  )}
-                </Button>
-                <Grid container justify="flex-end">
+                <Grid container xl={12} justify="center">
+                  <Grid item xs={6} sm={3}>
+                    <Button
+                      type="submit"
+                      size="medium"
+                      fullWidth
+                      variant="contained"
+                      color={
+                        !state.requesting
+                          ? state.message
+                            ? "success"
+                            : "primary"
+                          : "primary"
+                      }
+                      className={classes.submit}
+                      disabled={state.requesting}
+                    >
+                      {state.requesting ? (
+                        <CircularProgress color="inherit" />
+                      ) : state.message ? (
+                        <CheckIcon color="inherit" />
+                      ) : (
+                        "Register"
+                      )}
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid container xl={12} justify="center">
                   <Grid item>
-                    <Link href="/signin" variant="body2">
+                    <Link href="/login" variant="body2">
                       Already have an account? Sign in
                     </Link>
                   </Grid>
                 </Grid>
+                <Grid container xl={12} justify="flex-end">
+                  {/* <Grid item>
+                    <FormControlLabel
+                      control={
+                        <Checkbox value="allowExtraEmails" color="primary" />
+                      }
+                      label="Subscribe our news later."
+                      name="allowExtraEmails"
+                      value={values.allowExtraEmails}
+                      onChange={handleChange}
+                    />
+                  </Grid> */}
+                </Grid>
               </form>
             )}
           </Formik>
+          <Box>
+            <Copyright />
+          </Box>
         </div>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
       </Container>
     </Page>
   );

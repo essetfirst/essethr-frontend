@@ -1,4 +1,13 @@
 import React from "react";
+import API from "../../../api/leaves";
+import useOrg from "../../../providers/org";
+
+import PageView from "../../../components/PageView";
+import LoadingComponent from "../../../components/LoadingComponent";
+import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
+
+import TableComponent from "../../../components/TableComponent";
+import RequestForm from "./RequestForm";
 
 import {
   Box,
@@ -12,16 +21,6 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-
-import API from "../../../api/leaves";
-import useOrg from "../../../providers/org";
-
-import PageView from "../../../components/PageView";
-import LoadingComponent from "../../../components/LoadingComponent";
-import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
-
-import TableComponent from "../../../components/TableComponent";
-import RequestForm from "./RequestForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -81,12 +80,6 @@ const LeaveListView = () => {
   // Request form
   const [requestDialogOpen, setRequestDialogOpen] = React.useState(false);
 
-  // TODO: fetching employees, allowances, leaveTypes from API
-  // for now just simmulating with a constant
-  //   const employees = [
-  //     { _id: 1, name: "Abraham Gebrekidan" },
-  //     { _id: 2, name: "Anteneh Tesfaye" },
-  //   ];
   const allowances = [
     {
       employeeId: 1,
@@ -113,10 +106,7 @@ const LeaveListView = () => {
   };
 
   /* Search filters  */
-  const [filters, setFilters] = React.useState({
-    searchTerm: "",
-    leaveType: "",
-  });
+  const [filters, setFilters] = React.useState("");
 
   const handleFilterChange = (e) =>
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -189,9 +179,6 @@ const LeaveListView = () => {
           {
             field: "employeeId",
             label: "Employee",
-            renderCell: ({ employeeId }) => (
-              <Typography>{employeeId}</Typography>
-            ),
           },
           {
             field: "leaveType",
@@ -214,7 +201,9 @@ const LeaveListView = () => {
             label: "Status",
           },
         ]}
-        data={state.leaves || []}
+        data={(state.leaves || []).filter((d) =>
+          String(d.employeeId).includes(filters.searchTerm)
+        )}
       />
     </PageView>
   );

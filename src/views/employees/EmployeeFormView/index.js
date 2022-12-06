@@ -1,10 +1,17 @@
 import React from "react";
-
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
-
+import Page from "../../../components/Page";
+import useNotificationSnackbar from "../../../providers/notification-snackbar";
+import { useSnackbar } from "notistack";
+import API from "../../../api";
+import useOrg from "../../../providers/org";
 import {
   makeStyles,
   Box,
@@ -17,66 +24,6 @@ import {
   Container,
   MenuItem,
 } from "@material-ui/core";
-
-import Page from "../../../components/Page";
-// import TabbedComponent from "../../../components/TabbedComponent";
-// import SteppedComponent from "../../../components/SteppedComponent";
-
-import API from "../../../api";
-import useOrg from "../../../providers/org";
-
-const EMPLOYEE_DEFAULT_INITIAL_VALUES = {
-  employeeId: "",
-  firstName: "",
-  surName: "",
-  lastName: "",
-  gender: "Female",
-  birthDay: new Date().toISOString().slice(0, 10),
-  nationalID: "",
-  image: "",
-  phone: "",
-  phone2: "",
-  email: "",
-  address: "",
-  address2: "",
-
-  department: "",
-  position: "",
-  contractType: "Permanent",
-  startDate: new Date().toISOString().slice(0, 10),
-  endDate: new Date().toISOString().slice(0, 10),
-  hireDate: new Date().toISOString().slice(0, 10),
-};
-
-const EMPLOYEE_VALIDATION_SCHEMA = Yup.object().shape({
-  employeeId: Yup.string().required("Employee id is required"),
-  firstName: Yup.string().required("First name is required"),
-  surName: Yup.string().required("Sur name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  gender: Yup.string()
-    .oneOf(["Male", "male", "female", "Female"])
-    .required("Gender is required"),
-  birthDay: Yup.date().required("Birth date is required"),
-  nationalID: Yup.string(),
-  image: Yup.string(),
-  phone: Yup.string().required("Phone number is required"),
-  phone2: Yup.string(),
-  email: Yup.string().email("Must be a valid email").max(255),
-  address: Yup.string().required("Main address is required"),
-  address2: Yup.string(),
-
-  department: Yup.string().required("Department is required"),
-  position: Yup.string().required("Position is required"),
-  salary: Yup.number().positive("Enter valid salary figure"),
-  allowances: Yup.array().default([]),
-  deductions: Yup.array().default([]),
-  contractType: Yup.string()
-    .oneOf(["Permanent", "Temporary", "Internship"], "Choose contract type")
-    .required("Contract type is required"),
-  startDate: Yup.date(),
-  endDate: Yup.date(),
-  hireDate: Yup.date().required("Hire date is required"),
-});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,16 +45,15 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeFormView = ({ employeeId }) => {
   const classes = useStyles();
-
   const navigate = useNavigate();
   const params = useParams();
   const { pathname } = useLocation();
-
   const { currentOrg, org, addEmployee, updateEmployee } = useOrg();
-
-  // console.log(org);
-
   const [employee, setEmployee] = React.useState(null);
+
+  const { notificationSnackbar } = useNotificationSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
   React.useEffect(() => {
     const fetchEmployee = () => {
@@ -125,65 +71,35 @@ const EmployeeFormView = ({ employeeId }) => {
         });
     };
     (params.id || employeeId) && fetchEmployee();
-    // console.log(params.id, employeeId);
-
-    // const foundEmployee = (org.employees || []).find(
-    //   (e) => e._id === (params.id || employeeId)
-    // );
-    // setEmployee(foundEmployee);
   }, [params.id, employeeId]);
-
   console.log(employee);
-
-  // const fetchOrg = React.useCallback(() => {
-  //   API.orgs
-  //     .getById(currentOrg)
-  //     .then(({ success, org, error }) => {
-  //       if (success) {
-  //         setDepartments(arrayToMap(org.departments, "_id"));
-  //         setPositions(arrayToMap(org.positions, "_id"));
-  //       } else {
-  //         console.error(error);
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       console.error(e.message);
-  //     });
-  // }, [currentOrg]);
-
-  // React.useEffect(() => {
-  //   if ((params && params.id) || org === undefined || !org) {
-  //     fetchEmployee();
-  //   }
-
-  //   if (org === undefined || !org) {
-  //     fetchOrg();
-  //   } else {
-  //     setDepartments(arrayToMap(org.departments, "_id"));
-  //     setPositions(arrayToMap(org.positions, "_id"));
-  //   }
-  // }, [params, org, fetchEmployee, fetchOrg]);
 
   const [formSubmitStatus, setStatus] = React.useState("");
   const isCreateForm = pathname.includes("new");
 
   const title = isCreateForm
-    ? "Create employee form"
+    ? "Create Employee"
     : employee
     ? `Edit employee | ${employee.firstName} ${employee.surName}`
     : "Edit employee";
-  const clickLabel = isCreateForm ? "Create Employee" : "Save";
 
-  const handleCreateEmployee = (employeeInfo) => {
-    return API.employees
+  const clickLabel = isCreateForm ? "Create" : "Update";
+
+  const handleCreateEmployee = async (employeeInfo) => {
+    return await API.employees
       .create(employeeInfo)
       .then(({ success, employee, error }) => {
         if (success) {
           addEmployee(employee);
-          // Notify the user somehow
+          notify({ success, message: "Employee add successful!" });
+          navigate("/app/employees");
           return true;
         } else {
           console.error(error);
+          notify({
+            success: false,
+            error: "Couldnt add employee!",
+          });
           return false;
         }
       })
@@ -193,12 +109,14 @@ const EmployeeFormView = ({ employeeId }) => {
       });
   };
 
-  const handleUpdateEmployee = (employeeInfo) => {
-    return API.employees
+  const handleUpdateEmployee = async (employeeInfo) => {
+    return await API.employees
       .editById(employeeInfo._id, employeeInfo)
       .then(({ success, error }) => {
         if (success) {
           updateEmployee(employeeInfo);
+          notify({ success, message: "Employee update successful!" });
+          navigate("/app/employees");
           return true;
         } else {
           console.error(error);
@@ -222,11 +140,11 @@ const EmployeeFormView = ({ employeeId }) => {
     <Page className={classes.root} title={title}>
       <Box display="flex" flexDirection="column" height="100%">
         <Container maxWidth={false}>
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="left">
             <Typography
-              align="center"
+              align="left"
               color="textPrimary"
-              variant="h2"
+              variant="h4"
               gutterBottom
             >
               {title}
@@ -291,10 +209,8 @@ const EmployeeFormView = ({ employeeId }) => {
               endDate: Yup.date(),
               hireDate: Yup.date().required("Hire date is required"),
             })}
-            onSubmit={(values) => {
-              setStatus(
-                isCreateForm ? "Creating employee..." : "Saving changes..."
-              );
+            onSubmit={(values, { resetForm }) => {
+              setStatus(isCreateForm ? "Create" : "Saving changes...");
               console.log(values);
               if (
                 handleSubmitForm({
@@ -306,47 +222,23 @@ const EmployeeFormView = ({ employeeId }) => {
                   org: currentOrg,
                 })
               ) {
-                setStatus(
-                  isCreateForm ? "New employee created." : "Saved changes."
-                );
-
-                // navigate("/app/employees");
+                setStatus(isCreateForm ? "Create" : "Saved changes.");
               } else {
                 setStatus("Something went wrong.");
               }
-              setTimeout(() => {
-                setStatus("");
-              }, 1500);
+              resetForm();
             }}
           >
-            {/* Part 2: ጎደቦ ጎደቦ ጎደቦ ጎደቦ ጎደቦ ጎደቦ ጎደቦ!
-Summary:
-=> He is an author!  */}
             {({
               values,
               touched,
               errors,
-              // status,
               handleBlur,
               handleChange,
-              // isSubmitting,
-
               handleSubmit,
             }) => (
               <form onSubmit={handleSubmit} noValidate="off">
-                {/* <Grid
-                  container
-                  spacing={2}
-                  style={{ marginTop: "10px", height: "100%" }}
-                >
-                  <Grid item md={12}> */}
                 <Paper>
-                  {/* <Box p={2} display="flex" justifyContent="center">
-                        <Typography variant="h5" align="center" gutterBottom>
-                          Personal Details
-                        </Typography>
-                      </Box>
-                      <Divider /> */}
                   <Container
                     component={Box}
                     display="flex"
@@ -390,6 +282,7 @@ Summary:
                         {
                           label: "Date of Birth",
                           name: "birthDay",
+                          type: "date",
                           onChange: handleChange,
                           onBlur: handleBlur,
                           required: true,
@@ -530,140 +423,6 @@ Summary:
                     </Grid>
                   </Container>
                 </Paper>
-                {/* <Paper>
-                  <Box p={2} display="flex" justifyContent="center">
-                    <Typography variant="h5" align="center" gutterBottom>
-                      Job Details
-                    </Typography>
-                  </Box>
-                  <Divider />
-                  <Container style={{ padding: "15px" }}>
-                    <TextField
-                          select
-                          fullWidth
-                          error={Boolean(touched.org && errors.org)}
-                          helperText={touched.org && errors.org}
-                          label="Organization"
-                          margin="normal"
-                          size="small"
-                          name="org"
-                          value={values.org}
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          variant="outlined"
-                        >
-                          {Object.values(orgsMap).map(({ _id, name }) => (
-                            <MenuItem key={_id} value={_id}>
-                              {name}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-
-                    <TextField
-                      required
-                      select
-                      fullWidth
-                      error={Boolean(touched.department && errors.department)}
-                      helperText={touched.department && errors.department}
-                      label="Department"
-                      name="department"
-                      value={values.department}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                    >
-                      {(org.departments || []).map(({ _id, name }) => (
-                        <MenuItem key={_id} value={_id}>
-                          {name}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
-                    <TextField
-                      required
-                      select
-                      fullWidth
-                      error={Boolean(touched.position && errors.position)}
-                      helperText={touched.position && errors.position}
-                      label="Job Title (position)"
-                      name="position"
-                      value={values.position}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                    >
-                      {(org.positions || []).map(({ _id, title }) => (
-                        <MenuItem key={_id} value={_id}>
-                          {title}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
-                    <TextField
-                      select
-                      error={Boolean(
-                        touched.contractType && errors.contractType
-                      )}
-                      fullWidth
-                      helperText={touched.contractType && errors.contractType}
-                      label="Contract Length"
-                      name="contractType"
-                      value={values.contractType}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                    >
-                      <MenuItem value="Permanent">Permanent</MenuItem>
-                      <MenuItem value="Temporary">Temporary</MenuItem>
-                      <MenuItem value="Internship">Internship</MenuItem>
-                    </TextField>
-
-                    <TextField
-                      fullWidth
-                      label="Start Date"
-                      type="date"
-                      name="startDate"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.startDate}
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                    />
-                    <TextField
-                      fullWidth
-                      label="End Date"
-                      type="date"
-                      name="endDate"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.endDate}
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                    />
-                    <TextField
-                      required
-                      fullWidth
-                      label="Hire Date"
-                      type="date"
-                      name="hireDate"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.hireDate}
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                    />
-                  </Container>
-                </Paper>
- */}
                 <Box mt={2} flexGrow={1} />
                 <Divider />
 

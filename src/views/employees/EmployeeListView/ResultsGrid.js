@@ -1,26 +1,13 @@
 import React from "react";
-
 import {
   Avatar,
   Box,
   Card,
   CardContent,
-  // CardHeader,
-  // CardMedia,
-  // Divider,
   Grid,
-  // IconButton,
-  // Link,
   makeStyles,
   Typography,
 } from "@material-ui/core";
-
-// import {
-//   Edit2 as EditIcon,
-//   Delete as DeleteIcon,
-//   Phone as PhoneIcon,
-//   Mail as EmailIcon,
-// } from "react-feather";
 
 const useEmployeeCardStyles = makeStyles((theme) => ({
   root: {
@@ -40,10 +27,10 @@ const CoolEmployeeCard = ({ employee, onEdit, onDelete }) => {
     email,
   } = employee;
 
-  const name = `${firstName} ${surName} ${lastName}`;
-  const avatar = "https://material-ui.com/static/images/avatar/1.jpg";
-  // const initials = `${firstName[0]}${surName[0]}${lastName[0]}`;
+  console.log("deppppppppppppppp",departmentDetails);
 
+  const name = `${firstName} ${surName} ${lastName}`;
+  const avatar = "https://icons8.com/icon/GysS4Q3exahA/name";
   return (
     <Card className={classes.root}>
       <Box m={1} p={1} display="flex" justifyContent="center">
@@ -52,7 +39,6 @@ const CoolEmployeeCard = ({ employee, onEdit, onDelete }) => {
           src={avatar}
         />
       </Box>
-      {/* <CardMedia className={classes.cover} image={avatar} title={name} /> */}
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -69,12 +55,12 @@ const CoolEmployeeCard = ({ employee, onEdit, onDelete }) => {
               <strong>Department: </strong>
               {departmentDetails.name}
             </Typography>
-          </Grid>
-          <Grid item xs>
             <Typography variant="h6" gutterBottom>
               <strong>Work phone: </strong>
               {phone}
             </Typography>
+          </Grid>
+          <Grid item xs>
             <Typography variant="h6" gutterBottom>
               <strong>Mobile phone: </strong>
               {"N/A"}
@@ -89,78 +75,6 @@ const CoolEmployeeCard = ({ employee, onEdit, onDelete }) => {
     </Card>
   );
 };
-
-// const EmployeeCard = ({ employee, onEdit, onDelete }) => {
-//   const {
-//     firstName,
-//     surName,
-//     lastName,
-//     departmentDetails,
-//     positionDetails,
-//     phone,
-//     email,
-//   } = employee;
-//   const name = `${firstName} ${lastName}`;
-//   const initials = `${firstName[0]}${lastName[0]}`;
-//   return (
-//     <Card style={{ width: "100%" }}>
-//       <CardHeader
-//         title={
-//           <Typography color="primary" variant="h5">
-//             {name}
-//           </Typography>
-//         }
-//         action={
-//           <>
-//             <IconButton onClick={onEdit} aria-label="edit employee">
-//               <EditIcon fontSize="small" size="18" />
-//             </IconButton>
-//             <IconButton onClick={onDelete} aria-label="delete employee">
-//               <DeleteIcon fontSize="small" size="18" />
-//             </IconButton>
-//           </>
-//         }
-//       />
-//       <Divider />
-//       <CardContent>
-//         <Grid container spacing={2}>
-//           <Grid item>
-//             {/* Image */}
-//             <Avatar style={{ width: "64px", height: "64px" }} title={name}>
-//               {initials}
-//             </Avatar>
-//           </Grid>
-//           <Grid item>
-//             <Typography varaint="h3" gutterBottom>
-//               {`${firstName} ${surName} ${lastName}`.toUpperCase()}
-//             </Typography>
-//             <Typography varaint="h5" gutterBottom>
-//               {positionDetails.title} * {departmentDetails.name}
-//             </Typography>
-//             <br />
-//             <Typography variant="body1">
-//               <PhoneIcon
-//                 fontSize="small"
-//                 size="16"
-//                 style={{ marginRight: "5px", verticalAlign: "middle" }}
-//               />
-//               {phone}
-//             </Typography>
-//             {email && (
-//               <Typography variant="body1">
-//                 <EmailIcon
-//                   size="16"
-//                   style={{ marginRight: "5px", verticalAlign: "middle" }}
-//                 />
-//                 {email}
-//               </Typography>
-//             )}
-//           </Grid>
-//         </Grid>
-//       </CardContent>
-//     </Card>
-//   );
-// };
 
 const ResultsGrid = ({
   employees,

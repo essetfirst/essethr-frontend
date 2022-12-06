@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import {
   Repeat as RetryIcon,
   CheckCircle as SuccessIcon,
@@ -209,17 +209,19 @@ const PayrollGenerateView = () => {
                 height="100%"
                 p={2}
               >
-                <Typography variant="h6">
-                  <SuccessIcon color="primary" fontSize="large" /> Payroll
-                  generated successfully
+                <Typography variant="h4" display="flex" alignItems="center">
+                  <SuccessIcon color="primary" fontSize="small" /> Payroll
+                  Generated Successfully
                 </Typography>
+                <Box mt={2} />
                 <Button
                   variant="outlined"
                   color="primary"
                   onClick={handleViewClick}
                   aria-label="view payroll"
                 >
-                  View
+                  <VisibilityIcon />
+                  <Typography variant="h6">view</Typography>
                 </Button>
               </Box>
             )}
@@ -396,7 +398,7 @@ const PayrollGenerateView = () => {
                               />
                             }
                           />
-                          {/* 
+                          {/*                           
                           {touched.onlyApprovedHours && (
                             <FormControlHelperText>
                               {errors.onlyApprovedHours}
@@ -456,7 +458,10 @@ const PayrollGenerateView = () => {
                                 expectedDataColumns.includes(c.label || c.id)
                               );
                             handleChange({
-                              target: { name: "salesData", value: (data).map(e => Object.keys({ })) },
+                              target: {
+                                name: "salesData",
+                                value: data.map((e) => Object.keys({})),
+                              },
                             });
                             return !!data && isProperlyFormatted;
                           }}

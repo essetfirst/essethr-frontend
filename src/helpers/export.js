@@ -24,11 +24,13 @@ export const getTableDataForExport = (data, columns) =>
 export const makeExcel = async (data, filename) => {
   // TODO: implement using XLSX
   const wb = XLSX.utils.book_new();
-  const ws = await XLSX.utils.json_to_sheet(data);
+  const ws = XLSX.utils.json_to_sheet(data);
   XLSX.utils.book_append_sheet(wb, ws, "filename");
   const wopts = { bookType: "xlsx", bookSST: false, type: "array" };
   const wbout = await XLSX.write(wb, wopts);
-  downloadFile(wbout, `${filename}.xlsx`, { type: "application/octet-stream" });
+  downloadFile(wbout, `Employee Data ${new Date().toLocaleString()}.xlsx`, {
+    type: "application/octet-stream",
+  });
 };
 
 /**

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
 import { makeStyles, Chip, Typography, Link } from "@material-ui/core";
-
+import CreditCardIcon from "@material-ui/icons/CreditCard";
 import {
   Search as SearchIcon,
   Check as ApproveIcon,
@@ -14,7 +14,7 @@ import {
   // Printer as PrintIcon,
   ChevronRight as ArrowRightIcon,
 } from "react-feather";
-
+import GetAppIcon from "@material-ui/icons/GetApp";
 import API from "../../../api";
 
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
@@ -28,9 +28,9 @@ import Searchbar from "../../../components/common/Searchbar";
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
-    height: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
+    height: "10%",
+    paddingBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1),
   },
 }));
 
@@ -41,43 +41,17 @@ const types = {
   UPDATE_PAYROLL: "UPDATE_PAYROLL",
   DELETE_PAYROLL: "DELETE_PAYROLL",
 };
-const initialState = { payrolls: [], requesting: false, error: null };
+
+const initialState = { payroll: null, requesting: false, error: null };
 const reducer = (state, action) => {
   const { type, payload, error } = action;
   switch (type) {
     case types.REQUESTING:
       return { ...state, requesting: true, error: null };
     case types.REQUEST_SUCCESS:
-      return { ...state, payrolls: payload, requesting: false, error: null };
+      return { ...state, payroll: payload, requesting: false, error: null };
     case types.REQUEST_ERROR:
       return { ...state, requesting: false, error };
-    case types.UPDATE_PAYROLL:
-      let uIndex = state.payrolls.findIndex(({ _id }) => _id === payload._id);
-      console.log("Updated index: ", uIndex);
-      if (uIndex === -1) {
-        return state;
-      }
-      const newPayroll = { ...state.payrolls[uIndex], ...payload };
-      return {
-        ...state,
-        payrolls: [
-          ...state.payrolls.slice(0, uIndex),
-          newPayroll,
-          ...state.payrolls.slice(uIndex + 1),
-        ],
-      };
-
-    case types.DELETE_PAYROLL:
-      let dIndex = state.payrolls.findIndex(({ _id }) => _id === payload);
-      if (dIndex === -1) {
-        return state;
-      }
-      const newPayrolls = [
-        ...state.payrolls.slice(0, dIndex),
-        ...state.payrolls.slice(dIndex),
-      ];
-      return { ...state, payrolls: newPayrolls };
-
     default:
       return state;
   }
@@ -87,73 +61,52 @@ const PayrollListView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  // const [state, dispatch] = React.useReducer(reducer, initialState);
-  // const fetchPayrolls = React.useCallback(() => {
-  //   dispatch({ type: types.REQUESTING });
-  //   API.payroll
-  //     .getAll({})
-  //     .then(({ success, payrolls, error }) => {
-  //       success
-  //         ? dispatch({ type: types.REQUEST_SUCCESS, payload: payrolls })
-  //         : dispatch({ type: types.REQUEST_ERROR, error });
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       dispatch({ type: types.REQUEST_ERROR, error });
-  //     });
-  // }, []);
+  // const { state, onFetchPayrolls, onUpdatePayroll, onDeletePayroll } =
+  //   usePayroll() || {};
 
-  // const handleUpdatePayroll = (id, update) => {
-  //   API.payroll
-  //     .updateById(id, update)
-  //     .then(({ success, payroll, error }) => {
-  //       if (success) {
-  //         dispatch({ type: types.UPDATE_PAYROLL, payload: payroll });
-  //       } else {
-  //         console.error(error);
-  //         // Notify user via notistack Snackbar
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       console.error(e);
-  //       // Notify user via notistack Snackbar
-  //     });
-  // };
-
-  // const handleDeletePayroll = (payrollId) => {
-  //   API.payroll
-  //     .deleteById(payrollId)
-  //     .then(({ success, error }) => {
-  //       if (success) {
-  //         dispatch({ type: types.DELETE_PAYROLL, payload: payrollId });
-  //       } else {
-  //         console.error(error);
-  //         // Notify user via notistack Snackbar
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       console.error(e);
-  //       // Notify user via notistack Snackbar
-  //     });
-  // };
-
-  const { state, onFetchPayrolls, onUpdatePayroll, onDeletePayroll } =
-    usePayroll();
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { notificationSnackbar } = useNotificationSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
-  const fetchPayrolls = onFetchPayrolls(notify);
-  const handleUpdatePayroll = onUpdatePayroll(notify);
-  const handleDeletePayroll = onDeletePayroll(notify);
+  // const fetchPayrolls = onFetchPayrolls(notify);
+  const handleUpdatePayroll = async () => {
+    // onUpdatePayroll();
+  };
+  const handleDeletePayroll = async () => {
+    // onDeletePayroll();
+  };
+  // const handleDeletePayroll = onDeletePayroll(notify);
+
+  const fetchPayroll = React.useCallback(() => {
+    dispatch({ type: types.REQUESTING });
+    API.payroll
+      .getAll()
+      .then(({ success, payroll, error }) => {
+        success
+          ? dispatch({ type: types.REQUEST_SUCCESS, payload: payroll })
+          : dispatch({
+              type: types.REQUEST_ERROR,
+              error: "Payroll does not exists.",
+            });
+        console.log(payroll);
+
+        error && console.error(error);
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: types.REQUEST_ERROR, error: "Something went wrong." });
+      });
+  }, []);
 
   React.useEffect(() => {
-    fetchPayrolls();
-  }, [fetchPayrolls]);
+    console.log("Stateeeeeeeeeee", state);
+    fetchPayroll();
+  }, []);
 
   const handleRetry = () => {
-    fetchPayrolls();
+    // onFetchPayrolls();
   };
 
   const [filters, setFilters] = React.useState({
@@ -178,11 +131,6 @@ const PayrollListView = () => {
     });
   };
 
-  /* TODO: import, export, print */
-  // const handleImportClick = () => {};
-  // const handleExportClick = () => {};
-  // const handlePrintClick = () => {};
-
   const handleRowClick = ({ _id }) => navigate("/app/payroll/" + _id);
 
   const handleApprovePayrolls = () => {
@@ -198,38 +146,21 @@ const PayrollListView = () => {
   return (
     <PageView
       title="Payroll"
+      icon={<CreditCardIcon />}
       actions={[
         {
           type: "button",
-          label: "generate",
+          label: "Generate",
           handler: handleGenerateClick,
-          otherProps: { variant: "contained", color: "primary", size: "small" },
+          icon: { node: <GetAppIcon size="16px" /> },
+          otherProps: {
+            variant: "contained",
+            color: "primary",
+            size: "small",
+          },
         },
-        // {
-        //   type: "button",
-        //   label: "import",
-        //   icon: { node: <ImportIcon size="16px" /> },
-        //   handler: handleImportClick,
-        //   position: "right",
-        //   otherProps: { size: "small" },
-        // },
-        // {
-        //   type: "button",
-        //   label: "export",
-        //   icon: { node: <ExportIcon size="16px" /> },
-        //   handler: handleExportClick,
-        //   position: "right",
-        //   otherProps: { size: "small", disabled: !state.payrolls },
-        // },
-        // {
-        //   type: "button",
-        //   label: "print",
-        //   icon: { node: <PrintIcon size="16px" /> },
-        //   handler: handlePrintClick,
-        //   position: "right",
-        //   otherProps: { size: "small", disabled: !state.payrolls },
-        // },
       ]}
+      className={classes.root}
     >
       <Searchbar
         searchTerm={filters.searchTerm}

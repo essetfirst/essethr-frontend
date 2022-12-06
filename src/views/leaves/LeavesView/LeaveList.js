@@ -26,6 +26,14 @@ const useStyles = makeStyles((theme) => ({
 const LeaveList = ({ leaves }) => {
   const classes = useStyles();
 
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    console.log("Vhsvdhshdghsgdhsghshfghdghgeybnsbhcbusdghf", value);
+    setSearchTerm(value);
+  };
+
   return (
     <Box height="100%" mt={2}>
       <Box mb={1}>
@@ -35,6 +43,8 @@ const LeaveList = ({ leaves }) => {
               name="searchTerm"
               placeholder="Search leaves"
               variant="outlined"
+              onChange={handleChange("searchTerm")}
+              value={searchTerm}
               margin="dense"
               InputProps={{
                 startAdornment: (
@@ -53,7 +63,7 @@ const LeaveList = ({ leaves }) => {
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>Employee</TableCell>
+                <TableCell>Employee Name</TableCell>
                 <TableCell>Leave Type</TableCell>
                 <TableCell>Duration</TableCell>
                 <TableCell>Start Date</TableCell>
@@ -63,19 +73,38 @@ const LeaveList = ({ leaves }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leaves.map(
-                ({ _id, employee, leaveType, duration, from, to, status }) => (
-                  <TableRow key={_id}>
-                    <TableCell>{employee.name}</TableCell>
-                    <TableCell>{leaveType}</TableCell>
-                    <TableCell>{duration.value}</TableCell>
-                    <TableCell>{from}</TableCell>
-                    <TableCell>{to}</TableCell>
-                    <TableCell>{status}</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
+              {leaves
+                .map(
+                  ({
+                    _id,
+                    employee,
+                    leaveType,
+                    duration,
+                    from,
+                    to,
+                    status,
+                  }) => (
+                    <TableRow key={_id}>
+                      <TableCell>{employee.name}</TableCell>
+                      <TableCell>{leaveType}</TableCell>
+                      <TableCell>{duration.value}</TableCell>
+                      <TableCell>{from}</TableCell>
+                      <TableCell>{to}</TableCell>
+                      <TableCell>{status}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  )
                 )
-              )}
+                .filter(async (d) => {
+                  try {
+                    return (
+                      (await d.employee.firstName) &&
+                      null.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                  } catch (error) {
+                    console.log(error);
+                  }
+                })}
             </TableBody>
           </Table>
         </TableContainer>

@@ -65,32 +65,6 @@ function getReport({ query = {} }) {
   );
 }
 
-// function getEmployees(page, limit) {
-//   return request(`${path}?page=${page}&limit=${limit}`);
-// }
-
-// function getEmployeeById(id) {
-//   return request(`${path}/${id}`);
-// }
-
-// function createEmployee(employeeData) {
-//   return request(path, {
-//     method: "POST",
-//     body: JSON.stringify(employeeData),
-//   });
-// }
-
-// function editEmployee(employeeData) {
-//   return request(`${path}/${id}`, {
-//     method: "PATCH",
-//     body: JSON.stringify(employeeData),
-//   });
-// }
-
-// function deleteEmployee(id) {
-//   return request(`${path}/${id}`, { method: "DELETE" });
-// }
-
 const employeesApi = {
   getAll,
   getById,
@@ -102,11 +76,6 @@ const employeesApi = {
   deleteById,
   deleteAll,
   getReport,
-  // getEmployees,
-  // getEmployeeById,
-  // createEmployee,
-  // editEmployee,
-  // deleteEmployee,
 };
 
 export default employeesApi;

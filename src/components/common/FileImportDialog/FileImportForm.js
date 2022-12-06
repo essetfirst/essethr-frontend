@@ -163,7 +163,6 @@ const FileImportForm = ({ acceptedFileTypes, onReadSelectedFile }) => {
             id="importFiles"
             type="file"
             name="salesDataFile"
-            type="file"
             onChange={handleFileSelection}
             style={{ display: "none" }}
             accept={acceptedFileTypes}

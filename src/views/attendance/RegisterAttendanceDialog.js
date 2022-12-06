@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import { Formik } from "formik";
 import * as Yup from "yup";
+import MuiAlert from "@material-ui/lab/Alert";
+import API from "../../api/attendance";
 
 import {
   Button,
@@ -16,13 +17,6 @@ import {
   Divider,
   CircularProgress,
 } from "@material-ui/core";
-
-import MuiAlert from "@material-ui/lab/Alert";
-
-// import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-// import DateFnsUtils from "@date-io/date-fns";
-
-import API from "../../api/attendance";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -58,9 +52,10 @@ const RegisterAttendanceDialog = ({ employees, action, open, onClose }) => {
     const employeeId = employee;
     dispatch({ type: types.REGISTER_REQUEST });
     const { name } = employees.filter((e) => e.id === employeeId)[0] || {};
-    API.swipe({ employeeName: name, employeeId, time })
+    API.checkin({ employeeName: name, employeeId, time })
       .then(({ success, message, error }) => {
         if (success) {
+          console.log("ddddddddddddddddd", name, time);
           dispatch({ type: types.REGISTER_REQUEST_SUCCESS, payload: message });
         } else {
           dispatch({ type: types.REGISTER_REQUEST_FAILURE, error });
@@ -106,7 +101,7 @@ const RegisterAttendanceDialog = ({ employees, action, open, onClose }) => {
 
           <Formik
             initialValues={{
-              employee: "none",
+              employee: "",
               date: new Date().toISOString().slice(0, 10),
               time:
                 (new Date().getHours() > 9 ? "" : "0") +
@@ -131,6 +126,8 @@ const RegisterAttendanceDialog = ({ employees, action, open, onClose }) => {
                 time,
                 device: "PC",
               });
+
+              console.log("Valueeeeeeeeee", values);
             }}
           >
             {({
@@ -180,6 +177,8 @@ const RegisterAttendanceDialog = ({ employees, action, open, onClose }) => {
                       variant="outlined"
                       margin="normal"
                       size="small"
+                      defaultValue={new Date().toISOString().slice(0, 10)}
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
@@ -194,6 +193,11 @@ const RegisterAttendanceDialog = ({ employees, action, open, onClose }) => {
                       variant="outlined"
                       margin="normal"
                       size="small"
+                      defaultValue={
+                        (new Date().getHours() > 9 ? "" : "0") +
+                        new Date().toLocaleTimeString().slice(0, 4)
+                      }
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={12}>

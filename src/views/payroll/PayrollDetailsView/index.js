@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { useParams } from "react-router-dom";
-
+import PaymentIcon from "@material-ui/icons/Payment";
 import { Download as ExportIcon, Printer as PrintIcon } from "react-feather";
+import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 
 import API from "../../../api";
 
@@ -65,6 +66,61 @@ const PayrollDetailsView = () => {
     fetchPayroll();
   }, [fetchPayroll]);
 
+  const handleExportClick = async ({ _id }) => {
+    console.log("im about to export");
+
+    const columns = [
+      {
+        label: "First Name",
+        field: "firstName",
+      },
+      {
+        label: "Job Title",
+        field: "jobTitle",
+      },
+      {
+        label: "Organization",
+        field: "organization",
+      },
+      {
+        label: "Salary",
+        field: "salary",
+      },
+      {
+        label: "Status",
+        field: "status",
+      },
+      {
+        label: "Employee JoinedDate",
+        field: "employeeJoinedDate",
+      },
+      {
+        label: "Net Payment",
+        field: "netPayment",
+      },
+    ];
+
+    //map state.payroll paysilp array ?
+
+    const data = state.payroll.payslips.map((payslip) => {
+      return {
+        firstName: payslip.employee.name,
+        jobTitle: payslip.employee.jobTitle,
+        salary: payslip.employee.salary,
+        organization: payslip.organization,
+        employeeJoinedDate: payslip.employeeJoinedDate,
+        payrollTitle: payslip.payrollTitle,
+        status: payslip.status,
+        fromDate: payslip.fromDate,
+        netPayment: payslip.netPayment,
+      };
+    });
+
+    // console.log(data);
+
+    console.log(state.payroll);
+    await makeExcel(getTableDataForExport(data, columns));
+  };
   const handleRetry = () => {
     fetchPayroll();
   };
@@ -73,8 +129,9 @@ const PayrollDetailsView = () => {
 
   return (
     <PageView
-      title={"Payroll details"}
+      title={"Payroll Details"}
       backPath={"/app/payroll"}
+      icon={<PaymentIcon />}
       actions={[
         {
           label: "Approve",
@@ -83,12 +140,13 @@ const PayrollDetailsView = () => {
             variant: "contained",
             color: "primary",
             size: "small",
-            disabled: !state.payrolls,
+            disabled: state.payrolls,
           },
         },
         {
           label: "Export",
           position: "right",
+          handler: handleExportClick,
           icon: { node: <ExportIcon /> },
           otherProps: { size: "small", disabled: !state.payroll },
         },

@@ -10,11 +10,12 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  CircularProgress,
   Typography,
 } from "@material-ui/core";
 
 import { readExcelFile } from "../../../helpers/import";
-
+import API from "../../../api";
 import FileImportForm from "./FileImportForm";
 
 const FileImportDialog = ({
@@ -22,12 +23,13 @@ const FileImportDialog = ({
   onClose,
   title = "File import dialog",
   acceptedFileTypes,
-  onFileRead,
 }) => {
+  const [loading, setLoading] = React.useState(false);
+
   const [fileContent, setFileContent] = React.useState(null);
 
-  const handleFileRead = (file) => {
-    return readExcelFile(file)
+  const handleFileRead = async (file) => {
+    return await readExcelFile(file)
       .then((data) => {
         if (data) {
           setFileContent(data);
@@ -40,9 +42,20 @@ const FileImportDialog = ({
       });
   };
 
-  const handleImport = () => {
-    onFileRead(fileContent);
-    onClose();
+  const handleImport = async () => {
+    for (let i = 0; i < fileContent.data.length; i++) {
+      const { success, error } = await API.employees.create(
+        fileContent.data[i]
+      );
+      if (success) {
+        setLoading(true);
+        console.log(fileContent.data[i]);
+        setLoading(false);
+        onClose();
+      } else {
+        console.error(error);
+      }
+    }
   };
 
   return (
@@ -60,7 +73,7 @@ const FileImportDialog = ({
         />
         <Box mt={1} p={1}>
           <Typography>File contents:</Typography>
-          <code>{JSON.stringify(fileContent)}</code>
+          <pre>{JSON.stringify(fileContent)}</pre>
         </Box>
       </DialogContent>
       <DialogActions>
@@ -76,7 +89,11 @@ const FileImportDialog = ({
               disabled={!fileContent}
               onClick={handleImport}
             >
-              Import
+              {loading ? (
+                <CircularProgress size={24} />
+              ) : (
+                <Typography>Import</Typography>
+              )}
             </Button>
           </ButtonGroup>
         </Box>

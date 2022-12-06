@@ -28,7 +28,7 @@ const LeaveManagementView = () => {
   const { notificationSnackbar } = useNotificationSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
-  console.log("Leave management state: ", state);
+  console.log("Leave management state: ", fetchLeaveAllowances);
 
   const handleLoadLeaves = (startDate, endDate) => {
     fetchLeaves(startDate, endDate);

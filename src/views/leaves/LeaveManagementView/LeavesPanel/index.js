@@ -14,10 +14,20 @@ import { Box, Button, ButtonGroup, makeStyles } from "@material-ui/core";
 
 import useOrg from "../../../../providers/org";
 
-import filter from "../../../../helpers/filter";
 import getWeekDates from "../../../../helpers/get-week-dates";
 import arrayToMap from "../../../../utils/arrayToMap";
 
+import { getTableDataForExport, makeExcel } from "../../../../helpers/export";
+
+import {
+  Users as EmployeesIcon,
+  UploadCloud as ImportIcon,
+  Download as ExportIcon,
+  Printer as PrintIcon,
+  Plus as AddIcon,
+  Grid as GridIcon,
+  List as ListIcon,
+} from "react-feather";
 // import RequestForm from "./RequestForm";
 
 import EmployeesOnLeave from "./EmployeesOnLeave";
@@ -66,18 +76,6 @@ const LeavesPanel = ({
     { label: "Maternal Leave", value: "maternal" },
     { label: "Study Leave", value: "study" },
   ];
-  // const allowances = [
-  //   {
-  //     employeeId: 1,
-  //     remaining: { annual: 6, sick: 13, special: 16, maternal: 0, study: 12 },
-  //     totalRemaining: 47,
-  //   },
-  //   {
-  //     employeeId: 2,
-  //     remaining: { annual: 12, sick: 10, special: 20, maternal: 0, study: 12 },
-  //     totalRemaining: 54,
-  //   },
-  // ];
 
   const departmentOptions = [
     { label: "ALL", value: "ALL" },
@@ -114,9 +112,6 @@ const LeavesPanel = ({
   const handleRequestDialogClose = () => {
     setRequestDialogOpen(false);
   };
-
-  // const [detailedView, setDetailedView] = React.useState(false);
-  // const toggleDetailedView = () => setDetailedView(!detailedView);
 
   const initialFiltersValue = {
     searchTerm: "",
@@ -165,21 +160,39 @@ const LeavesPanel = ({
   };
   const handleFiltersReset = () => setFilters(initialFiltersValue);
 
-  // const getFilteredList = function () {
-  //   return filter(
-  //     state.leaves || [],
-  //     Object.keys(filters).map((key) => {
-  //       return {
-  //         value: filters[key],
-  //         cmpFn: comparisonFns[key],
-  //       };
-  //     })
-  //   );
-  // };
-
   const handleRegisterClick = () => {
     setDialogAction("register");
     handleRequestDialogOpen();
+  };
+
+  const handleExportClick = async ({ _id }) => {
+    console.log("im about to export");
+
+    const columns = [
+      {
+        label: "employeeId",
+        field: "employeeId",
+      },
+      {
+        label: "leave Type",
+        field: "leaveType",
+      },
+      {
+        label: "Duration",
+        field: "duration",
+      },
+      {
+        label: "Period",
+        field: "from",
+      },
+      {
+        label: "Status",
+        field: "status",
+      },
+    ];
+
+    console.log(state.fetchLeaves.leaves);
+    await makeExcel(getTableDataForExport(state.fetchLeaves.leaves, columns));
   };
 
   const handleEditLeaveClick = (selected) => {
@@ -198,12 +211,6 @@ const LeavesPanel = ({
     // TODO: Implement dialog for deleteLeave
     onDeleteLeave(selected);
   };
-
-  // const handleImportClick = () => {};
-  // const handleExportClick = () => {};
-  // const handlePrintClick = () => {};
-
-  // console.log("Week dates", weekDays);
   const weekDays = getWeekDates(new Date(), 0);
 
   const fetchLeaves = React.useCallback(() => {
@@ -242,20 +249,6 @@ const LeavesPanel = ({
           </Button>
         </ButtonGroup>
         <ButtonGroup>
-          <ExportButton
-            data={[]}
-            onExportFinished={() => {
-              console.log("Export finished...");
-            }}
-          />
-          {/* <Button
-            size="small"
-            onClick={handleImportClick}
-            startIcon={<ImportIcon size="16px" />}
-            aria-label="import leave data"
-          >
-            Import
-          </Button>
           <Button
             size="small"
             onClick={handleExportClick}
@@ -264,14 +257,6 @@ const LeavesPanel = ({
           >
             Export
           </Button>
-          <Button
-            size="small"
-            onClick={handlePrintClick}
-            startIcon={<PrintIcon size="16px" />}
-            aria-label="print leave data"
-          >
-            Print
-          </Button> */}
         </ButtonGroup>
       </Box>
 

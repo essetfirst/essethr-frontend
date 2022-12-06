@@ -8,10 +8,7 @@ import {
 const path = "/attendance";
 
 function getAttendance({ query = {} } = {}) {
-  // const fromDate = `${new Date(from).getFullYear()}-${new Date(from).getMonth()}-${new Date(from)}`;
-  // const toDate = new Date(to).toISOString().slice(0, 10);
-  // console.log("From date: ", from, fromDate);
-  // console.log("To date: ", to, toDate);
+  console.log("Queryyyyyyyyyyyyyyyyyy", query);
   return getRequest(
     `${path}?${typeof query === "string" ? query : queryObjectToString(query)}`
   );

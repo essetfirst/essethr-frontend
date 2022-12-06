@@ -1,14 +1,23 @@
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import { useReactToPrint } from "react-to-print";
-
 import { useSnackbar } from "notistack";
-
 import { Box, makeStyles, Typography } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
-
+import PageView from "../../../components/PageView";
+import API from "../../../api";
+import useOrg from "../../../providers/org";
+import useNotificationSnackbar from "../../../providers/notification-snackbar";
+import arrayToMap from "../../../utils/arrayToMap";
+import filter from "../../../helpers/filter";
+import sort from "../../../helpers/sort";
+import { getTableDataForExport, makeExcel } from "../../../helpers/export";
+import FileImportDialog from "../../../components/common/FileImportDialog";
+import Toolbar from "./Toolbar";
+import BranchTransferDialog from "./BranchTransferDialog";
+import ResultsTable from "./ResultsTable";
+import ResultsGrid from "./ResultsGrid";
+import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
 import {
   Users as EmployeesIcon,
   UploadCloud as ImportIcon,
@@ -17,36 +26,7 @@ import {
   Plus as AddIcon,
   Grid as GridIcon,
   List as ListIcon,
-  // Edit2 as EditIcon,
-  // Delete as DeleteIcon,
-  // Phone as PhoneIcon,
-  // Mail as EmailIcon,
 } from "react-feather";
-
-import PageView from "../../../components/PageView";
-// import VerticalTableComponent from "../../../components/VerticalTableComponent";
-// import ImportJSONFromTabularFileDialog from "../../../components/ImportFromFileDialog";
-// import withPrintability from "../../../components/PrintHoC";
-
-import API from "../../../api";
-
-import useOrg from "../../../providers/org";
-import useNotificationSnackbar from "../../../providers/notification-snackbar";
-
-import arrayToMap from "../../../utils/arrayToMap";
-import filter from "../../../helpers/filter";
-import sort from "../../../helpers/sort";
-import { readExcelFile } from "../../../helpers/import";
-import { getTableDataForExport, makeExcel } from "../../../helpers/export";
-
-import { ImportFileDialogSimple } from "../../../components/common/ImportFileDialog";
-import FileImportDialog from "../../../components/common/FileImportDialog";
-
-import Toolbar from "./Toolbar";
-import BranchTransferDialog from "./BranchTransferDialog";
-import ResultsTable from "./ResultsTable";
-import ResultsGrid from "./ResultsGrid";
-// import Highlights from "./Highlights";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -92,22 +72,22 @@ const EmployeeListView = () => {
   const navigate = useNavigate();
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-
   const { org, deleteEmployee } = useOrg();
+
+  const { notificationSnackbar } = useNotificationSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
   React.useEffect(() => {
     org &&
       org.employees &&
       dispatch({ type: types.RECEIVE_EMPLOYEES, payload: org.employees });
+    console.log(org.name);
   }, [org, org.employees]);
 
   const employeesMap = arrayToMap(state.employees, "_id");
   const departmentsMap = arrayToMap(org.departments, "_id");
   const positionsMap = arrayToMap(org.positions, "_id");
-
-  const { notificationSnackbar } = useNotificationSnackbar();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
   const initialFiltersValue = {
     searchTerm: "",
@@ -121,19 +101,19 @@ const EmployeeListView = () => {
     sortBy: "",
     sortOrder: "",
   };
-  const [filters, setFilters] = React.useState(initialFiltersValue);
+  const [filters, setFilters] = React.useState("");
 
-  const handleFilterChange = (filterName) => (e) => {
-    setFilters({ ...filters, [filterName]: e.target.value });
+  const handleFilterChange = () => (e) => {
+    const { value } = e.target;
+    setFilters(value);
   };
-  const handleFiltersReset = () => setFilters(initialFiltersValue);
+  // const handleFiltersReset = () => setFilters(initialFiltersValue);
 
   const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
   const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
 
   const handleSortParamsChange = (newSortParams) =>
     setSortParams({ ...newSortParams });
-  // const handleSortParamsReset = () => setSortParams(initialSortParamsValue);
 
   const comparisonFns = {
     searchTerm: ({ firstName, surName, lastName }, searchTermFilterValue) =>
@@ -184,6 +164,9 @@ const EmployeeListView = () => {
     []
   );
 
+  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
+  const [branchTransferDialog, setBranchTransferDialog] = React.useState(false);
+
   const getSortedList = React.useCallback(
     (employees = [], sortBy, sortOrder) => {
       return sort(employees, sortBy, sortOrder);
@@ -192,6 +175,7 @@ const EmployeeListView = () => {
   );
 
   const [viewType, setViewType] = React.useState("list");
+
   const handleViewChange = (e, value) => {
     setViewType(value);
   };
@@ -206,44 +190,35 @@ const EmployeeListView = () => {
     navigate("/app/employees/" + id);
   };
 
-  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
-  const [branchTransferDialog, setBranchTransferDialog] = React.useState(false);
   const handleBranchTransferDialogOpen = () => setBranchTransferDialog(true);
   const handleBranchTransferDialogClose = () => setBranchTransferDialog(false);
-  // const handleTransferClick = (_id) => {
-  //   navigate('/app/employees/transfer', + _id)
-  // }
+
   const handleTransferClick = (_id) => {
-    // console.log("[EmployeeListView]: Line 202 -> Transfer clicked፡ ", _id);
     const employee = employeesMap[_id];
     setSelectedEmployee(employee);
     handleBranchTransferDialogOpen();
   };
 
   const handleBranchTransfer = async (transferInfo) => {
-    // Do something async
     try {
       const { success, error } = await API.employees.editById(
         transferInfo._id,
         transferInfo
       );
       if (success) {
-        // updateEmployee(employeeInfo);
-        // Show notification
         notify({ success, message: "Employee transfer successful!" });
       } else {
         console.error(error);
-        // Show notification
         notify({ success: false, error: "Couldnt execute employee transfer!" });
       }
     } catch (e) {
       console.error(e.message);
-      // Show notification
       notify({ success: false, error: "Couldnt execute employee transfer." });
     }
   };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+
   const handleDeleteDialogOpen = () => {
     setDeleteDialogOpen(true);
   };
@@ -251,21 +226,17 @@ const EmployeeListView = () => {
     setDeleteDialogOpen(false);
   };
 
-  const handleDeleteClick = (_id) => {
-    // handleDeleteDialogOpen();
-    // handleDeleteEmployee(_id);
-  };
-
-  const handleDeleteEmployee = (employeeId) => {
-    API.employees
-      .deleteById(employeeId)
+  const handleDeleteClick = async (_id) => {
+    return await API.employees
+      .deleteById(_id)
       .then(({ success, error }) => {
         if (success) {
-          // notify user
-          deleteEmployee(employeeId);
+          deleteEmployee(_id);
+          notify({ success: true, message: "Employee Delete Succuss" });
+          console.log(_id);
         } else {
-          // notify user
           console.error(error);
+          notify({ success: false, message: "Employee Delete faild" });
         }
       })
       .catch((e) => {
@@ -274,6 +245,7 @@ const EmployeeListView = () => {
   };
 
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
+
   const handleImportDialogOpen = () => {
     setImportDialogOpen(true);
   };
@@ -284,34 +256,8 @@ const EmployeeListView = () => {
     handleImportDialogOpen();
   };
 
-  // const handleImportEmployees = (employees) => {
-  //   const attempt = () =>
-  //     API.employees
-  //       .importEmployees(employees)
-  //       .then(({ success, message, error }) => {
-  //         if (success) {
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         // showNotification({ success: false, error: String(e).includes('Unexpected token') ? 'Something is not right.' });
-  //       });
-  //   attempt();
-  // };
-
-  // const handleAddEmployees = (employees) => {
-  //   dispatch({ type: types.ADD_EMPLOYEES, payload: employees });
-  // };
-
-  // const [exportDialogOpen, setExportDialogOpen] = React.useState(false);
-  // const handleImportDialogOpen = () => {
-  //   setExportDialogOpen(true);
-  // };
-  // const handleExportDialogClose = () => {
-  //   setExportDialogOpen(false);
-  // };
-  const handleExportClick = async () => {
-    // handleExportDialogOpen();
-    if (!state.employees || !(state.emmployees > 0)) return;
+  const handleExportClick = async ({ _id }) => {
+    console.log("im about to export");
 
     const columns = [
       {
@@ -352,13 +298,15 @@ const EmployeeListView = () => {
       },
     ];
 
-    await makeExcel(getTableDataForExport(org.employees, columns));
+    console.log(state.employees);
+    await makeExcel(getTableDataForExport(state.employees, columns));
   };
 
   const printListRef = React.useRef();
   const handlePrintList = useReactToPrint({
     content: () => printListRef.current,
   });
+
   const handlePrintClick = () => {
     handlePrintList();
   };
@@ -405,18 +353,18 @@ const EmployeeListView = () => {
           icon: { node: <PrintIcon size="16px" /> },
           handler: handlePrintClick,
           position: "right",
-          otherProps: { disabled: !(state.employees.length > 0) },
+          otherProps: {
+            color: "primary",
+            disabled: !(state.employees.length > 0),
+          },
         },
       ]}
     >
-      {/* I wanna show some stats | how many are active | recently hired | employees on probation ! terminated cases */}
-
-      {/* <Highlights /> */}
       <Box mb={2} />
       <Toolbar
         filters={filters}
         onFilterChange={handleFilterChange}
-        onFiltersReset={handleFiltersReset}
+        // onFiltersReset={handleFiltersReset}
         departments={org.departments}
         positions={org.positions}
       />
@@ -431,37 +379,8 @@ const EmployeeListView = () => {
             "[EmployeeList]: Line 334 -> Data imported from file: ",
             data
           );
-          // readExcelFile(file)
-          //   .then((data) => {})
-          //   .catch((e) => {});
-
-          // await handleImportEmployees(data);
         }}
       />
-      {/* <ImportFileDialogSimple
-        title={"Import employees data"}
-        description={"Drop your files here or click"}
-        open={importDialogOpen}
-        onClose={handleImportDialogClose}
-        onFileRead={(data) => {
-          console.log(
-            "[EmployeeList]: Line 334 -> Data imported from file: ",
-            data
-          );
-          // readExcelFile(file)
-          //   .then((data) => {})
-          //   .catch((e) => {});
-        }}
-      /> */}
-      {/*       
-      <ImportJSONFromTabularFileDialog
-        open={importDialogOpen}
-        onClose={handleImportDialogClose}
-        onDropedFileReadAsJSON={({ columns, data }) => {
-          console.log("File columns: ", columns);
-          console.log("File data: ", data);
-        }}
-      /> */}
 
       <BranchTransferDialog
         open={branchTransferDialog}
@@ -470,14 +389,7 @@ const EmployeeListView = () => {
         onTransfer={handleBranchTransfer}
       />
 
-      <Box display="flex" justifyContent="space-between" mt={1}>
-        <Box pl={1} display="flex" alignItems="center">
-          <Typography color="textSecondary" variant="body2">
-            {`${state.employees.length} ${
-              state.employees.length > 1 ? "Employees" : "Employee"
-            }`}
-          </Typography>
-        </Box>
+      <Box display="flex" justifyContent="flex-end" mt={1}>
         <ToggleButtonGroup value={viewType}>
           <ToggleButton value="list" size="small" onClick={handleViewChange}>
             <ListIcon
@@ -501,13 +413,9 @@ const EmployeeListView = () => {
       {viewType === "list" ? (
         <ResultsTable
           org={org}
-          // employees={getSortedList(
-          //   getFilteredList(state.employees, filters, comparisonFns),
-          //   sortParams.sortBy,
-          //   sortParams.sortOrder
-          // )}
-          // employees={getFilteredList(state.employees, filters, comparisonFns)}
-          employees={state.employees || []}
+          employees={(state.employees || []).filter((d) =>
+            String(d.firstName).includes(filters)
+          )}
           onSortParamsChange={(sortBy, sortOrder) =>
             handleSortParamsChange({ sortBy, sortOrder })
           }
@@ -520,13 +428,9 @@ const EmployeeListView = () => {
         />
       ) : (
         <ResultsGrid
-          // employees={getSortedList(
-          //   getFilteredList(state.employees, filters, comparisonFns),
-          //   sortParams.sortBy,
-          //   sortParams.sortOrder
-          // )}
-          // employees={getFilteredList(state.employees, filters, comparisonFns)}
-          employees={state.employees || []}
+          employees={(state.employees || []).filter((d) =>
+            String(d.firstName).includes(filters)
+          )}
           departmentsMap={departmentsMap}
           positionsMap={positionsMap}
           onEditClicked={handleEditClick}

@@ -142,7 +142,7 @@ const AllocateAllowanceDialog = ({
                         select
                         error={Boolean(touched.leaveType && errors.leaveType)}
                         helperText={touched.leaveType && errors.leaveType}
-                        label="Employee"
+                        label="leave Type"
                         name="leaveType"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -187,10 +187,15 @@ const AllocateAllowanceDialog = ({
   );
 };
 
-const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
+const EntitlementsPanel = ({
+  allowances,
+  state,
+  notify,
+  onFetchAllowances,
+}) => {
   const { org } = useOrg();
 
-  console.log("[EntitlementsPanel]: Line 185 -> state: ", state);
+  console.log("[EntitlementsPanel]: Line 185 -> state: ", allowances);
 
   const employeesMap = arrayToMap(org.employees || [], "_id");
 
@@ -214,7 +219,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   };
 
   React.useEffect(() => {
-    // console.log("Allowances state: ", state);
+    console.table("usessssssss", state);
     onFetchAllowances();
   }, []);
 
@@ -285,7 +290,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
           {
             label: "Employee",
             field: "employeeId",
-            renderCell: ({ name }) => name,
+            renderCell: (row) => employeesMap[row.employeeId].name,
           },
           {
             label: "Allocated",

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 
 import { Typography } from "@material-ui/core";
-
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import TableComponent from "../../../components/TableComponent";
 
 import useOrg from "../../../providers/org";
@@ -66,9 +66,9 @@ const PayslipList = ({ payslips }) => {
       rowActions={[
         {
           label: "View details",
-          icon: { node: null, position: "end" },
+          icon: { node: <VisibilityIcon /> },
           handler: (row) => handleViewDetailsClick(row),
-          variant: "outlined",
+          variant: "inline",
         },
       ]}
     />

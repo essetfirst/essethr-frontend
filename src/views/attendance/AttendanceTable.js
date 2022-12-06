@@ -1,12 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Box, Chip, Link, Typography } from "@material-ui/core";
+import { Chip, Link, Typography } from "@material-ui/core";
 import {
-  // Delete as DeleteIcon,
   Edit as EditIcon,
   CheckCircleOutlineRounded as CheckIcon,
-  // EmojiNatureSharp as EmptyIcon,
 } from "@material-ui/icons";
 
 import TableComponent from "../../components/TableComponent";
@@ -24,27 +22,6 @@ const AttendanceTable = ({
   return (
     <TableComponent
       size="small"
-      // emptyDataText={
-      //   <Box
-      //     display="flex"
-      //     flexDirection="column"
-      //     alignItems="center"
-      //     // justifyContent="center"
-      //   >
-      //     <EmptyIcon
-      //       fontSize="large"
-      //       size={44}
-      //       color="disabled"
-      //       style={{ marginBottom: 8 }}
-      //     />
-      //     <Typography variant="h4" color="textSecondary" gutterBottom>
-      //       No one in attendance!
-      //     </Typography>
-      //     <Typography variant="body1" color="textSecondary">
-      //       CLOCK IN or and entry will show up here.
-      //     </Typography>
-      //   </Box>
-      // }
       columns={[
         {
           label: "Employee",
@@ -112,29 +89,7 @@ const AttendanceTable = ({
             );
           },
         },
-        // {
-        //   label: "OVERTIME",
-        //   field: "overtimeHours",
-        //   align: "center",
-        //   sortable: true,
-        //   renderCell: ({ checkout, overtimeHours }) => {
-        //     // // If todays is holiday
-        //     // const holidayAsOvertime = 0;
-        //     // // If employee has checked in before work start
-        //     // const beforeWork = 0;
-        //     // //  If employee has checked out after work end
-        //     // const afterWork = 0;
 
-        //     // const calculatedOvertime =
-        //     //   holidayAsOvertime || beforeWork + afterWork;
-
-        //     return overtimeHours
-        //       ? String(`${parseFloat(overtimeHours).toFixed(1)} hrs`)
-        //       : checkout
-        //       ? 0
-        //       : "N/A";
-        //   },
-        // },
         {
           label: "REMARK",
           field: "remark",

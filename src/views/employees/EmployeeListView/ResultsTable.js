@@ -1,22 +1,17 @@
 import React from "react";
-
 import moment from "moment";
-
 import { useReactToPrint } from "react-to-print";
-
 import { Box, Chip, Link, Typography } from "@material-ui/core";
+import TableComponent from "../../../components/TableComponent";
+import CustomAvatar from "../../../components/CustomAvatar";
+import PrintableMultipleEmployeeIDCards from "./PrintableMultipleEmployeeIDCards";
 import {
   Edit2 as EditIcon,
-  // Mail as EmailIcon,
   Delete as DeleteIcon,
   Phone as PhoneIcon,
   Printer as PrintIcon,
   ToggleRight as TransferIcon,
 } from "react-feather";
-
-import TableComponent from "../../../components/TableComponent";
-import CustomAvatar from "../../../components/CustomAvatar";
-import PrintableMultipleEmployeeIDCards from "./PrintableMultipleEmployeeIDCards";
 
 const ResultsTable = ({
   org,
@@ -31,6 +26,7 @@ const ResultsTable = ({
   ...rest
 }) => {
   const printableIDsRef = React.useRef();
+
   const handlePrintMultipleIds = useReactToPrint({
     content: () => printableIDsRef.current,
   });
@@ -59,9 +55,9 @@ const ResultsTable = ({
             sortable: true,
             renderCell: ({ _id, firstName, surName, phone }) => (
               <Box display="flex" alignItems="center">
-                {/* <CustomAvatar color="primary" size="1">
-                  {`${firstName[0]}${surName[0]}`}
-                </CustomAvatar> */}
+                <CustomAvatar color="primary" size="1">
+                  {/* {`${firstName[0]}${surName[0]}`} */}
+                </CustomAvatar>
                 <div>
                   <Typography
                     variant="h6"
@@ -72,31 +68,17 @@ const ResultsTable = ({
                     {`${firstName} ${surName}`}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {/* <PhoneIcon
+                    <PhoneIcon
                       fontSize="small"
                       size="16"
                       style={{ verticalAlign: "middle", marginRight: 5 }}
-                    /> */}
+                    />
                     {phone}
                   </Typography>
-                  {/* <Typography variant="body2">
-                  <EmailIcon
-                    fontSize="small"
-                    size="16"
-                    style={{ verticalAlign: "middle", marginRight: "5" }}
-                  />
-                  {email}
-                </Typography> */}
                 </div>
               </Box>
             ),
           },
-          // {
-          //   label: "DEPARTMENT",
-          //   field: "department",
-          //   sortable: true,
-          //   renderCell: ({ department }) => departmentsMap[department].name,
-          // },
           {
             label: "Job Title",
             field: "position",

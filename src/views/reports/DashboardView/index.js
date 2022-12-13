@@ -3,29 +3,14 @@ import { useNavigate } from "react-router";
 
 import moment from "moment";
 
-import {
-  Card,
-  CardContent,
-  Container,
-  // Box,
-  // Card,
-  // CardContent,
-  // Divider,
-  Grid,
-  makeStyles,
-  Typography,
-  // Typography,
-} from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 
 import {
   // Report as AddReportIcon,
   DashboardOutlined as DashboardIcon,
 } from "@material-ui/icons";
 
-import {
-  UserPlus as AddEmployeeIcon,
-  PieChart as AddReportIcon,
-} from "react-feather";
+import {} from "react-feather";
 
 import useOrg from "../../../providers/org";
 
@@ -40,8 +25,6 @@ import TotalPayroll from "./TotalPayroll";
 
 // import DailyAttendanceSummary from "./DailyAttendanceSummary";
 import AttendanceSummary from "../../attendance/AttendanceSummary";
-import DailyLeaveSummary from "./DailyLeaveSummary";
-import ApproveAttendanceTable from "./ApproveAttendanceTable";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -59,13 +42,13 @@ const DashboardView = () => {
   const { org } = useOrg();
   const { employees, departments, positions } = org;
 
-  const handleAddEmployeeClick = () => {
-    navigate("/app/employees/new");
-  };
+  // const handleAddEmployeeClick = () => {
+  //   navigate("/app/employees/new");
+  // };
 
-  const handleAddReportClick = () => {
-    navigate("/app/reports/");
-  };
+  // const handleAddReportClick = () => {
+  //   navigate("/app/reports/");
+  // };
 
   React.useEffect(() => {}, []);
   return (

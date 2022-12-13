@@ -1,6 +1,6 @@
 import React from "react";
 
-// import moment from "moment";
+import moment from "moment";
 
 import {
   // Avatar,
@@ -120,7 +120,7 @@ const DailyAttendanceSummaryByRemark = ({
         }
         action={
           <Button endIcon={<ArrowDropDownIcon />} size="small" variant="text">
-            {date === new Date() ? "Today" : new Date(date).toDateString()}
+            Today || {moment().format("MMM YYYY, h:mm a")}
           </Button>
         }
       />

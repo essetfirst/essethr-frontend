@@ -117,7 +117,7 @@ const EmployeeProfileView = () => {
       .getDetails(params.id)
       // .getById(params.id)
       .then(({ success, employee, error }) => {
-        console.dir(employee);
+        console.log("Gopopeopdihusgdyusgydgysgdhsgdhsgh", employee);
         success
           ? dispatch({
               type: types.FETCH_EMPLOYEE_SUCCESS,

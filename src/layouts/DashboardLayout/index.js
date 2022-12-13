@@ -94,7 +94,7 @@ const DashboardLayout = () => {
   return (
     <div className={classes.root}>
       {/* Start: this is a notification board from us developers to users */}
-      {/* {alert && <Alert>{alert}</Alert>} */}
+      {alert && <Alert>{alert}</Alert>}
       {/* End */}
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <NavBar

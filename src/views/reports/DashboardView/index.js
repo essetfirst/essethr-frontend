@@ -77,28 +77,30 @@ const DashboardView = () => {
           <DashboardIcon />
         </span>
       }
-      actions={[
-        {
-          label: "Add Employee",
-          icon: { node: <AddEmployeeIcon size="18" /> },
-          handler: handleAddEmployeeClick,
-          otherProps: {
-            size: "small",
-            variant: "contained",
-            color: "primary",
-          },
-        },
-        {
-          label: "Create Report",
-          icon: { node: <AddReportIcon size="18" /> },
-          handler: handleAddReportClick,
-          otherProps: {
-            size: "small",
-            variant: "contained",
-            color: "secondary",
-          },
-        },
-      ]}
+      actions={
+        [
+          // {
+          //   label: "Add Employee",
+          //   icon: { node: <AddEmployeeIcon size="18" /> },
+          //   handler: handleAddEmployeeClick,
+          //   otherProps: {
+          //     size: "small",
+          //     variant: "contained",
+          //     color: "primary",
+          //   },
+          // },
+          // {
+          //   label: "Create Report",
+          //   icon: { node: <AddReportIcon size="18" /> },
+          //   handler: handleAddReportClick,
+          //   otherProps: {
+          //     size: "small",
+          //     variant: "contained",
+          //     color: "secondary",
+          //   },
+          // },
+        ]
+      }
     >
       <Grid container spacing={2}>
         <Grid item lg={3} sm={6} xl={3} xs={12}>

@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import clsx from "clsx";
-
-// import moment from "moment";
+import moment from "moment";
 
 import {
   Avatar,
@@ -45,17 +43,14 @@ const Profile = ({ className, user, onUploadImage, ...rest }) => {
           <Typography color="textPrimary" gutterBottom variant="h3">
             {user.name}
           </Typography>
-          {/* 
-          <Typography color="textSecondary" variant="body1">
-            {`${user.city} ${user.country}`}
-          </Typography>
+
           <Typography
             className={classes.dateText}
             color="textSecondary"
             variant="body1"
           >
-            {`${moment().format("hh:mm A")} ${user.timezone}`}
-          </Typography> */}
+            {`${moment().format("hh:mm A")}`}
+          </Typography>
         </Box>
         <label
           style={{
@@ -79,7 +74,6 @@ const Profile = ({ className, user, onUploadImage, ...rest }) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleFileSelection}
           component="span"
           startIcon={<ImageUploadIcon fontSize="small" />}
           aria-label="upload image"

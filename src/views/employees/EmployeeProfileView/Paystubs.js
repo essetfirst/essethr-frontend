@@ -1,5 +1,6 @@
 import React from "react";
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import moment from "moment";
 import { useReactToPrint } from "react-to-print";
 
@@ -20,26 +21,10 @@ import { Download as ExportIcon, Printer as PrintIcon } from "react-feather";
 
 import TableComponent from "../../../components/TableComponent";
 
-// import VerticalTableComponent from "../../../components/VerticalTableComponent";
-
-// class PrintableComponent extends React.Component {
-//   render() {
-//     const { children } = this.props;
-//     return children ? (
-//       children
-//     ) : (
-//       <div>
-//         <h1>Yay it prints</h1>
-//         <p>This is the end.</p>
-//       </div>
-//     );
-//   }
-// }
-
 const useStyles = makeStyles((theme) => ({
   root: {},
   textField: {
-    minWidth: "30ch",
+    minWidth: "25ch",
     margin: theme.spacing(1, 2),
   },
 }));
@@ -60,12 +45,63 @@ const Paystubs = ({ payslips = [] }) => {
     setFilters({ ...filters, [name]: value });
   };
 
-  const handleExportClick = () => {};
+  const handleExportClick = () => {
+    console.log("Export Pdf");
+
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+    const marginLeft = 40;
+    const marginRight = 40;
+    const marginTop = 40;
+    const marginBottom = 20;
+
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.text(`Employee PaySlips`, marginLeft, marginTop);
+
+    doc.autoTable({
+      head: [
+        ["Start Date", "End Date", "Pay Date", "Recevied Amount", "Status"],
+      ],
+      body: payslips.map((pay) => [
+        moment(pay.fromDate).format("MM/DD/YYYY"),
+        moment(pay.toDate).format("MM/DD/YYYY"),
+        moment(pay.payDate).format("MM/DD/YYYY"),
+        pay.netPayment,
+        pay.status,
+      ]),
+      startY: marginTop + doc.autoTableEndPosY() + marginBottom,
+      margin: {
+        top: marginTop,
+        left: marginLeft,
+        right: marginRight,
+        bottom: marginBottom,
+      },
+      styles: {
+        overflow: "linebreak",
+        fontSize: 8,
+        cellPadding: 2, // a number, array or
+        halign: "center", // left, center, right
+      },
+      columnStyles: {
+        0: { columnWidth: "auto" },
+      },
+      tableWidth: "auto",
+      theme: "grid", // 'striped', '
+      tableLineWidth: 0.5,
+      tableLineColor: [200, 200, 200],
+      showHeader: "everyPage",
+      tableId: "paystubs",
+      // tableLineWidth: 0.5,
+    });
+    doc.save(`PaySlip-${moment().format("MM-DD-YYYY")}.pdf`);
+  };
   const handlePrintClick = (e) => {
     handlePrint(e);
   };
   return (
-    <Box>
+    <Box width="100%">
       <Box display="flex" justifyContent="flex-end" flexWrap="wrap" mb={2}>
         {/* Export and Print action area */}
         <ButtonGroup>
@@ -75,10 +111,11 @@ const Paystubs = ({ payslips = [] }) => {
             onClick={handleExportClick}
             aria-label="export"
             startIcon={<ExportIcon />}
+            disabled={payslips.length === 0}
           >
             Export as PDF
           </Button>
-          <Button
+          {/* <Button
             type="button"
             variant="outlined"
             size="small"
@@ -87,105 +124,68 @@ const Paystubs = ({ payslips = [] }) => {
             startIcon={<PrintIcon />}
           >
             Print
-          </Button>
+          </Button> */}
         </ButtonGroup>
       </Box>
-      <Box mb={2}>{/* Total amount recieved and number of payslips  */}</Box>
-      <Card>
-        <CardContent>
-          <Box display="flex" alignItems="center">
-            {/* Filter area */}
-            {/* <Box maxWidth={100}>
-          <TextField name="searchTerm" />
-        </Box> */}
-            <TextField
-              className={classes.textField}
-              label="From"
-              name="fromDate"
-              type="date"
-              value={filters.fromDate}
-              onChange={handleFilterChange}
-              variant="outlined"
-              margin="dense"
-              size="small"
-            />
-            <TextField
-              className={classes.textField}
-              label="To"
-              name="toDate"
-              type="date"
-              value={filters.toDate}
-              onChange={handleFilterChange}
-              variant="outlined"
-              margin="dense"
-              size="small"
-            />
-            <TextField
-              className={classes.textField}
-              label="Status"
-              select
-              name="status"
-              value={filters.status}
-              variant="outlined"
-              margin="dense"
-              size="small"
-            >
-              {[
-                { label: "ALL", value: "ALL" },
-                { label: "Pending", value: "pending" },
-                { label: "Approved", value: "approved" },
-                { label: "Rejected", value: "rejected" },
-              ].map(({ label, value }) => (
-                <MenuItem value={value} key={value}>
-                  {label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-        </CardContent>
-      </Card>
-      {/* <PrintableComponent ref={printableRef}>
-        <VerticalTableComponent
-          keys={[
-            {
-              label: "Employee ID",
-              field: "employeeId",
-            },
-            {
-              label: "Start Date",
-              field: "fromDate",
-              renderCell: ({ fromDate }) =>
-                moment(fromDate).toDate().toDateString(),
-            },
-            {
-              label: "End Date",
-              field: "toDate",
-              renderCell: ({ toDate }) =>
-                moment(toDate).toDate().toDateString(),
-            },
-            {
-              label: "Pay Date",
-              field: "payDate",
-              renderCell: ({ payDate }) =>
-                moment(payDate).toDate().toDateString(),
-            },
-            {
-              label: "Received amount",
-              field: "netPayment",
-              renderCell: ({ netPayment }) => `${netPayment} ETB`,
-            },
-          ]}
-          data={payslips}
-        />
-      </PrintableComponent> */}
+      <Box mb={2}>
+        <Card>
+          <CardContent>
+            <Box display="flex" alignItems="center">
+              <TextField
+                className={classes.textField}
+                label="From"
+                name="fromDate"
+                type="date"
+                value={filters.fromDate}
+                onChange={handleFilterChange}
+                variant="outlined"
+                margin="dense"
+                size="small"
+              />
+              <TextField
+                className={classes.textField}
+                label="To"
+                name="toDate"
+                type="date"
+                value={filters.toDate}
+                onChange={handleFilterChange}
+                variant="outlined"
+                margin="dense"
+                size="small"
+              />
+              <TextField
+                className={classes.textField}
+                label="Status"
+                select
+                name="status"
+                value={filters.status}
+                variant="outlined"
+                margin="dense"
+                size="small"
+              >
+                {[
+                  { label: "ALL", value: "ALL" },
+                  { label: "Pending", value: "pending" },
+                  { label: "Approved", value: "approved" },
+                  { label: "Rejected", value: "rejected" },
+                ].map(({ label, value }) => (
+                  <MenuItem value={value} key={value}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
       <TableComponent
-        size="small"
+        size="large"
         columns={[
-          {
-            label: "Payroll",
-            field: "title",
-            renderCell: ({ title }) => title,
-          },
+          // {
+          //   label: "Payroll",
+          //   field: "title",
+          //   renderCell: ({ title }) => title,
+          // },
           {
             label: "Start Date",
             field: "fromDate",

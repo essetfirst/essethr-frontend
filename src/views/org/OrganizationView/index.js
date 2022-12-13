@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { useParams, useNavigate } from "react-router-dom";
+import useNotificationSnackbar from "../../../providers/notification-snackbar";
+import { useSnackbar } from "notistack";
 
 import {
   Avatar,
@@ -14,8 +16,8 @@ import {
   Divider,
   Grid,
   IconButton,
-  // makeStyles,
   Typography,
+  makeStyles,
 } from "@material-ui/core";
 
 import {
@@ -31,7 +33,7 @@ import PageView from "../../../components/PageView";
 import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 import TabbedComponent from "../../../components/TabbedComponent";
-
+import ApartmentIcon from "@material-ui/icons/Apartment";
 import API from "../../../api";
 
 import useAuth from "../../../providers/auth";
@@ -64,13 +66,22 @@ const reducer = (state, action) => {
       return state;
   }
 };
+const useStyles = makeStyles((theme) => ({
+  root: {
+    fontFamily: "Poppins",
+  },
+}));
 
 const OrganizationView = ({ id }) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   const navigate = useNavigate();
 
   const params = useParams();
   const { auth } = useAuth();
+
+  const { notificationSnackbar } = useNotificationSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
   const {
     currentOrg,
     org,
@@ -111,7 +122,6 @@ const OrganizationView = ({ id }) => {
   }, []);
 
   React.useEffect(() => {
-    console.log("Hellooooooooooooooooooooo", org);
     if (org) {
       dispatch({ type: types.REQUEST_SUCCESS, payload: org });
     }
@@ -137,13 +147,30 @@ const OrganizationView = ({ id }) => {
   const holidaysMap = arrayToMap(state.org ? state.org.holidays : [], "_id");
 
   const handleCreateDepartment = (departmentInfo) => {
-    // console.log("We are in createDepartment");
-    // console.log(departmentInfo);
     API.orgs.departments
       .create(currentOrg, departmentInfo)
       .then(({ success, department, error }) => {
-        // console.log("We are in createDepartment", department);
-        success ? addDepartment(department) : console.error(error);
+        if (success) {
+          addDepartment(
+            {
+              _id: department._id,
+              ...departmentInfo,
+              org: currentOrg,
+            },
+            currentOrg
+          );
+          notify({
+            message: "Department created successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: error,
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -151,13 +178,24 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleUpdateDepartment = (departmentInfo) => {
-    // console.log("We are in updateDepartment");
-    // console.log(departmentInfo);
+    console.log(departmentInfo);
     API.orgs.departments
       .editById(currentOrg, departmentInfo._id, departmentInfo)
       .then(({ success, error }) => {
-        // console.log("We are in updateDepartment");
-        success ? updateDepartment(departmentInfo) : console.error(error);
+        if (success) {
+          updateDepartment(departmentInfo);
+          notify({
+            message: "Department updated successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: error,
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -165,14 +203,31 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleDeleteDepartment = (departmentId) => {
-    // console.log(departmentId);
+    console.log(departmentId);
     API.orgs.departments
       .deleteById(currentOrg, departmentId)
       .then(({ success, error }) => {
-        success ? deleteDepartment(departmentId) : console.error(error);
+        if (success) {
+          deleteDepartment(departmentId);
+          notify({
+            message: "Department deleted successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: error,
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
+        notify({
+          message: "Error deleting department.",
+          type: "error",
+        });
       });
   };
 
@@ -180,7 +235,20 @@ const OrganizationView = ({ id }) => {
     API.orgs.positions
       .create(currentOrg, positionInfo)
       .then(({ success, position, error }) => {
-        success ? addPosition(position) : console.error(error);
+        if (success) {
+          addPosition(position);
+          notify({
+            message: "Position created successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: error,
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -190,7 +258,20 @@ const OrganizationView = ({ id }) => {
     API.orgs.positions
       .editById(currentOrg, positionInfo._id, positionInfo)
       .then(({ success, error }) => {
-        success ? updatePosition(positionInfo) : console.error(error);
+        if (success) {
+          updatePosition(positionInfo);
+          notify({
+            message: "Position updated successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: error,
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -202,7 +283,20 @@ const OrganizationView = ({ id }) => {
     API.orgs.positions
       .deleteById(currentOrg, positionId)
       .then(({ success, error }) => {
-        success ? deletePosition(positionId) : console.error(error);
+        if (success) {
+          deletePosition(positionId);
+          notify({
+            message: "Position deleted successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: error,
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -210,13 +304,23 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleAddLeaveType = (leaveTypeInfo) => {
-    // console.log("We are in addLeaveType");
-    // console.log(leaveTypeInfo);
     API.orgs.leaveTypes
       .add(currentOrg, leaveTypeInfo)
       .then(({ success, leaveType, error }) => {
-        // console.log("We are in addLeaveType", leaveType);
-        success ? addLeaveType(leaveType) : console.error(error);
+        if (success) {
+          addLeaveType(leaveType);
+          notify({
+            message: "Success record Leave type",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: "Error record Leave type",
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -224,13 +328,23 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleUpdateLeaveType = (leaveInfo) => {
-    // console.log("We are in updateLeave");
-    // console.log(leaveInfo);
     API.orgs.leaveTypes
       .editById(currentOrg, leaveInfo._id, leaveInfo)
       .then(({ success, error }) => {
-        // console.log("We are in updateLeaveType");
-        success ? updateLeaveType(leaveInfo) : console.error(error);
+        if (success) {
+          updateLeaveType(leaveInfo);
+          notify({
+            message: "Leave type updated successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: "Leave type updated error",
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -238,11 +352,23 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleDeleteLeaveType = (leaveTypeId) => {
-    // console.log(leaveTypeId);
     API.orgs.leaveTypes
       .deleteById(currentOrg, leaveTypeId)
       .then(({ success, error }) => {
-        success ? deleteLeaveType(leaveTypeId) : console.error(error);
+        if (success) {
+          deleteLeaveType(leaveTypeId);
+          notify({
+            message: "Leave type deleted successfully.",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: "Leave type deleted error",
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -250,13 +376,23 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleAddHoliday = (holidayInfo) => {
-    // console.log("We are in addHoliday");
-    // console.log(holidayInfo);
     API.orgs.holidays
       .add(currentOrg, holidayInfo)
       .then(({ success, holiday, error }) => {
-        // console.log("We are in addholiday", holiday);
-        success ? addHoliday(holiday) : console.error(error);
+        if (success) {
+          addHoliday(holiday);
+          notify({
+            message: "Success record Holiday",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: "Error record Holiday",
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -264,13 +400,24 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleUpdateHoliday = (holidayInfo) => {
-    // console.log("We are in updateHoliday");
-    // console.log(leaveInfo);
+    console.log(holidayInfo);
     API.orgs.holidays
       .editById(currentOrg, holidayInfo._id, holidayInfo)
       .then(({ success, error }) => {
-        // console.log("We are in updateHoliday");
-        success ? updateHoliday(holidayInfo) : console.error(error);
+        if (success) {
+          updateHoliday(holidayInfo);
+          notify({
+            message: "Success update Holiday",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: "Error update Holiday",
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -278,11 +425,24 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleDeleteHoliday = (holidayId) => {
-    // console.log(holidayId);
+    console.log(holidayId);
     API.orgs.holidays
       .deleteById(currentOrg, holidayId)
       .then(({ success, error }) => {
-        success ? deleteHoliday(holidayId) : console.error(error);
+        if (success) {
+          deleteHoliday(holidayId);
+          notify({
+            message: "Success delete Holiday",
+            type: "success",
+            success: true,
+          });
+        } else {
+          notify({
+            message: "Error delete Holiday",
+            type: "error",
+            success: false,
+          });
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -304,9 +464,20 @@ const OrganizationView = ({ id }) => {
         {state.org && Object.keys(state.org).length > 0 && (
           <Grid container>
             <Grid item sm={8}>
-              <Typography variant="h3" color="primary">
-                {`${state.org.name} (${state.org.branch})`}
-              </Typography>
+              <Box display="flex" flexDirection="row" alignItems="center">
+                <ApartmentIcon
+                  color="primary"
+                  style={{ marginRight: "7px", fontSize: "38px" }}
+                />
+                <Typography
+                  variant="h3"
+                  color="primary"
+                  align="left"
+                  className={classes.root}
+                >
+                  {`${state.org.name} (${state.org.branch})`}
+                </Typography>
+              </Box>
               <Box mt={3} />
               {[
                 {
@@ -357,8 +528,8 @@ const OrganizationView = ({ id }) => {
                 >
                   Edit
                 </Button>
-                <Button
-                  variant="contained"
+                {/* <Button
+                  variant="outlined"
                   color="primary"
                   onClick={handleEditOrgClick}
                   endIcon={<ArrowDownIcon />}
@@ -367,7 +538,7 @@ const OrganizationView = ({ id }) => {
                   style={{ marginLeft: "16px" }}
                 >
                   Actions
-                </Button>
+                </Button> */}
               </Box>
             </Grid>
             <Grid item sm={12}>
@@ -380,10 +551,10 @@ const OrganizationView = ({ id }) => {
                     indicatorColor: "primary",
                   }}
                   tabs={[
-                    {
-                      label: "Branches",
-                      panel: <BranchList />,
-                    },
+                    // {
+                    //   label: "Branches",
+                    //   panel: <BranchList />,
+                    // },
                     {
                       label: "Departments",
                       panel: (

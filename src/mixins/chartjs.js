@@ -1,7 +1,4 @@
 import Chart from "react-chartjs-2";
-
-// ChartJS extension rounded bar chart
-// https://codepen.io/jedtrow/full/ygRYgo
 function draw() {
   const { ctx } = this._chart;
   const vm = this._view;

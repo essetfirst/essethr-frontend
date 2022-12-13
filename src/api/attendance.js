@@ -7,7 +7,7 @@ import {
 
 const path = "/attendance";
 
-function getAttendance({ query = {} } = {}) {
+function getAttendance(query = {}) {
   console.log("Queryyyyyyyyyyyyyyyyyy", query);
   return getRequest(
     `${path}?${typeof query === "string" ? query : queryObjectToString(query)}`

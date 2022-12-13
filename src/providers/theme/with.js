@@ -5,8 +5,12 @@ const withContainer = (Component) => {
   const ChildComponent = (props) => {
     return (
       <Context.Consumer>
-        {({ theme, setTheme }) => (
-          <Component theme={theme} setTheme={setTheme} {...props} />
+        {({ darkMode, toggleDarkMode }) => (
+          <Component
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            {...props}
+          />
         )}
       </Context.Consumer>
     );

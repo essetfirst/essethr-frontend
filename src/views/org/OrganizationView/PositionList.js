@@ -54,8 +54,8 @@ const PositionList = ({
   const [formDialogOpen, setFormDialogOpen] = React.useState(false);
   const handleDialogOpen = () => setFormDialogOpen(true);
   const handleDialogClose = () => {
-    setSelectedId("");
     setFormDialogOpen(false);
+    setSelectedId("");
   };
 
   const handleEditClick = (id) => {
@@ -134,11 +134,11 @@ const PositionList = ({
             renderCell: ({ department }) =>
               `${(departmentsMap[department] || {}).name || "N/A"}`,
           },
-          {
-            field: "parent",
-            label: "Parent",
-            renderCell: ({ parent }) => `${parent || "N/A"}`,
-          },
+          // {
+          //   field: "parent",
+          //   label: "Parent",
+          //   renderCell: ({ parent }) => `${parent || "N/A"}`,
+          // },
           {
             field: "salary",
             label: "Salary",
@@ -151,12 +151,12 @@ const PositionList = ({
         rowActions={[
           {
             label: "Edit position",
-            icon: <EditIcon fontSize="small" />,
+            icon: <EditIcon fontSize="small" color="primary" />,
             handler: ({ _id }) => handleEditClick(_id),
           },
           {
             label: "Delete position",
-            icon: <DeleteIcon fontSize="small" />,
+            icon: <DeleteIcon fontSize="small" color="error" />,
             handler: ({ _id }) => handleDeleteClick(_id),
           },
         ]}

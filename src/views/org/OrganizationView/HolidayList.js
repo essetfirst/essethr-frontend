@@ -28,11 +28,6 @@ import TableComponent from "../../../components/TableComponent";
 
 import HolidayForm from "./HolidayForm";
 
-// What are the functionalities
-// I wanna add a holiday (type recurring, once), fetch holidays, remove holiday
-//
-// const localizer = momentLocalizer(moment);
-
 const useStyles = makeStyles((theme) => ({
   textField: {
     width: "35ch",
@@ -65,23 +60,19 @@ const HolidayList = ({
     handleDialogOpen();
   };
 
-  const handleEditClick = (_id) => () => {
+  const handleEditClick = (_id) => {
     setSelectedHoliday(_id);
     handleDialogOpen();
   };
 
-  const handleDeleteClick = (_id) => () => {
+  const handleDeleteClick = (_id) => {
     onDeleteHoliday(_id);
-    setSelectedHoliday("");
   };
 
   const handleFormSubmit = (holidayInfo) => {
-    console.log(
-      "[HolidayList]: Line 51 -> Selected holiday: ",
-      selectedHoliday
-    );
     selectedHoliday ? onUpdateHoliday(holidayInfo) : onAddHoliday(holidayInfo);
     handleDialogClose();
+    setSelectedHoliday("");
   };
 
   return (
@@ -118,7 +109,7 @@ const HolidayList = ({
             onClick={handleAddClick}
             startIcon={<AddIcon />}
           >
-            Add
+            Create
           </Button>
         </ButtonGroup>
         <Dialog open={formDialogOpen} onClose={handleDialogClose}>
@@ -137,35 +128,34 @@ const HolidayList = ({
           { label: "Name", field: "name" },
           { label: "Date", field: "date" },
           {
-            label: "Half Day?",
+            label: "Half Day ?",
             field: "halfDate",
-            align: 'center',
+            align: "center",
             renderCell: ({ halfDay }) => (
               <FormControlLabel control={<Checkbox checked={halfDay} />} />
             ),
           },
           {
-            label: "Included in Payroll?",
+            label: "Included in Payroll ?",
             field: "inPayroll",
-            align: 'center',
+            align: "center",
             renderCell: ({ inPayroll }) => (
               <FormControlLabel control={<Checkbox checked={inPayroll} />} />
             ),
           },
         ]}
-        data={
-          holidays
-          // (holidays || []).filter((h) =>String(h.name).includes(searchTerm))
-        }
+        data={(holidays || []).filter((h) =>
+          String(h.name).includes(searchTerm)
+        )}
         rowActions={[
           {
             label: "Edit Holiday",
-            icon: <EditIcon fontSize="small" />,
+            icon: <EditIcon fontSize="small" color="primary" />,
             handler: ({ _id }) => handleEditClick(_id),
           },
           {
-            label: "Remove Holiday",
-            icon: <DeleteIcon fontSize="small" />,
+            label: "Delete Holiday",
+            icon: <DeleteIcon fontSize="small" color="error" />,
             handler: ({ _id }) => handleDeleteClick(_id),
           },
         ]}

@@ -7,6 +7,7 @@ import * as serviceWorker from "./serviceWorker";
 
 import "./index.css";
 
+import Provider from "./providers/theme/Provider";
 import App from "./App";
 
 // Barcode reader
@@ -49,7 +50,9 @@ import App from "./App";
 
 ReactDOM.render(
   <BrowserRouter>
-    <App />
+    <Provider>
+      <App />
+    </Provider>
   </BrowserRouter>,
   document.getElementById("root")
 );

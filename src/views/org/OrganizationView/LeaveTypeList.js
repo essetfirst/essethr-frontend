@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import {
   Box,
   Button,
   ButtonGroup,
-  Checkbox,
   Chip,
   Dialog,
   DialogContent,
@@ -61,18 +60,17 @@ const LeaveTypeList = ({
     handleDialogOpen();
   };
 
-  const handleEditClick = (id) => () => {
+  const handleEditClick = (id) => {
     setSelectedId(id);
     handleDialogOpen();
   };
 
-  const handleDeleteClick = (id) => () => {
+  const handleDeleteClick = (id) => {
     onDeleteLeaveType(id);
     setSelectedId("");
   };
 
   const handleFormSubmit = (leaveTypeInfo) => {
-    // console.log("LeaveTypeId: ", selectedId);
     selectedId
       ? onUpdateLeaveType(leaveTypeInfo)
       : onAddLeaveType(leaveTypeInfo);
@@ -113,7 +111,7 @@ const LeaveTypeList = ({
             onClick={handleAddClick}
             startIcon={<AddIcon fontSize="small" />}
           >
-            Add
+            Create
           </Button>
         </ButtonGroup>
 
@@ -168,12 +166,12 @@ const LeaveTypeList = ({
         rowActions={[
           {
             label: "Edit leave type",
-            icon: <EditIcon fontSize="small" />,
+            icon: <EditIcon fontSize="small" color="primary" />,
             handler: ({ _id }) => handleEditClick(_id),
           },
           {
             label: "Delete leave type",
-            icon: <DeleteIcon fontSize="small" />,
+            icon: <DeleteIcon fontSize="small" color="error" />,
             handler: ({ _id }) => handleDeleteClick(_id),
           },
         ]}

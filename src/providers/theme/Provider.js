@@ -1,31 +1,43 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useMediaQuery } from "@material-ui/core";
 
 import Context from "./Context";
 
-const Provider = ({
-  children,
-  defaultTheme = "dark",
-  persistKey = "theme",
-}) => {
-  const persistTheme = localStorage.getItem(persistKey);
-  const [theme, setTheme] = React.useState(persistTheme || defaultTheme);
+const Provider = ({ children }) => {
+  const [darkMode, setDarkMode] = React.useState(false);
+
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
   React.useEffect(() => {
-    try {
-      localStorage.setItem(persistKey, theme);
-    } catch (e) {
-      console.warn(e);
+    if (localStorage.getItem("theme") === "dark") {
+      setDarkMode(true);
+    } else if (localStorage.getItem("theme") === "light") {
+      setDarkMode(false);
+    } else {
+      setDarkMode(prefersDarkMode);
     }
-  }, [theme, persistKey]);
+  }, [prefersDarkMode]);
+
+  const toggleDarkMode = () => {
+    if (darkMode) {
+      localStorage.setItem("theme", "light");
+      setDarkMode(false);
+    } else {
+      localStorage.setItem("theme", "dark");
+      setDarkMode(true);
+    }
+  };
+
   return (
-    <Context.Provider value={{ theme, setTheme }}>{children}</Context.Provider>
+    <Context.Provider value={{ darkMode, toggleDarkMode }}>
+      {children}
+    </Context.Provider>
   );
 };
 
 Provider.propTypes = {
   children: PropTypes.any,
-  defaultTheme: PropTypes.string,
-  persistKey: PropTypes.string,
 };
 
 export default Provider;

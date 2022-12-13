@@ -10,19 +10,31 @@ import AttendanceProvider from "./providers/attendance/Provider";
 import LeaveProvider from "./providers/leave/Provider";
 import NotificationSnackbarProvider from "./providers/notification-snackbar/Provider";
 import defaultConfig from "./config";
-import { defaultTheme } from "./theme";
+import { defaultTheme, darkTheme } from "./theme";
 import ErrorBoundary from "./components/ErrorBoundary";
 import RoutesComponent from "./Routes";
 import "react-perfect-scrollbar/dist/css/styles.css";
+import { useTheme } from "./providers/theme";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 const App = ({ config: appConfig }) => {
   const config = { ...defaultConfig, ...appConfig };
   const { auth } = config;
   const { persistKey } = auth || {};
+
+  const { darkMode } = useTheme();
+
+  console.log(darkMode);
+
+  let mode = React.useMemo(() => {
+    return darkMode ? darkTheme : defaultTheme;
+  }, [darkMode]);
+
   return (
-    <ErrorBoundary>
-      <LocalizationProvider dateAdapter={MomentUtils}>
-        <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={mode}>
+      <CssBaseline />
+      <ErrorBoundary>
+        <LocalizationProvider dateAdapter={MomentUtils}>
           <ConfigProvider appConfig={config}>
             <AuthProvider persistKey={persistKey}>
               <OrgProvider>
@@ -33,7 +45,7 @@ const App = ({ config: appConfig }) => {
                         vertical: "top",
                         horizontal: "right",
                       }}
-                      autoHideDuration={10000}
+                      autoHideDuration={2000}
                       hideIconVariant={true}
                       maxSnack={4}
                     >
@@ -46,9 +58,9 @@ const App = ({ config: appConfig }) => {
               </OrgProvider>
             </AuthProvider>
           </ConfigProvider>
-        </ThemeProvider>
-      </LocalizationProvider>
-    </ErrorBoundary>
+        </LocalizationProvider>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 };
 

@@ -1,8 +1,14 @@
 import React from "react";
-
-import { Box, Container, Typography, makeStyles } from "@material-ui/core";
-
 import Page from "../../components/Page";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Container,
+  Typography,
+  makeStyles,
+  Button,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,40 +16,58 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
+    fontFamily: "Poppins",
   },
   image: {
-    marginTop: 50,
     display: "inline-block",
     maxWidth: "100%",
     width: 560,
+  },
+
+  button: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
 
 const NotFoundView = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   return (
     <Page className={classes.root} title="404">
       <Box
         display="flex"
-        flexDirection="column"
-        height="100%"
         justifyContent="center"
+        alignItems="center"
+        flexDirection="row"
+        height="70%"
       >
         <Container maxWidth="md">
-          <Typography align="center" color="textPrimary" variant="h1">
-            404: The page you are looking for isn’t here
-          </Typography>
-          <Typography align="center" color="textPrimary" variant="subtitle2">
-            You either tried some shady route or you came here by mistake.
-            Whichever it is, try using the navigation
-          </Typography>
           <Box textAlign="center">
-            <img
-              alt="Under development"
-              className={classes.image}
-              src="/static/images/undraw_page_not_found_su7k.svg"
-            />
+            <div className="notfound">
+              <div className="notfound-404">
+                <Typography
+                  variant="h1"
+                  style={{ fontSize: "150px", color: "#002626" }}
+                >
+                  <span>4</span>
+                  <span>0</span>
+                  <span>4</span>
+                </Typography>
+                <h3>Oops! Page not found</h3>
+              </div>
+            </div>
+          </Box>
+          <Box textAlign="center" marginTop={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ArrowBackIcon />}
+              onClick={() => navigate(-1)}
+            >
+              Go Back
+            </Button>
           </Box>
         </Container>
       </Box>

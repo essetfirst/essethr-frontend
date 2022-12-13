@@ -1,44 +1,31 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import moment from "moment";
 import { Link as RouterLink } from "react-router-dom";
+import { useTheme } from "../../providers/theme";
 
 import clsx from "clsx";
 import {
   makeStyles,
   AppBar,
-  Badge,
   Box,
   Hidden,
   IconButton,
   Toolbar,
   Typography,
-  TextField,
-  MenuItem,
 } from "@material-ui/core";
 
-import {
-  Menu as MenuIcon,
-  NotificationsOutlined as NotificationsIcon,
-} from "@material-ui/icons";
+import { Menu as MenuIcon } from "@material-ui/icons";
+import BusinessIcon from "@material-ui/icons/Business";
+import Brightness4Icon from "@material-ui/icons/Brightness4";
+import Brightness7Icon from "@material-ui/icons/Brightness7";
 
-import {
-  // User as UserIcon,
-  LogOut as LogoutIcon,
-} from "react-feather";
+import { LogOut as LogoutIcon } from "react-feather";
 
 import useAuth from "../../providers/auth";
 import useOrg from "../../providers/org";
 
 import API from "../../api";
-
-import Logo from "../../components/Logo";
-
-// const user = {
-//   avatar: "/static/images/avatars/avatar_6.png",
-//   jobTitle: "Senior Developer",
-//   name: "Abraham Gebrekidan",
-// };
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -47,15 +34,17 @@ const useStyles = makeStyles((theme) => ({
     height: 32,
     marginRight: 5,
   },
+  text: {
+    fontFamily: "Poppins",
+  },
 }));
 
 const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
-  // const [notifications] = useState([]);
+  const { darkMode, toggleDarkMode } = useTheme();
 
   const { auth, logout } = useAuth();
   const { currentOrg, setCurrentOrg, setOrg } = useOrg();
-
   const [orgs, setOrgs] = React.useState([]);
   const [orgName, setOrgName] = React.useState("");
 
@@ -94,12 +83,13 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
     console.log("DashboardLayout => Selected org: ", org);
     setCurrentOrg(value);
     setOrg(org);
-    // setOrgName((orgs.find((o) => o._id === value) || {}).branch);
     setOrgName(org.branch);
   };
 
   const handleLogout = () => {
-    logout(() => {});
+    logout(() => {
+      localStorage.clear();
+    });
   };
 
   return (
@@ -112,16 +102,23 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         </Hidden>
 
         <RouterLink to="/">
-          <Logo />
+          <BusinessIcon
+            style={{ color: "#fff", fontSize: "2rem", marginRight: "10px" }}
+          />
         </RouterLink>
         <RouterLink to="/">
-          <Typography component="span" variant="h4" style={{ color: "#fff" }}>
-            EssetHR
+          <Typography
+            component="span"
+            variant="h4"
+            style={{ color: "#fff" }}
+            className={classes.text}
+          >
+            Esset HR
           </Typography>
         </RouterLink>
 
         <Box flexGrow={1} />
-        <Hidden smDown>
+        {/* <Hidden smDown>
           {auth.isAuth &&
             Array.isArray(orgs) &&
             orgs.length > 0 &&
@@ -136,7 +133,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
                 size="small"
               >
                 {orgs.map(({ _id, name, branch }) => (
-                  <MenuItem style={{color: '#fff'}} value={_id} key={_id}>
+                  <MenuItem style={{ color: "#fff" }} value={_id} key={_id}>
                     {branch || name}
                   </MenuItem>
                 ))}
@@ -144,42 +141,71 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             ) : (
               <Typography variant="subtitle1">{orgName}</Typography>
             ))}
-          {/* 
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={notifications.length}
-              color="error"
-              variant="standard"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton> */}
-        </Hidden>
+        </Hidden> */}
         {/* <Box alignItems="center" display="flex" mr={1}>
           <IconButton
-          component={RouterLink}
-          to={"/app/account"}
-          color="inherit"
+            component={RouterLink}
+            to={"/app/account"}
+            color="inherit"
           >
-          <UserIcon />
+            <UserIcon />
           </IconButton>
           <Hidden smDown>
-          <Typography
-          className={classes.name}
-          color="inherit"
-          variant="body2"
-          component={RouterLink}
-          to={"/app/account"}
-          color="inherit"
+            <Typography
+              className={classes.name}
+              color="inherit"
+              variant="body2"
+              component={RouterLink}
+              to={"/app/account"}
             >
-            {user.name}
+              {orgs.user}
             </Typography>
+          </Hidden>
+        </Box> */}
+
+        {/* <Hidden smDown>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <Typography
+              className={classes.text}
+              color="inherit"
+              variant="body2"
+            >
+              {moment().format("ddd, h:mm:ss a")}{" "}
+            </Typography>
+          </Box>
+        </Hidden> */}
+
+        <Box alignItems="center" display="flex" ml={2}>
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              toggleDarkMode();
+            }}
+          >
+            {darkMode ? (
+              <Brightness7Icon fontSize="small" />
+            ) : (
+              <Brightness4Icon fontSize="small" />
+            )}
+          </IconButton>
+        </Box>
+        <Box alignItems="center" display="flex" ml={2}>
+          <IconButton onClick={handleLogout} color="inherit" title="logout">
+            <LogoutIcon />
+            <Hidden smDown>
+              <Typography
+                className={classes.text}
+                color="inherit"
+                variant="body2"
+                component={RouterLink}
+                to={"/app/account"}
+                style={{ marginLeft: "7px", fontWeight: "bolder" }}
+              >
+                LogOut
+              </Typography>
             </Hidden>
-          </Box> */}
-        {/*           
-        <IconButton onClick={handleLogout} color="inherit" title="logout">
-          <LogoutIcon />
-        </IconButton> */}
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   );

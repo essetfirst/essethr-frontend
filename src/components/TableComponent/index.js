@@ -68,7 +68,7 @@ const TableComponent = ({
   expandableRowIcons,
   renderRowExpansion,
 
-  paginationEnabled = false,
+  paginationEnabled = true,
 
   sizeAdjustEnabled = false,
 

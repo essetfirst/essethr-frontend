@@ -1,8 +1,13 @@
 import React from "react";
-
 import { Formik } from "formik";
 import * as Yup from "yup";
-
+import useOrg from "../../../providers/org";
+import EmployeeSelect from "./EmployeeSelect";
+import API from "../../../api";
+import { useNavigate } from "react-router-dom";
+import PageView from "../../../components/PageView";
+import ImportDataFile from "./ImportDataFile";
+import { readExcelFile } from "../../../helpers/import";
 import {
   Backdrop,
   Box,
@@ -28,15 +33,6 @@ import {
   CheckCircle as SuccessIcon,
 } from "@material-ui/icons";
 
-import useOrg from "../../../providers/org";
-
-import EmployeeSelect from "./EmployeeSelect";
-import API from "../../../api";
-import { useNavigate } from "react-router-dom";
-import PageView from "../../../components/PageView";
-import ImportDataFile from "./ImportDataFile";
-import { readExcelFile } from "../../../helpers/import";
-
 const startOfMonth = new Date(
   new Date().getFullYear(),
   new Date().getMonth() - 1,
@@ -58,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
   processStateCard: {
     padding: theme.spacing(2),
   },
+  text: {
+    fontSize: "1.2rem",
+    font: "Poppins",
+  },
 }));
 
 const types = {
@@ -67,7 +67,7 @@ const types = {
   RETRY: "RETRY",
 };
 const initialState = {
-  payroll: null,
+  payroll: [],
   requesting: false,
   error: null,
   retry: false,
@@ -107,9 +107,6 @@ const PayrollGenerateView = () => {
       .then(({ success, payroll, error }) => {
         if (success) {
           dispatch({ type: types.REQUEST_SUCCESS, payload: payroll });
-          // setTimeout(() => {
-          //   navigate("/app/payroll/" + payroll);
-          // }, 10000);
         } else {
           console.error(error);
           dispatch({ type: types.REQUEST_ERROR, error });
@@ -160,7 +157,7 @@ const PayrollGenerateView = () => {
           <CardContent>
             {state.requesting ? (
               <Box
-                minWidth={400}
+                minWidth={800}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -168,7 +165,7 @@ const PayrollGenerateView = () => {
                 height="100%"
                 p={2}
               >
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h2" gutterBottom>
                   Generating employee payslips...
                 </Typography>
                 <Box mt={1} />
@@ -178,7 +175,7 @@ const PayrollGenerateView = () => {
               </Box>
             ) : state.error ? (
               <Box
-                minWidth={400}
+                minWidth={800}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -201,7 +198,7 @@ const PayrollGenerateView = () => {
               </Box>
             ) : (
               <Box
-                minWidth={400}
+                minWidth={800}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -209,7 +206,7 @@ const PayrollGenerateView = () => {
                 height="100%"
                 p={2}
               >
-                <Typography variant="h4" display="flex" alignItems="center">
+                <Typography variant="h3" display="flex" alignItems="center">
                   <SuccessIcon color="primary" fontSize="small" /> Payroll
                   Generated Successfully
                 </Typography>
@@ -255,7 +252,7 @@ const PayrollGenerateView = () => {
             ["daily", "hourly"],
             "'Payment unit' can only be either daily or hourly"
           ),
-          employees: Yup.array(),
+          employees: Yup.array().required("At least one employee is required"),
           onlyApprovedHours: Yup.boolean().default(false),
           commissionEnabled: Yup.boolean(),
           salesData: Yup.array().default([]),

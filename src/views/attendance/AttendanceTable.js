@@ -157,7 +157,7 @@ const AttendanceTable = ({
         },
       ]}
       requestState={requestState}
-      data={attendance}
+      data={Object.values(attendance)}
       onSortParamsChange={onSortParamsChange}
     />
   );

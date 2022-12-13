@@ -19,11 +19,7 @@ import {
   EditOutlined as EditIcon,
   SearchOutlined as SearchIcon,
 } from "@material-ui/icons";
-
-import API from "../../../api";
-
 import TableComponent from "../../../components/TableComponent";
-
 import DepartmentForm from "./DepartmentForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -52,22 +48,25 @@ const DepartmentList = ({
   };
   const [selectedId, setSelectedId] = React.useState("");
 
-  const [formDialogOpen,  setFormDialogOpen] = React.useState(false);
+  const [formDialogOpen, setFormDialogOpen] = React.useState(false);
   const handleDialogOpen = () => setFormDialogOpen(true);
-  const handleDialogClose = () => setFormDialogOpen(false);
-
-  const handleCreateClick = (e) => {
-    handleDialogOpen();
-  };
-
-  const handleEditClick = (_id) => (e) => {
-    setSelectedId(_id);
-    handleDialogOpen();
-  };
-
-  const handleDeleteClick = (_id) => (e) => {
-    onDeleteDepartment(_id);
+  const handleDialogClose = () => {
+    setFormDialogOpen(false);
     setSelectedId("");
+  };
+
+  const handleCreateClick = () => {
+    handleDialogOpen();
+  };
+
+  const handleEditClick = (id) => {
+    setSelectedId(id);
+    handleDialogOpen();
+  };
+
+  const handleDeleteClick = (_id) => {
+    console.log(_id);
+    onDeleteDepartment(_id);
   };
 
   const handleFormSubmit = (departmentInfo) => {
@@ -75,6 +74,7 @@ const DepartmentList = ({
     selectedId
       ? onUpdateDepartment(departmentInfo)
       : onCreateDepartment(departmentInfo);
+
     handleDialogClose();
   };
 
@@ -131,11 +131,11 @@ const DepartmentList = ({
         columns={[
           { field: "name", label: "Name", sortable: true },
           { field: "location", label: "Location" },
-          {
-            field: "parent",
-            label: "Parent",
-            renderCell: ({ parent }) => `${parent || "N/A"}`,
-          },
+          // {
+          //   field: "parent",
+          //   label: "Parent",
+          //   renderCell: ({ parent }) => `${parent || "-"}`,
+          // },
         ]}
         data={(departments || []).filter((d) =>
           String(d.name).includes(searchTerm)
@@ -143,12 +143,12 @@ const DepartmentList = ({
         rowActions={[
           {
             label: "Edit department",
-            icon: <EditIcon fontSize="small" />,
+            icon: <EditIcon fontSize="small" color="primary" />,
             handler: ({ _id }) => handleEditClick(_id),
           },
           {
             label: "Delete department",
-            icon: <DeleteIcon fontSize="small" />,
+            icon: <DeleteIcon fontSize="small" color="error" />,
             handler: ({ _id }) => handleDeleteClick(_id),
           },
         ]}

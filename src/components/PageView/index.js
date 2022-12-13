@@ -89,8 +89,11 @@ const PageView = ({
   });
 
   React.useEffect(() => {
-    return () => {};
-    // document.scrollingElement.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    document.scrollingElement.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
   }, []);
 
   return (

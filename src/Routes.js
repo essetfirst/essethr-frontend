@@ -187,7 +187,10 @@ const RoutesComponent = () => {
           <Route path="/job-history" element={<JobHistoryReport />} />
           <Route path="/payroll-hours-view" element={<PayrollHoursView />} />
           <Route path="/absentees-view" element={<AbsenteesReportView />} />
-          <Route path="/leave-balances-view" element={<LeaveBalancesReportView />} />
+          <Route
+            path="/leave-balances-view"
+            element={<LeaveBalancesReportView />}
+          />
           <Route path="/" element={<ReportView />} />
         </PrivateRoute>
         <PrivateRoute
@@ -218,8 +221,8 @@ const RoutesComponent = () => {
         <Route path="signin" element={<SignInView />} />
         <Route path="register" element={<RegisterView />} />
         <Route path="login" element={<LoginView />} />
-        <Route path="404" element={<NotFoundView />} />
-        <Route path="*" element={<Navigate to="/404" />} />
+        <Route path="*" element={<NotFoundView />} />
+        {/* <Route path="*" element={<Navigate to="/404" />} /> */}
       </Route>
     </Routes>
   );

@@ -1,4 +1,10 @@
 import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import useNotificationSnackbar from "../../../providers/notification-snackbar";
+import { useSnackbar } from "notistack";
+import { Edit as EditIcon } from "react-feather";
+import API from "../../../api";
+import useOrg from "../../../providers/org";
 
 import {
   Box,
@@ -15,13 +21,7 @@ import {
   MenuItem,
   TextField,
   Checkbox,
-  //   Typography,
 } from "@material-ui/core";
-
-import { Edit as EditIcon } from "react-feather";
-
-import API from "../../../api";
-import useOrg from "../../../providers/org";
 
 const DAYS_OF_WEEK = [
   "monday",
@@ -82,8 +82,6 @@ const AttendancePolicy = ({
   orgId,
   attendancePolicy = DEFAULT_ATTENDANCE_POLICY,
 }) => {
-  console.log("Org Id: ", orgId);
-  console.log("Attendance policy: ", attendancePolicy);
   const { updateOrg } = useOrg();
 
   const [selectedWeekDay, setSelectedWeekDay] = React.useState("");
@@ -118,6 +116,9 @@ const AttendancePolicy = ({
       });
     }
   };
+  const { notificationSnackbar } = useNotificationSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
   const [editMode, setEditMode] = React.useState(false);
 
@@ -125,7 +126,6 @@ const AttendancePolicy = ({
     setEditMode(true);
   };
   const handleSaveChanges = () => {
-    // do something with the changes
     handleUpdateAttendancePolicy();
     setEditMode(false);
   };
@@ -133,21 +133,32 @@ const AttendancePolicy = ({
     setEditMode(false);
   };
 
+  React.useEffect(() => {
+    console.log(policyState);
+  }, []);
+
   const handleUpdateAttendancePolicy = () => {
-    console.log("\n\nOrgId: ", orgId);
     API.orgs
       .updateAttendancePolicy(orgId, policyState)
       .then(({ success, message, error }) => {
         if (success) {
-          // Show message
           setEditMode(false);
           updateOrg({ attendancePolicy: policyState });
+          notify({
+            message: message,
+            success: true,
+            variant: "success",
+          });
         } else {
-          // show error
+          notify({
+            message: error,
+            success: false,
+            variant: "error",
+          });
         }
       })
       .catch((e) => {
-        // show error
+        console.error(e);
       });
   };
 
@@ -280,6 +291,7 @@ const WorkDayHoursForm = ({
   breakEndTime,
 }) => {
   const editable = onChange && typeof onChange === "function";
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={12} md={6}>
@@ -295,6 +307,7 @@ const WorkDayHoursForm = ({
           size="small"
         />
       </Grid>
+
       <Grid item xs={12} sm={12} md={6}>
         <TextField
           fullWidth

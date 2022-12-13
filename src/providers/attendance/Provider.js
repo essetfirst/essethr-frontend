@@ -82,6 +82,10 @@ const Provider = ({ children }) => {
         })
         .then(({ success, attendance, error }) => {
           if (success) {
+            console.log(
+              "Attenadancess   ssssssssssssssssssssssssss",
+              attendance
+            );
             dispatch({
               type: types.FETCH_ATTENDANCE_SUCCESS,
               payload: attendance,

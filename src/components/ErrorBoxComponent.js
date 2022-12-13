@@ -8,18 +8,18 @@ import { RefreshTwoTone as RetryIcon } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
-    width: "100%",
 
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     padding: theme.spacing(2),
-    margin: theme.spacing(2),
+    margin: theme.spacing(1),
+    fontFamily: "Poppins",
+    marginLeft: "-10rem",
     // background: theme.palette.background.default,
   },
   button: {
-    // border: `1px solid ${theme.palette.primary.main}`,
     margin: theme.spacing(1),
     padding: theme.spacing(1),
   },
@@ -29,7 +29,7 @@ const ErrorBoxComponent = ({ error, onRetry }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography variant="h5" color="error" align="center">
+      <Typography variant="h2" color="error" align="left">
         {String(error)}
       </Typography>
 
@@ -37,9 +37,9 @@ const ErrorBoxComponent = ({ error, onRetry }) => {
         className={classes.button}
         variant="outlined"
         color="default"
-        size='small'
+        size="small"
         onClick={onRetry}
-        startIcon={<RetryIcon fontSize='small' />}
+        startIcon={<RetryIcon fontSize="small" />}
       >
         Retry
       </Button>

@@ -1,7 +1,13 @@
 import React from "react";
 import moment from "moment";
 import { useReactToPrint } from "react-to-print";
-import { Box, Chip, Link, Typography } from "@material-ui/core";
+import {
+  Box,
+  Chip,
+  Link,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
 import TableComponent from "../../../components/TableComponent";
 import CustomAvatar from "../../../components/CustomAvatar";
 import PrintableMultipleEmployeeIDCards from "./PrintableMultipleEmployeeIDCards";
@@ -56,7 +62,9 @@ const ResultsTable = ({
             renderCell: ({ _id, firstName, surName, phone }) => (
               <Box display="flex" alignItems="center">
                 <CustomAvatar color="primary" size="1">
-                  {/* {`${firstName[0]}${surName[0]}`} */}
+                  {`${firstName ? firstName[0] : ""}${
+                    surName ? surName[0] : ""
+                  }`}
                 </CustomAvatar>
                 <div>
                   <Typography
@@ -146,11 +154,11 @@ const ResultsTable = ({
             label: "Edit employee",
             handler: ({ _id }) => onEditClicked(_id),
           },
-          {
-            icon: <TransferIcon fontSize="small" />,
-            label: "Transfer employee",
-            handler: ({ _id }) => onTransferClicked(_id),
-          },
+          // {
+          //   icon: <TransferIcon fontSize="small" />,
+          //   label: "Transfer employee",
+          //   handler: ({ _id }) => onTransferClicked(_id),
+          // },
           {
             icon: <DeleteIcon fontSize="small" />,
             label: "Delete employee",

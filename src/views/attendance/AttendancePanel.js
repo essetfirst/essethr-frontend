@@ -10,7 +10,15 @@ import { Button, ButtonGroup, Box, Divider } from "@material-ui/core";
 import {
   UploadCloud as ImportIcon,
   Download as ExportIcon,
+
+  // Printer as PrintIcon,
+  // Search as SearchIcon,
+  // RotateCcw as RefreshIcon,
+  // ChevronLeft as PrevArrowIcon,
+  // ChevronRight as NextArrowIcon,
 } from "react-feather";
+
+// import API from "../../api";
 
 import useOrg from "../../providers/org";
 import useNotificationSnackbar from "../../providers/notification-snackbar";
@@ -18,8 +26,11 @@ import useAttendance from "../../providers/attendance";
 
 import arrayToMap from "../../utils/arrayToMap";
 import filter from "../../helpers/filter";
+// import getWeekDates from "../../helpers/get-week-dates";
 import sort from "../../helpers/sort";
 import { getTableDataForExport, makeExcel } from "../../helpers/export";
+
+// import AttendanceSummary from "./AttendanceSummary";
 import FilterBar from "./FilterBar";
 import AttendanceTable from "./AttendanceTable";
 import EditAttendanceDialog from "./EditAttendanceDialog";
@@ -74,7 +85,6 @@ const AttendancePanel = () => {
         ? remark === remarkFilterValue
         : true,
   };
-
   const getFilteredAttendanceList = React.useCallback((attendance, filters) => {
     return filter(
       attendance || [],
@@ -86,11 +96,10 @@ const AttendancePanel = () => {
   }, []);
 
   const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
-
   const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
   const handleSortParamsChange = (newSortParams) =>
     setSortParams({ ...newSortParams });
-
+  // const handleSortParamsReset = () => setSortParams(initialSortParamsValue);
   const getSortedAttendanceList = React.useCallback(
     (attendance, sortBy, sortOrder) => {
       return sort(attendance || [], sortBy, sortOrder);
@@ -146,14 +155,16 @@ const AttendancePanel = () => {
     }
   };
 
+  // const handlePrintClick = () => {};
+
   const handleRefreshClick = () => {
+    // console.log("[AttendancePanel]: Line 203 -> Refreshing...");
     fetchAttendance(null, null, attendanceDate);
   };
 
   const [selectedAttendance, setSelectedAttendance] = React.useState(null);
 
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-
   const handleEditDialogClose = () => {
     setEditDialogOpen(false);
     handleRefreshClick();
@@ -182,6 +193,18 @@ const AttendancePanel = () => {
   const handleViewEmployeeClick = (id) => {
     navigate("/app/employees/" + id);
   };
+
+  // React.useEffect(() => {
+  //   // console.log(
+  //   //   "[AttendancePanel]: Line 268 -> We are in useEffect, attendanceDate has changed: "
+  //   // );
+
+  //   fetchAttendance(null, null, attendanceDate);
+  //   localStorage.setItem(
+  //     "attendanceByDate",
+  //     JSON.stringify(state.attendanceByDate)
+  //   );
+  // }, [attendanceDate]);
 
   return (
     <div>
@@ -245,6 +268,17 @@ const AttendancePanel = () => {
         onClose={handleRegisterDialogClose}
       />
 
+      {/* <Grid container spacing={2}>
+        <Grid item xs={12} sm={12} md={12}>
+          <AttendanceSummary
+            totalEmployees={Object.keys(employeesMap).length}
+            attendanceByDate={state.attendanceByDate}
+            currentDate={attendanceDate}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}></Grid>
+      </Grid> */}
+
       <Box mb={2} />
       <FilterBar
         attendanceDate={attendanceDate}
@@ -265,6 +299,7 @@ const AttendancePanel = () => {
           sortParams.sortBy,
           sortParams.sortOrder
         )}
+        // attendance={state.attendanceByDate[getDateString(attendanceDate)] || []}
         onSortParamsChange={handleSortParamsChange}
         onEditClicked={handleEditClick}
         onApproveClicked={handleApproveClick}

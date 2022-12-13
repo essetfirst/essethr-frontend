@@ -9,6 +9,7 @@ const useStyles = makeStyles({
   root: {},
   toolbar: {
     height: 64,
+    fontFamily: "Poppins",
   },
 });
 

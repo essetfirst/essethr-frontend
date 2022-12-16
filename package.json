@@ -55,6 +55,7 @@
     "react-to-print": "^2.12.3",
     "react-transition-group": "^4.4.2",
     "sequelize": "^6.3.5",
+    "serve": "^14.1.2",
     "uifx": "^2.0.7",
     "xlsx": "^0.17.3",
     "yup": "^0.29.3"

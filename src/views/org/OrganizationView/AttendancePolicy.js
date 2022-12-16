@@ -1,11 +1,11 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
 import { Edit as EditIcon } from "react-feather";
 import API from "../../../api";
 import useOrg from "../../../providers/org";
-
+import moment from "moment";
+import { DatePicker, TimePicker, DateTimePicker } from "@material-ui/pickers";
 import {
   Box,
   Button,
@@ -22,6 +22,7 @@ import {
   TextField,
   Checkbox,
 } from "@material-ui/core";
+import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 
 const DAYS_OF_WEEK = [
   "monday",
@@ -60,23 +61,6 @@ const DEFAULT_ATTENDANCE_POLICY = DAYS_OF_WEEK.map((day) => ({
           workHours: DEFAULT_WORK_DAY_HOURS_FORMAT,
         },
 }));
-
-// const types = {
-//   DAY_CHANGE: 'DAY_CHANGE',
-//   UPDATE_ATTENDANCE_POLICY_REQUEST: 'UPDATE_REQUEST',
-//   UPDATE_ATTENDANCE_POLICY_SUCCESS: 'UPDATE_REQUEST',
-//   UPDATE_ATTENDANCE_POLICY_FAILURE: 'UPDATE_REQUEST',
-// }
-// const reducer = (state, action) => {
-//   const { type, payload, error } = action;
-//   switch(type) {
-//     case types.DAY_CHANGE:
-
-//     case types.UPDATE_ATTENDANCE_POLICY_REQUEST:
-//     case types.UPDATE_ATTENDANCE_POLICY_SUCCESS:
-//     case types.UPDATE_ATTENDANCE_POLICY_FAILURE:
-//   }
-// };
 
 const AttendancePolicy = ({
   orgId,
@@ -119,6 +103,7 @@ const AttendancePolicy = ({
   const { notificationSnackbar } = useNotificationSnackbar();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
+  const [selectedDate, handleDateChange] = React.useState(new Date());
 
   const [editMode, setEditMode] = React.useState(false);
 
@@ -133,10 +118,6 @@ const AttendancePolicy = ({
     setEditMode(false);
   };
 
-  React.useEffect(() => {
-    console.log(policyState);
-  }, []);
-
   const handleUpdateAttendancePolicy = () => {
     API.orgs
       .updateAttendancePolicy(orgId, policyState)
@@ -144,6 +125,8 @@ const AttendancePolicy = ({
         if (success) {
           setEditMode(false);
           updateOrg({ attendancePolicy: policyState });
+          console.log({ policyState });
+
           notify({
             message: message,
             success: true,
@@ -170,12 +153,14 @@ const AttendancePolicy = ({
           title="Define work days, and hours"
           action={
             !editMode && (
-              <IconButton
+              <Button
                 aria-label="edit work days, hours"
                 onClick={handleEditClick}
+                variant="outlined"
+                startIcon={<EditIcon size={18} />}
               >
-                <EditIcon />
-              </IconButton>
+                {" Update The Work time "}
+              </Button>
             )
           }
         />
@@ -192,7 +177,7 @@ const AttendancePolicy = ({
                 <TextField
                   fullWidth
                   select
-                  label="Choose week day"
+                  label="Choose Week Day"
                   name="weekDay"
                   onChange={handleChange}
                   value={selectedWeekDay}
@@ -205,7 +190,7 @@ const AttendancePolicy = ({
                     if (String(value).length === 1) {
                       text = DAYS_OF_WEEK[value];
                     }
-                    const label = text[0].toUpperCase() + text.slice(1);
+                    const label = text.charAt(0).toUpperCase() + text.slice(1);
                     return (
                       <MenuItem value={value} key={value}>
                         {label}
@@ -300,11 +285,16 @@ const WorkDayHoursForm = ({
           label="Work start time"
           name="workStartTime"
           type={editable ? "time" : "text"}
-          value={workStartTime}
+          value={
+            editable
+              ? workStartTime
+              : moment(workStartTime, "HH:mm").format("hh:mm A")
+          }
           onChange={onChange}
           variant="outlined"
           margin="dense"
           size="small"
+          disabled={editable ? false : true}
         />
       </Grid>
 
@@ -314,11 +304,16 @@ const WorkDayHoursForm = ({
           label="Work end time"
           name="workEndTime"
           type={editable ? "time" : "text"}
-          value={workEndTime}
+          value={
+            editable
+              ? workEndTime
+              : moment(workEndTime, "HH:mm").format("hh:mm A")
+          }
           onChange={onChange}
           variant="outlined"
           margin="dense"
           size="small"
+          disabled={editable ? false : true}
         />
       </Grid>
       <Grid item xs={12} sm={12} md={6}>
@@ -327,11 +322,16 @@ const WorkDayHoursForm = ({
           label="Break start time"
           name="breakStartTime"
           type={editable ? "time" : "text"}
-          value={breakStartTime}
+          value={
+            editable
+              ? breakStartTime
+              : moment(breakStartTime, "HH:mm").format("hh:mm A")
+          }
           onChange={onChange}
           variant="outlined"
           margin="dense"
           size="small"
+          disabled={editable ? false : true}
         />
       </Grid>
       <Grid item xs={12} sm={12} md={6}>
@@ -340,11 +340,16 @@ const WorkDayHoursForm = ({
           label="Break end time"
           name="breakEndTime"
           type={editable ? "time" : "text"}
-          value={breakEndTime}
+          value={
+            editable
+              ? breakEndTime
+              : moment(breakEndTime, "HH:mm").format("hh:mm A")
+          }
           onChange={onChange}
           variant="outlined"
           margin="dense"
           size="small"
+          disabled={editable ? false : true}
         />
       </Grid>
     </Grid>

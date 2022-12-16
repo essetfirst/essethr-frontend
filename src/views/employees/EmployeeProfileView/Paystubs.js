@@ -14,9 +14,9 @@ import {
   makeStyles,
   MenuItem,
   TextField,
-  // Typography,
+  Typography,
 } from "@material-ui/core";
-
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import { Download as ExportIcon, Printer as PrintIcon } from "react-feather";
 
 import TableComponent from "../../../components/TableComponent";
@@ -58,16 +58,32 @@ const Paystubs = ({ payslips = [] }) => {
 
     const doc = new jsPDF(orientation, unit, size);
 
-    doc.text(`Employee PaySlips`, marginLeft, marginTop);
+    doc.text(`Employee PaySlips `, marginLeft, marginTop);
 
     doc.autoTable({
       head: [
-        ["Start Date", "End Date", "Pay Date", "Recevied Amount", "Status"],
+        [
+          "Payroll Title",
+          "Organization",
+          "Employee Name",
+          "Start Date",
+          "End Date",
+          "Pay Date",
+          "Earnings Total",
+          "Deductions Total",
+          "Net Payment",
+          "Status",
+        ],
       ],
       body: payslips.map((pay) => [
+        pay.payrollTitle,
+        pay.organization,
+        pay.employeeName,
         moment(pay.fromDate).format("MM/DD/YYYY"),
         moment(pay.toDate).format("MM/DD/YYYY"),
         moment(pay.payDate).format("MM/DD/YYYY"),
+        pay.earningsTotal,
+        pay.deductionsTotal,
         pay.netPayment,
         pay.status,
       ]),
@@ -82,21 +98,21 @@ const Paystubs = ({ payslips = [] }) => {
         overflow: "linebreak",
         fontSize: 8,
         cellPadding: 2, // a number, array or
-        halign: "center", // left, center, right
+        halign: "left",
       },
       columnStyles: {
         0: { columnWidth: "auto" },
       },
       tableWidth: "auto",
-      theme: "grid", // 'striped', '
-      tableLineWidth: 0.5,
-      tableLineColor: [200, 200, 200],
+      theme: "striped", // 'striped', '
       showHeader: "everyPage",
       tableId: "paystubs",
-      // tableLineWidth: 0.5,
+      tableLineWidth: 1.1,
     });
     doc.save(`PaySlip-${moment().format("MM-DD-YYYY")}.pdf`);
   };
+
+  console.log(payslips);
   const handlePrintClick = (e) => {
     handlePrint(e);
   };
@@ -181,11 +197,11 @@ const Paystubs = ({ payslips = [] }) => {
       <TableComponent
         size="large"
         columns={[
-          // {
-          //   label: "Payroll",
-          //   field: "title",
-          //   renderCell: ({ title }) => title,
-          // },
+          {
+            label: "Payroll",
+            field: "payrollTitle",
+            renderCell: ({ payrollTitle }) => payrollTitle.toUpperCase(),
+          },
           {
             label: "Start Date",
             field: "fromDate",
@@ -206,7 +222,17 @@ const Paystubs = ({ payslips = [] }) => {
           {
             label: "Received amount",
             field: "netPayment",
-            renderCell: ({ netPayment }) => `${netPayment} ETB`,
+            renderCell: ({ netPayment }) => {
+              return (
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  component="span"
+                >
+                  {netPayment} ETB
+                </Typography>
+              );
+            },
           },
           {
             label: "Status",
@@ -228,6 +254,7 @@ const Paystubs = ({ payslips = [] }) => {
           },
         ]}
         data={payslips}
+        selectionEnabled
       />
     </Box>
   );

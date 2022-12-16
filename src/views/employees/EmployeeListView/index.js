@@ -315,6 +315,7 @@ const EmployeeListView = () => {
     <PageView
       className={classes.root}
       title="Employees"
+      backPath={"app/dashboard"}
       icon={
         <span style={{ verticalAlign: "middle" }}>
           <EmployeesIcon fontSize="large" />

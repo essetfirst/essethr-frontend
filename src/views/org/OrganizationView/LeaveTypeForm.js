@@ -26,7 +26,7 @@ const LeaveTypeForm = ({
   onSubmit,
 }) => {
   const formTitle =
-    title || (leaveType ? "Edit leave type details" : "Create new leave type");
+    title || (leaveType ? "Edit leave type" : "Create leave type");
   return (
     <Box p={2}>
       <Typography variant="h3" align="center" gutterBottom>
@@ -110,7 +110,13 @@ const LeaveTypeForm = ({
               {["white", "red", "green", ""].map((color) => (
                 <MenuItem value={color} key={color}>
                   <Chip
-                    style={{ backgroundColor: color, marginRight: "10px" }}
+                    style={{
+                      backgroundColor: color,
+                      borderRadius: "50%",
+                      width: "20px",
+                      height: "20px",
+                      marginRight: "5px",
+                    }}
                   />{" "}
                   {color}
                 </MenuItem>

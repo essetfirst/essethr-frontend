@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 // import { Calendar, momentLocalizer } from "react-big-calendar";
-// import moment from "moment";
+import moment from "moment";
 
 import {
   Box,
@@ -18,7 +19,6 @@ import {
 } from "@material-ui/core";
 
 import {
-  AddOutlined as AddIcon,
   DeleteOutlined as DeleteIcon,
   EditOutlined as EditIcon,
   SearchOutlined as SearchIcon,
@@ -43,7 +43,7 @@ const HolidayList = ({
   onDeleteHoliday,
 }) => {
   const classes = useStyles();
-  console.log("[HolidayList]: Line 49 -> holidays: ", holidays);
+
   const [searchTerm, setSearchTerm] = React.useState("");
   const handleSearchTermChange = (e) => {
     const { value } = e.target;
@@ -57,6 +57,7 @@ const HolidayList = ({
   const handleDialogClose = () => setFormDialogOpen(false);
 
   const handleAddClick = () => {
+    setSelectedHoliday(null);
     handleDialogOpen();
   };
 
@@ -83,31 +84,29 @@ const HolidayList = ({
         justifyContent="space-between"
         alignItems="center"
       >
-        <div>
-          <TextField
-            className={classes.textField}
-            name="searchTerm"
-            onChange={handleSearchTermChange}
-            value={searchTerm}
-            placeholder="Search holidays"
-            variant="outlined"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
+        <TextField
+          className={classes.textField}
+          name="searchTerm"
+          onChange={handleSearchTermChange}
+          value={searchTerm}
+          placeholder="Search holidays"
+          variant="outlined"
+          size="small"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" />
+              </InputAdornment>
+            ),
+          }}
+        />
 
         <ButtonGroup>
           <Button
             variant="contained"
             color="primary"
             onClick={handleAddClick}
-            startIcon={<AddIcon />}
+            startIcon={<AddCircleIcon />}
           >
             Create
           </Button>
@@ -126,27 +125,48 @@ const HolidayList = ({
         size="small"
         columns={[
           { label: "Name", field: "name" },
-          { label: "Date", field: "date" },
           {
-            label: "Half Day ?",
+            label: "Date",
+            field: "date",
+            renderCell: ({ date }) => moment(date).format("MMMM Do"),
+          },
+          {
+            label: "Half Day ",
             field: "halfDate",
             align: "center",
             renderCell: ({ halfDay }) => (
-              <FormControlLabel control={<Checkbox checked={halfDay} />} />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={halfDay}
+                    indeterminate={!halfDay}
+                  />
+                }
+              />
             ),
           },
           {
-            label: "Included in Payroll ?",
+            label: "Included in Payroll ",
             field: "inPayroll",
             align: "center",
             renderCell: ({ inPayroll }) => (
-              <FormControlLabel control={<Checkbox checked={inPayroll} />} />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={inPayroll}
+                    indeterminate={!inPayroll}
+                  />
+                }
+              />
             ),
           },
         ]}
         data={(holidays || []).filter((h) =>
           String(h.name).includes(searchTerm)
         )}
+        selectionEnabled
         rowActions={[
           {
             label: "Edit Holiday",

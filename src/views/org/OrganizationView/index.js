@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {
   Avatar,
   Box,
@@ -28,6 +27,7 @@ import {
 } from "@material-ui/icons";
 
 import { Edit as EditIcon, ArrowDown as ArrowDownIcon } from "react-feather";
+import { DatePicker } from "@material-ui/pickers";
 
 import PageView from "../../../components/PageView";
 import LoadingComponent from "../../../components/LoadingComponent";
@@ -136,14 +136,15 @@ const OrganizationView = ({ id }) => {
   }, []);
 
   React.useEffect(() => {
-    if (org) {
-      dispatch({ type: types.REQUEST_SUCCESS, payload: org });
-    }
-
-    if ((orgId && !org) || (org && orgId !== org._id)) {
+    if (orgId) {
       fetchOrg(orgId);
+      if (!org) {
+        navigate("/app/dashboard");
+        notify("Organization not found", "error");
+        return;
+      }
     }
-  }, [orgId, org, fetchOrg]);
+  }, [orgId, fetchOrg]);
 
   const handleEditOrgClick = () => {
     navigate("/app/orgs/edit", orgId);
@@ -476,9 +477,9 @@ const OrganizationView = ({ id }) => {
     >
       <Container>
         {state.requesting && <LoadingComponent />}
-        {/* {state.error && (
+        {state.error && (
           <ErrorBoxComponent error={state.error} onRetry={() => fetchOrg()} />
-        )} */}
+        )}
         {state.org && Object.keys(state.org).length > 0 && (
           <Grid container>
             <Card

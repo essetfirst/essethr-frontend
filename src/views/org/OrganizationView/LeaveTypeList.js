@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import TableComponent from "../../../components/TableComponent";
+import LeaveTypeForm from "./LeaveTypeForm";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {
   Box,
   Button,
@@ -16,17 +18,12 @@ import {
 
 import {
   AddOutlined as AddIcon,
-  CheckBoxOutlineBlankRounded,
   CheckCircleRounded,
   DeleteOutlined as DeleteIcon,
   EditOutlined as EditIcon,
   SearchOutlined as SearchIcon,
   WarningRounded,
 } from "@material-ui/icons";
-
-import TableComponent from "../../../components/TableComponent";
-
-import LeaveTypeForm from "./LeaveTypeForm";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -57,6 +54,7 @@ const LeaveTypeList = ({
   const [selectedId, setSelectedId] = React.useState("");
 
   const handleAddClick = () => {
+    setSelectedId("");
     handleDialogOpen();
   };
 
@@ -109,7 +107,7 @@ const LeaveTypeList = ({
             variant="contained"
             color="primary"
             onClick={handleAddClick}
-            startIcon={<AddIcon fontSize="small" />}
+            startIcon={<AddCircleIcon fontSize="small" />}
           >
             Create
           </Button>
@@ -144,7 +142,15 @@ const LeaveTypeList = ({
             label: "Color ID",
             field: "color",
             renderCell: ({ color }) => (
-              <Chip style={{ backgroundColor: color }} />
+              <Chip
+                style={{
+                  backgroundColor: color,
+                  borderRadius: "50%",
+                  width: "20px",
+                  height: "20px",
+                  marginRight: "5px",
+                }}
+              />
             ),
           },
           {
@@ -157,12 +163,12 @@ const LeaveTypeList = ({
               ) : (
                 <WarningRounded />
               ),
-            // <Checkbox checked={allowDaysFromPast} />
           },
         ]}
         data={(leaveTypes || []).filter((lt) =>
           String(lt.name).includes(searchTerm)
         )}
+        selectionEnabled
         rowActions={[
           {
             label: "Edit leave type",

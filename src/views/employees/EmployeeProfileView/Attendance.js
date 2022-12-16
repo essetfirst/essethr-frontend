@@ -7,18 +7,9 @@ import { Box, Chip } from "@material-ui/core";
 import TableComponent from "../../../components/TableComponent";
 
 const Attendance = ({ attendanceByDate }) => {
-  // attendanceByDate:
-  //  {
-  //    '12-02-2021': { employeeId: '', date: '', checkin: 10, checkout: 20, remark: '', status: '', device: '' }
-  //    '12-02-2021': { employeeId: '', date: '', checkin: 10, checkout: 20, remark: '', status: '', device: '' }
-  //    '12-02-2021': { employeeId: '', date: '', checkin: 10, checkout: 20, remark: '', status: '', device: '' }
-  //  }
-  //
+  console.log(attendanceByDate);
   return (
     <Box>
-      <Box>{/* Export and Print action area */}</Box>
-      <Box>{/* Latest weekly attendance record  */}</Box>
-      <Box>{/* Filter area */}</Box>
       <TableComponent
         size="small"
         columns={[
@@ -30,12 +21,12 @@ const Attendance = ({ attendanceByDate }) => {
           {
             label: "Check in",
             field: "checkin",
-            renderCell: ({ checkin }) => moment(checkin).format("hh:mm"),
+            renderCell: ({ checkin }) => moment(checkin).format("hh:mm A"),
           },
           {
             label: "Check out",
             field: "checkout",
-            renderCell: ({ checkout }) => moment(checkout).format("hh:mm"),
+            renderCell: ({ checkout }) => moment(checkout).format("hh:mm A"),
           },
           {
             label: "Worked Hours",
@@ -73,6 +64,7 @@ const Attendance = ({ attendanceByDate }) => {
           },
         ]}
         data={Object.values(attendanceByDate)}
+        selectionEnabled
       />
     </Box>
   );

@@ -43,6 +43,9 @@ export const darkTheme = createMuiTheme({
     primary: {
       main: colors.teal[500],
     },
+    secondary: {
+      main: colors.red[800],
+    },
   },
 
   shadows,

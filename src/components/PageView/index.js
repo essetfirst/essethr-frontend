@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { useLocation, useNavigate } from "react-router";
-
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 import {
@@ -112,7 +112,7 @@ const PageView = ({
                   onClick={handleBackClick}
                   size="small"
                 >
-                  <BackIcon />
+                  <ArrowBackIosIcon />
                 </IconButton>
               )}{" "}
               <span style={{ verticalAlign: "middle" }}> {icon}</span> {title}

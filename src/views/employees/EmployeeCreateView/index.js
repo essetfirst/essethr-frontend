@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import PageView from "../../../components/PageView";
-import API from "../../../api/employees";
 import EmployeeForm from "./Form";
 
 const EmployeeCreateView = () => {

@@ -5,11 +5,13 @@ import { Box, Chip, Link, Typography } from "@material-ui/core";
 import TableComponent from "../../../components/TableComponent";
 import CustomAvatar from "../../../components/CustomAvatar";
 import PrintableMultipleEmployeeIDCards from "./PrintableMultipleEmployeeIDCards";
+import LoadingComponent from "../../../components/LoadingComponent";
 import {
   Edit2 as EditIcon,
   Delete as DeleteIcon,
   Phone as PhoneIcon,
   Printer as PrintIcon,
+  Eye,
 } from "react-feather";
 
 const ResultsTable = ({
@@ -141,18 +143,19 @@ const ResultsTable = ({
             },
           },
         ]}
-        data={employees}
+        data={employees || {}}
         rowActions={[
+          {
+            icon: <Eye fontSize="small" />,
+            label: "View employee",
+            handler: ({ _id }) => onViewClicked(_id),
+          },
           {
             icon: <EditIcon fontSize="small" />,
             label: "Edit employee",
             handler: ({ _id }) => onEditClicked(_id),
           },
-          // {
-          //   icon: <TransferIcon fontSize="small" />,
-          //   label: "Transfer employee",
-          //   handler: ({ _id }) => onTransferClicked(_id),
-          // },
+
           {
             icon: <DeleteIcon fontSize="small" />,
             label: "Delete employee",
@@ -174,6 +177,7 @@ const ResultsTable = ({
             size: "small",
           },
         ]}
+        onSelectionChanged={(selected) => setSelected(selected)}
         onSortParamsChange={onSortParamsChange}
         {...rest}
       />

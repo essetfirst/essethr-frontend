@@ -41,6 +41,19 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(0, 0, 0, 1),
   },
+  form: {
+    paddingLeft: 100,
+    paddingRight: 100,
+    paddingBottom: 125,
+    paddingTop: 125,
+  },
+  title: {
+    marginTop: theme.spacing(10),
+    display: "flex",
+    fontFamily: "Poppins",
+    fontSize: "20px",
+    fontWeight: 600,
+  },
 }));
 
 const EmployeeFormView = ({ employeeId }) => {
@@ -146,6 +159,7 @@ const EmployeeFormView = ({ employeeId }) => {
               color="textPrimary"
               variant="h4"
               gutterBottom
+              className={classes.title}
             >
               {title}
             </Typography>
@@ -360,7 +374,6 @@ const EmployeeFormView = ({ employeeId }) => {
                           name: "hireDate",
                           required: true,
                           type: "date",
-                          // defaultValue: new Date().toISOString().slice(0, 10),
                           onChange: handleChange,
                           onBlur: handleBlur,
                           GridProps: { sm: 12, md: 6, lg: 6 },
@@ -370,7 +383,6 @@ const EmployeeFormView = ({ employeeId }) => {
                           name: "startDate",
                           required: true,
                           type: "date",
-                          // defaultValue: new Date().toISOString().slice(0, 10),
                           onChange: handleChange,
                           onBlur: handleBlur,
                           GridProps: { sm: 12, md: 6, lg: 6 },

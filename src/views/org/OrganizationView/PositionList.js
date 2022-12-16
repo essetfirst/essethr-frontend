@@ -1,6 +1,15 @@
 import React from "react";
-
 import clsx from "clsx";
+import {
+  DeleteOutlined as DeleteIcon,
+  EditOutlined as EditIcon,
+  SearchOutlined as SearchIcon,
+} from "@material-ui/icons";
+import AttachMoneyOutlinedIcon from "@material-ui/icons/AttachMoneyOutlined";
+import Table from "../../../components/TableComponent";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import PositionForm from "./PositionForm";
+
 import {
   makeStyles,
   Box,
@@ -10,18 +19,8 @@ import {
   InputAdornment,
   Dialog,
   DialogContent,
+  Typography,
 } from "@material-ui/core";
-
-import {
-  AddOutlined as AddIcon,
-  DeleteOutlined as DeleteIcon,
-  EditOutlined as EditIcon,
-  SearchOutlined as SearchIcon,
-} from "@material-ui/icons";
-
-import Table from "../../../components/TableComponent";
-
-import PositionForm from "./PositionForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -65,7 +64,6 @@ const PositionList = ({
 
   const handleDeleteClick = (id) => {
     onDeletePosition(id);
-    // setSelectedId("");
   };
 
   const handleFormSubmit = (data) => {
@@ -105,7 +103,7 @@ const PositionList = ({
             variant="contained"
             color="primary"
             onClick={handleDialogOpen}
-            startIcon={<AddIcon />}
+            startIcon={<AddCircleIcon />}
           >
             Create
           </Button>
@@ -134,20 +132,31 @@ const PositionList = ({
             renderCell: ({ department }) =>
               `${(departmentsMap[department] || {}).name || "N/A"}`,
           },
-          // {
-          //   field: "parent",
-          //   label: "Parent",
-          //   renderCell: ({ parent }) => `${parent || "N/A"}`,
-          // },
+          {
+            field: "parent",
+            label: "Parent",
+            renderCell: ({ parent }) => {
+              const parentPosition = positionsMap[parent];
+              return parentPosition ? parentPosition.title : "N/A";
+            },
+          },
           {
             field: "salary",
             label: "Salary",
-            renderCell: ({ salary }) => `${salary}`,
+            renderCell: ({ salary }) => {
+              return (
+                <Box display="flex" alignItems="center">
+                  <AttachMoneyOutlinedIcon fontSize="small" />
+                  <Typography variant="body2">{salary.toFixed(2)}</Typography>
+                </Box>
+              );
+            },
           },
         ]}
         data={(positions || []).filter((p) =>
           String(p.title).includes(searchTerm)
         )}
+        selectionEnabled
         rowActions={[
           {
             label: "Edit position",

@@ -6,20 +6,15 @@ import TableComponent from "../../../components/TableComponent";
 import moment from "moment";
 
 const Leaves = ({ leaves = [] }) => {
-  // const allowanceSummary = {};
-
   return (
     <Box>
-      <Box>{/* Export and Print action area */}</Box>
-      <Box>{/* Allowance summary area  */}</Box>
-      <Box>{/* Filter area */}</Box>
       <TableComponent
         size="small"
         columns={[
           {
             label: "Leave Type",
             field: "leaveType",
-            renderCell: ({ leaveType }) => leaveType,
+            renderCell: ({ leaveType }) => leaveType.toUpperCase(),
           },
           {
             label: "Start Date",
@@ -53,7 +48,8 @@ const Leaves = ({ leaves = [] }) => {
             ),
           },
         ]}
-        data={leaves}
+        data={leaves || {}}
+        selectionEnabled
       />
     </Box>
   );

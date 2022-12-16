@@ -11,8 +11,9 @@ import {
   TextField,
   Dialog,
   DialogContent,
+  Typography,
 } from "@material-ui/core";
-
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {
   AddOutlined as AddIcon,
   DeleteOutlined as DeleteIcon,
@@ -110,7 +111,7 @@ const DepartmentList = ({
             variant="contained"
             color="primary"
             onClick={handleCreateClick}
-            startIcon={<AddIcon />}
+            startIcon={<AddCircleIcon />}
           >
             Create
           </Button>
@@ -131,15 +132,20 @@ const DepartmentList = ({
         columns={[
           { field: "name", label: "Name", sortable: true },
           { field: "location", label: "Location" },
-          // {
-          //   field: "parent",
-          //   label: "Parent",
-          //   renderCell: ({ parent }) => `${parent || "-"}`,
-          // },
+          {
+            field: "parent",
+            label: "Parent",
+            renderCell: ({ parent }) => {
+              const { name } = departmentsMap[parent] || {};
+              const names = `${name || "N/A"}`;
+              return <Typography variant="body2">{names}</Typography>;
+            },
+          },
         ]}
         data={(departments || []).filter((d) =>
           String(d.name).includes(searchTerm)
         )}
+        selectionEnabled
         rowActions={[
           {
             label: "Edit department",

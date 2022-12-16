@@ -164,7 +164,7 @@ const TableComponent = ({
     setOrderBy("id");
     setPage(0);
     setDense(true);
-    setRowsPerPage(5);
+    setRowsPerPage(10);
   }, [data]);
 
   return (

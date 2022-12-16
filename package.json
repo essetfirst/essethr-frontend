@@ -2,7 +2,8 @@
   "name": "essethr",
   "version": "0.1.0",
   "engines": {
-    "node": "16.x"
+    "node": "16.x",
+    "npm": "8.19.2"
   },
   "dependencies": {
     "@createnextapp/react-barcode": "^1.1.1",
@@ -58,8 +59,8 @@
     "yup": "^0.29.3"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

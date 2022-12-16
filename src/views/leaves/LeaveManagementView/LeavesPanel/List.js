@@ -4,7 +4,11 @@ import PropTypes from "prop-types";
 import { Box, Chip, Typography } from "@material-ui/core";
 
 import TableComponent from "../../../../components/TableComponent";
-
+import {
+  Edit2 as EditIcon,
+  Delete as DeleteIcon,
+  ToggleRight as TransferIcon,
+} from "react-feather";
 const MONTHS = [
   "Jan",
   "Feb",
@@ -46,6 +50,7 @@ const List = ({
   error,
   onRetry,
   employeesMap,
+  leaveTypeMap,
   onEditLeaveClicked,
   onApproveLeaveClicked,
   onDeleteLeaveClicked,
@@ -60,29 +65,19 @@ const List = ({
           field: "employeeId",
           label: "Employee",
           renderCell: ({ employeeId }) => {
-            const { firstName, lastName } = employeesMap[employeeId] || {};
-            const name = `${firstName} ${lastName}`;
+            const { firstName, surName } = employeesMap[employeeId] || {};
+            const name = `${firstName} ${surName}`;
             return <Typography variant="h6">{name}</Typography>;
           },
         },
         {
           field: "leaveType",
           label: "Leave Type",
-          renderCell: ({ leaveType }) => (
-            <div
-              style={{
-                display: "flex",
-                // justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Dot color={LEAVE_TYPE_COLOR[leaveType]} />{" "}
-              <Typography>
-                {String(leaveType[0]).toUpperCase() +
-                  String(leaveType).slice(1)}
-              </Typography>
-            </div>
-          ),
+          renderCell: ({ leaveType }) => {
+            const { name } = leaveTypeMap[leaveType] || {};
+            const values = `${name}`;
+            return <Typography variant="h6">{values}</Typography>;
+          },
         },
         {
           field: "duration",
@@ -106,7 +101,6 @@ const List = ({
             if (fromDate.toLocaleDateString() === toDate.toLocaleDateString()) {
               return <Typography>{toDate.toDateString()}</Typography>;
             }
-
             if (
               fromDate.getMonth() !== toDate.getMonth() &&
               fromDate.getFullYear() === toDate.getFullYear()
@@ -145,21 +139,28 @@ const List = ({
         },
       ]}
       data={
-        leaves || []
-        //   .sort(
-        //   (a, b) =>
-        //     new Date(a.to).toLocaleDateString() >=
-        //     new Date(b.to).toLocaleDateString()
-        // )
+        leaves ||
+        [].sort(
+          (a, b) =>
+            new Date(a.to).toLocaleDateString() >=
+            new Date(b.to).toLocaleDateString()
+        )
       }
+      selectionEnabled
       rowActions={[
         {
           label: "Approve Leave",
+          icon: <TransferIcon />,
           handler: ({ _id }) => onApproveLeaveClicked(_id),
         },
-        { label: "Edit Leave", handler: ({ _id }) => onEditLeaveClicked(_id) },
+        {
+          label: "Edit Leave",
+          icon: <EditIcon />,
+          handler: ({ _id }) => onEditLeaveClicked(_id),
+        },
         {
           label: "Delete Leave",
+          icon: <DeleteIcon />,
           handler: ({ _id }) => onDeleteLeaveClicked(_id),
         },
       ]}

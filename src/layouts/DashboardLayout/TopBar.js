@@ -53,11 +53,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
       .getAll({ query: { createdBy: auth && auth.user && auth.user.email } })
       .then(({ success, orgs, error }) => {
         if (success) {
-          console.log(
-            "[DashboardLayout-TopBar]: Line 67 -> fetched orgs: ",
-            orgs
-          );
-
           if (Array.isArray(orgs) && orgs.length > 0) {
             setOrgs(orgs);
             setCurrentOrg(orgs[0]._id);
@@ -80,7 +75,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
     const { value } = e.target;
     setCurrentOrg(value);
     const org = orgs.filter((o) => o._id === value);
-    console.log("DashboardLayout => Selected org: ", org);
     setCurrentOrg(value);
     setOrg(org);
     setOrgName(org.branch);
@@ -183,9 +177,9 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             }}
           >
             {darkMode ? (
-              <Brightness7Icon fontSize="small" />
+              <Brightness7Icon fontSize="medium" />
             ) : (
-              <Brightness4Icon fontSize="small" />
+              <Brightness4Icon fontSize="medium" />
             )}
           </IconButton>
         </Box>

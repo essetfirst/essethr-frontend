@@ -107,7 +107,7 @@ const EmployeeListView = () => {
     const { value } = e.target;
     setFilters(value);
   };
-  // const handleFiltersReset = () => setFilters(initialFiltersValue);
+  const handleFiltersReset = () => setFilters(initialFiltersValue);
 
   const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
   const [sortParams, setSortParams] = React.useState(initialSortParamsValue);

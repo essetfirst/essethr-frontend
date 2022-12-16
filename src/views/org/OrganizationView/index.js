@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
-
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {
   Avatar,
   Box,
@@ -70,6 +70,20 @@ const useStyles = makeStyles((theme) => ({
   root: {
     fontFamily: "Poppins",
   },
+  card: {
+    marginTop: theme.spacing(3),
+  },
+  divider: {
+    margin: theme.spacing(2, 0),
+  },
+  editButton:
+    theme.direction === "rtl"
+      ? {
+          float: "left",
+        }
+      : {
+          float: "right",
+        },
 }));
 
 const OrganizationView = ({ id }) => {
@@ -452,95 +466,97 @@ const OrganizationView = ({ id }) => {
   return (
     <PageView
       pageTitle={"Organization"}
-      // backPath={
-      //   auth.user && auth.user.role === "ADMIN" ? "/app/orgs" : "/app/dashboard"
-      // }
+      className={classes.root}
+      title={`${state.org.name}`}
+      icon={
+        <span style={{ marginLeft: "23px" }}>
+          <ApartmentIcon fontSize="medium" />
+        </span>
+      }
     >
       <Container>
         {state.requesting && <LoadingComponent />}
-        {state.error && (
+        {/* {state.error && (
           <ErrorBoxComponent error={state.error} onRetry={() => fetchOrg()} />
-        )}
+        )} */}
         {state.org && Object.keys(state.org).length > 0 && (
           <Grid container>
-            <Grid item sm={8}>
-              <Box display="flex" flexDirection="row" alignItems="center">
-                <ApartmentIcon
-                  color="primary"
-                  style={{ marginRight: "7px", fontSize: "38px" }}
-                />
-                <Typography
-                  variant="h3"
-                  color="primary"
-                  align="left"
-                  className={classes.root}
-                >
-                  {`${state.org.name} (${state.org.branch})`}
-                </Typography>
-              </Box>
-              <Box mt={3} />
-              {[
-                {
-                  label: state.org.phone,
-                  icon: <PhoneIcon fontSize="small" />,
-                },
-                { label: state.org.email, icon: <MailIcon fontSize="small" /> },
-                {
-                  label: state.org.address,
-                  icon: <AddressIcon fontSize="small" />,
-                },
-              ].map(({ icon, label }, index) => (
-                <Typography
-                  key={index}
-                  variant="subtitle1"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}
-                >
-                  <Typography
-                    component="span"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginRight: "10px",
-                    }}
-                  >
-                    {icon}
-                  </Typography>
-                  <Typography variant="body2" component="span">
-                    {label}
-                  </Typography>
-                </Typography>
-              ))}
-              <Box mb={3} />
-            </Grid>
-            <Grid item sm={4}>
-              <Box display="flex" justifyContent="flex-end">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleEditOrgClick}
-                  endIcon={<EditIcon />}
-                  aria-label="edit org"
-                  title="Edit branch details"
-                >
-                  Edit
-                </Button>
-                {/* <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleEditOrgClick}
-                  endIcon={<ArrowDownIcon />}
-                  aria-label="other actions"
-                  title="Do other actions"
-                  style={{ marginLeft: "16px" }}
-                >
-                  Actions
-                </Button> */}
-              </Box>
-            </Grid>
+            <Card
+              style={{
+                padding: "10px",
+                margin: "0px",
+                borderRadius: "7px",
+                width: "100rem",
+                marginBottom: "10px",
+              }}
+            >
+              <CardContent>
+                <Box display="flex" alignItems="center" mr={1}>
+                  <Grid item sm={8}>
+                    <Box mt={1} />
+                    {[
+                      {
+                        label: state.org.phone,
+                        icon: <PhoneIcon fontSize="small" />,
+                      },
+                      {
+                        label: state.org.email,
+                        icon: <MailIcon fontSize="small" />,
+                      },
+                      {
+                        label: state.org.address,
+                        icon: <AddressIcon fontSize="small" />,
+                      },
+                    ].map(({ icon, label }, index) => (
+                      <Typography
+                        key={index}
+                        variant="subtitle1"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: "20px",
+                        }}
+                      >
+                        <Typography
+                          component="span"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginRight: "10px",
+                          }}
+                        >
+                          {icon}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          component="span"
+                          className={classes.root}
+                        >
+                          {label}
+                        </Typography>
+                      </Typography>
+                    ))}
+                    <Box mb={3} />
+                  </Grid>
+                  <Grid item sm={4}>
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleEditOrgClick}
+                        endIcon={<EditIcon size={15} />}
+                        aria-label="edit org"
+                        title="Edit branch details"
+                        className={classes.root}
+                      >
+                        Edit
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Box>
+              </CardContent>
+            </Card>
+
             <Grid item sm={12}>
               <Divider />
               {currentOrg === orgId && (

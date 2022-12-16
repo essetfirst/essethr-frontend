@@ -46,12 +46,8 @@ const allowances = {
   allocate: function (allowanceData) {
     return postRequest(`${allowancesPath}/allocate`, allowanceData);
   },
-  getAll: function ({ query = {}, page = 1, limit = 10 }) {
-    return getRequest(
-      `${allowancesPath}?${
-        typeof query === "string" ? query : queryObjectToString(query)
-      }&page=${page}&limit=${limit}`
-    );
+  getAll: function () {
+    return getRequest(`${allowancesPath}`);
   },
   getById: function (allowanceId) {
     return getRequest(`${allowancesPath}/${allowanceId}`);

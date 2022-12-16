@@ -1,13 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { useReactToPrint } from "react-to-print";
-import {
-  Box,
-  Chip,
-  Link,
-  Typography,
-  CircularProgress,
-} from "@material-ui/core";
+import { Box, Chip, Link, Typography } from "@material-ui/core";
 import TableComponent from "../../../components/TableComponent";
 import CustomAvatar from "../../../components/CustomAvatar";
 import PrintableMultipleEmployeeIDCards from "./PrintableMultipleEmployeeIDCards";
@@ -16,7 +10,6 @@ import {
   Delete as DeleteIcon,
   Phone as PhoneIcon,
   Printer as PrintIcon,
-  ToggleRight as TransferIcon,
 } from "react-feather";
 
 const ResultsTable = ({
@@ -61,14 +54,15 @@ const ResultsTable = ({
             sortable: true,
             renderCell: ({ _id, firstName, surName, phone }) => (
               <Box display="flex" alignItems="center">
-                <CustomAvatar color="primary" size="1">
-                  {`${firstName ? firstName[0] : ""}${
-                    surName ? surName[0] : ""
+                <CustomAvatar color="secondary" size="1">
+                  {`${firstName ? firstName.charAt(0) : ""}${
+                    surName ? surName.charAt(0) : ""
                   }`}
                 </CustomAvatar>
                 <div>
                   <Typography
                     variant="h6"
+                    color="textSecondary"
                     component={Link}
                     onClick={() => onViewClicked(_id)}
                     style={{ cursor: "pointer" }}
@@ -98,7 +92,7 @@ const ResultsTable = ({
             ),
           },
           {
-            label: "Salary",
+            label: "SALARY",
             field: "salary",
             sortable: false,
             renderCell: ({ position }) => (
@@ -115,7 +109,7 @@ const ResultsTable = ({
             label: "Hired",
             field: "hireDate",
             renderCell: ({ hireDate }) =>
-              `${moment(hireDate).format("DD MMM Y")} (${
+              `${moment(hireDate).format("MMM DD,  Y")} (${
                 moment(new Date()).diff(hireDate, "M") <= 1
                   ? "A month"
                   : moment(new Date()).diff(hireDate, "M") + " months"
@@ -138,8 +132,8 @@ const ResultsTable = ({
                     eStatus === "on probation"
                       ? "default"
                       : eStatus === "terminated"
-                      ? "secondary"
-                      : "primary"
+                      ? "primary"
+                      : "secondary"
                   }
                   label={eStatus}
                 />

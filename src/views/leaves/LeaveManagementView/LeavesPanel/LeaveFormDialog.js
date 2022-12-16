@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-import { Formik } from "formik";
-import * as Yup from "yup";
-
+import FormikFormFields from "../../../../components/common/FormikFormFields";
+import { leaveFormFields } from "./leaveFormFields";
 import {
   Box,
   CircularProgress,
@@ -12,12 +10,6 @@ import {
   Divider,
   Typography,
 } from "@material-ui/core";
-
-import { Alert } from "@material-ui/lab";
-
-import FormikFormFields from "../../../../components/common/FormikFormFields";
-
-import { leaveFormFields } from "./leaveFormFields";
 
 const LeaveFormDialog = ({
   open,
@@ -30,16 +22,17 @@ const LeaveFormDialog = ({
   leaveTypes,
   durations,
 }) => {
-  console.log("LeaveForm state: ", state);
+  console.log("LeaveForm state: ", leaveTypes);
 
   const employeeOptions = [
     { label: "Choose employee", value: -1 },
     ...employees,
   ];
   const leaveTypeOptions = [
-    { label: "Choose a leave type", value: -1 },
+    { label: "Choose leaveTypes", value: -1 },
     ...leaveTypes,
   ];
+
   const durationOptions = [
     { label: "Choose duration", value: -1 },
     ...durations,
@@ -63,16 +56,6 @@ const LeaveFormDialog = ({
     <Dialog open={open} onClose={handleDialogClose}>
       <DialogContent>
         <Box height="100%" p={2} justifyContent="center">
-          {!state.isLoading && (state.message || state.error) && (
-            <Box mb={2} p={1}>
-              <Alert
-                onClose={handleDialogClose}
-                severity={state.error ? "error" : "success"}
-              >
-                {state.message || state.error}
-              </Alert>
-            </Box>
-          )}
           <Typography variant="h4" align="center" gutterBottom>
             {!action || action === "register"
               ? "Register Leave"
@@ -99,6 +82,8 @@ const LeaveFormDialog = ({
               let requestInfo = {
                 ...values,
               };
+
+              console.log("Gooajdhsgdguydguisgdhsdhsgdgshdgh", requestInfo);
               if (values.duration === 1 || values.duration === 2) {
                 requestInfo.duration = 0.5;
                 requestInfo.to = values.from;

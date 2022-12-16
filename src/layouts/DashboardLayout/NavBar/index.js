@@ -30,7 +30,6 @@ import {
   Users as UsersIcon,
   Clock as TimeIcon,
   Linkedin as OrgIcon,
-  LogOut as LogoutIcon,
 } from "react-feather";
 
 import NavItem from "./NavItem";
@@ -119,22 +118,27 @@ const useStyles = makeStyles(() => ({
     fontSize: "1rem",
     fontFamily: "Poppins",
   },
+  minimize: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
-  const { auth, logout } = useAuth();
+  const { auth } = useAuth();
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
   }, [location.pathname]);
-
-  const handleLogout = () => {
-    logout();
-  };
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">

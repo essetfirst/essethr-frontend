@@ -18,7 +18,6 @@ export const leaveFormFields = ({
       )
       // .notOneOf([-1], "Chooe employee")
       .required("Choose employee"),
-    defaultValue: -1,
     select: true,
     selectOptions: employeeOptions,
     GridProps: { sm: 12 },
@@ -31,7 +30,9 @@ export const leaveFormFields = ({
     defaultValue: -1,
     validation: Yup.string()
       .oneOf(
-        leaveTypeOptions.filter((lt) => lt.value !== -1).map(({ value }) => value),
+        leaveTypeOptions
+          .filter((lt) => lt.value !== -1)
+          .map(({ value }) => value),
         "Choose a leave type"
       )
       // .notOneOf([0], "Choose a leave type")
@@ -65,7 +66,10 @@ export const leaveFormFields = ({
     required: true,
     defaultValue: new Date().toISOString().slice(0, 10),
     validation: Yup.date("Provide a start date")
-      .min(new Date().toISOString().slice(0, 10), "Date from past is not allowed")
+      .min(
+        new Date().toISOString().slice(0, 10),
+        "Date from past is not allowed"
+      )
       .required("Specify start date of leave"),
     GridProps: { sm: 12, md: 6 },
   },

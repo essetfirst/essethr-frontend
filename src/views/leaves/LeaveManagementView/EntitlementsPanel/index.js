@@ -1,8 +1,12 @@
 import React from "react";
-
 import { Formik } from "formik";
 import * as Yup from "yup";
-
+import API from "../../../../api";
+import useOrg from "../../../../providers/org";
+import arrayToMap from "../../../../utils/arrayToMap";
+import TableComponent from "../../../../components/TableComponent";
+import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
+import { Delete as DeleteIcon } from "react-feather";
 import {
   Box,
   Button,
@@ -16,63 +20,13 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import API from "../../../../api";
-
-import useOrg from "../../../../providers/org";
-
-// import filter from "../../../../helpers/filter";
-// import getWeekDates from "../../../../helpers/get-week-dates";
-import arrayToMap from "../../../../utils/arrayToMap";
-
-import TableComponent from "../../../../components/TableComponent";
-
-const ALLOWANCE = {
-  1: {
-    employeeId: 1,
-    name: "Abraham Gebrekidan",
-    allocatedTotal: 77,
-    usedTotal: 5,
-    annual: 9,
-    special: 3,
-    maternal: 60,
-    allocated: {
-      annual: 14,
-      special: 3,
-      maternal: 60,
-    },
-    used: {
-      annual: 5,
-      special: 0,
-      maternal: 0,
-    },
-  },
-  2: {
-    employeeId: 2,
-    name: "Endalk Hussien",
-    allocatedTotal: 77,
-    usedTotal: 20,
-    annual: 6,
-    special: 1,
-    maternal: 50,
-    allocated: {
-      annual: 14,
-      special: 3,
-      maternal: 60,
-    },
-    used: {
-      annual: 8,
-      special: 2,
-      maternal: 10,
-    },
-  },
-};
-
 const AllocateAllowanceDialog = ({
   open,
   onClose,
   employees,
   leaveTypes,
   onSubmit,
+  onDeleteLeaveBalanceClicked,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -97,9 +51,9 @@ const AllocateAllowanceDialog = ({
             leaveType: Yup.string()
               .required("'Leave type' is required")
               .notOneOf([-1], "'Employee id' is required"),
-            // days: Yup.number().positive(
-            //   "'Balance in days' can not be negative"
-            // ),
+            days: Yup.number().positive(
+              "'Balance in days' can not be negative"
+            ),
           })}
           onSubmit={onSubmit}
         >
@@ -188,22 +142,24 @@ const AllocateAllowanceDialog = ({
 };
 
 const EntitlementsPanel = ({
-  allowances,
   state,
   notify,
   onFetchAllowances,
+  onDeleteLeaveBalanceClicked,
 }) => {
   const { org } = useOrg();
 
-  console.log("[EntitlementsPanel]: Line 185 -> state: ", allowances);
+  console.log("[EntitlementsPanel]: Line 185 -> state: ", org);
 
   const employeesMap = arrayToMap(org.employees || [], "_id");
 
   const [allocateDialogOpen, setAllocateDialogOpen] = React.useState(false);
   const handleAllocateDialogClose = () => setAllocateDialogOpen(false);
+
   const handleAllocateClick = () => {
     setAllocateDialogOpen(true);
   };
+
   const handleAllocateAllowance = async (allowanceInfo) => {
     console.log("Allowance info: ", allowanceInfo);
     const { employeeId } = allowanceInfo;
@@ -218,10 +174,14 @@ const EntitlementsPanel = ({
     }
   };
 
-  React.useEffect(() => {
-    console.table("usessssssss", state);
-    onFetchAllowances();
-  }, []);
+  React.useEffect(
+    () => {
+      console.log("Aloowancessssssssss", state);
+      onFetchAllowances();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const employees = Object.values(employeesMap).map(
     ({ _id, firstName, surName, lastName }) => ({
@@ -229,10 +189,6 @@ const EntitlementsPanel = ({
       name: `${firstName} ${surName} ${lastName}`,
     })
   );
-  // const employees = [
-  //   { _id: 1, name: "Abraham Gebrekidan" },
-  //   { _id: 2, name: "Endalk Hussien" },
-  // ];
 
   const leaveTypes = [
     { name: "Annual", key: "annual", duration: 16 },
@@ -250,29 +206,10 @@ const EntitlementsPanel = ({
             size="small"
             onClick={handleAllocateClick}
             aria-label="allocate leave balance"
+            startIcon={<AddCircleRoundedIcon size="16px" />}
           >
             Allocate Balance
           </Button>
-        </ButtonGroup>
-        <ButtonGroup>
-          {/*
-          
-          <Button
-            size="small"
-            onClick={handleExportClick}
-            startIcon={<ExportIcon size="16px" />}
-            aria-label="export leave balances"
-          >
-            Export
-          </Button>
-          <Button
-            size="small"
-            onClick={handlePrintClick}
-            startIcon={<PrintIcon size="16px" />}
-            aria-label="print leave balances"
-          >
-            Print
-          </Button> */}
         </ButtonGroup>
       </Box>
       <AllocateAllowanceDialog
@@ -282,15 +219,38 @@ const EntitlementsPanel = ({
         leaveTypes={leaveTypes}
         onSubmit={handleAllocateAllowance}
       />
-      {/* Summary usage and leave by type */}
 
+      {/* Summary usage and leave by type */}
       <TableComponent
         size="small"
         columns={[
           {
             label: "Employee",
             field: "employeeId",
-            renderCell: (row) => employeesMap[row.employeeId].name,
+            renderCell: ({ employeeId }) => {
+              const { firstName, surName } = employeesMap[employeeId] || {};
+              const name = `${firstName} ${surName}`;
+              return <Typography variant="h6">{name}</Typography>;
+            },
+          },
+
+          {
+            label: "Annual leave",
+            field: "annual",
+            align: "center",
+            renderCell: ({ allocated }) => allocated.annual,
+          },
+          {
+            label: "Special leave",
+            field: "special",
+            align: "center",
+            renderCell: ({ allocated }) => allocated.special,
+          },
+          {
+            label: "Maternity leave",
+            field: "maternal",
+            align: "center",
+            renderCell: ({ allocated }) => allocated.maternal,
           },
           {
             label: "Allocated",
@@ -303,28 +263,22 @@ const EntitlementsPanel = ({
             renderCell: ({ allocatedTotal, usedTotal }) =>
               allocatedTotal - usedTotal,
           },
-          {
-            label: "Annual leave",
-            field: "annual",
-            align: "center",
-          },
-          { label: "Special leave", field: "special", align: "center" },
-          { label: "Maternal leave", field: "maternal", align: "center" },
         ]}
         data={state.allowances}
+        selectionEnabled
+        rowActions={[
+          // {
+          //   label: "Edit Leave",
+          //   icon: <EditIcon />,
+          //   handler: ({ _id }) => onEditLeaveClicked(_id),
+          // },
+          {
+            label: "Delete Leave",
+            icon: <DeleteIcon />,
+            handler: ({ _id }) => onDeleteLeaveBalanceClicked(_id),
+          },
+        ]}
       />
-
-      {/* <Grid container>
-        {Object.values(ALLOWANCE).map(({ employeeId, allocated, used }) => (
-          <Grid item xs>
-            <Box>
-              Icon
-              label
-              remaining
-            </Box>
-          </Grid>
-        ))}
-      </Grid> */}
     </div>
   );
 };

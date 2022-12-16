@@ -1,69 +1,10 @@
+/* eslint-disable default-case */
 import React from "react";
 import { combineReducers } from "..";
-
 import API from "../../api";
 import categorizeError from "../../helpers/categorize-error";
-
 import useOrg from "../org";
-
 import Context from "./Context";
-
-// const types = {
-//   FETCH_LEAVES_REQUEST: "FETCH_LEAVES_REQUEST",
-//   FETCH_LEAVES_SUCCESS: "FETCH_LEAVES_SUCCESS",
-//   FETCH_LEAVES_FAILURE: "FETCH_LEAVES_FAILURE",
-
-//   FETCH_LEAVE_ALLOWANCES_REQUEST: "FETCH_LEAVE_ALLOWANCES_REQUEST",
-//   FETCH_LEAVE_ALLOWANCES_SUCCESS: "FETCH_LEAVE_ALLOWANCES_SUCCESS",
-//   FETCH_LEAVE_ALLOWANCES_FAILURE: "FETCH_LEAVE_ALLOWANCES_FAILURE",
-// };
-// const leavesInitialState = {
-//   isLoading: false,
-//   leaves: null,
-//   error: null,
-// };
-
-// const allowancesInitialState = {
-//   isLoading: false,
-//   allowances: null,
-//   error: null,
-// };
-
-// const leavesReducer = (state, action) => {
-//   const { type, payload, error } = action;
-//   switch (type) {
-//     case types.FETCH_LEAVES_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case types.FETCH_LEAVES_SUCCESS:
-//       return {
-//         ...state,
-//         leaves: payload,
-//         isLoading: false,
-//         error: null,
-//       };
-//     case types.FETCH_LEAVES_FAILURE:
-//       return { ...state, isLoading: false, error };
-//     default:
-//       return state;
-//   }
-// };
-// const allowancesReducer = (state, action) => {
-//   const { type, payload, error } = action;
-//   switch (type) {
-//     case types.FETCH_LEAVE_ALLOWANCES_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case types.FETCH_LEAVE_ALLOWANCES_SUCCESS:
-//       return {
-//         ...state,
-//         allowances: payload,
-//         isLoading: false,
-//       };
-//     case types.FETCH_LEAVE_ALLOWANCES_FAILURE:
-//       return { ...state, isLoading: false, error };
-//     default:
-//       return state;
-//   }
-// };
 
 const types = {
   FETCH_LEAVES_REQUEST: "FETCH_LEAVES_REQUEST",
@@ -73,6 +14,10 @@ const types = {
   FETCH_LEAVE_ALLOWANCES_REQUEST: "FETCH_LEAVE_ALLOWANCES_REQUEST",
   FETCH_LEAVE_ALLOWANCES_SUCCESS: "FETCH_LEAVE_ALLOWANCES_SUCCESS",
   FETCH_LEAVE_ALLOWANCES_FAILURE: "FETCH_LEAVE_ALLOWANCES_FAILURE",
+
+  DELETE_LEAVE_ALLOWANCES_REQUEST: "DELETE_LEAVE_ALLOWANCES_REQUEST",
+  DELETE_LEAVE_ALLOWANCES_SUCCESS: "DELETE_LEAVE_ALLOWANCES_SUCCESS",
+  DELETE_LEAVE_ALLOWANCES_FAILURE: "DELETE_LEAVE_ALLOWANCES_FAILURE",
 
   REGISTER_LEAVE_REQUEST: "REGISTER_LEAVE_REQUEST",
   REGISTER_LEAVE_SUCCESS: "REGISTER_LEAVE_SUCCESS",
@@ -116,6 +61,12 @@ const initialState = {
     message: "",
     error: "",
   },
+
+  deleteLeaveBalance: {
+    isLoading: false,
+    message: "",
+    error: "",
+  },
 };
 
 const fetchLeavesReducer = (state, action) => {
@@ -132,14 +83,27 @@ const fetchLeavesReducer = (state, action) => {
 const fetchAllowancesReducer = (state, action) => {
   const { type, payload, error } = action;
   switch (type) {
-    case types.FETCH_ALLOWANCES_REQUEST:
+    case types.FETCH_LEAVE_ALLOWANCES_REQUEST:
       return { ...state, isLoading: true, error: "" };
-    case types.FETCH_ALLOWANCES_SUCCESS:
+    case types.FETCH_LEAVE_ALLOWANCES_SUCCESS:
       return { ...state, isLoading: false, allowances: payload };
-    case types.FETCH_ALLOWANCES_FAILURE:
+    case types.FETCH_LEAVE_ALLOWANCES_FAILURE:
       return { ...state, isLoading: false, error };
   }
 };
+
+const allowancesDeleteReducer = (state, action) => {
+  const { type, payload, error } = action;
+  switch (type) {
+    case types.DELETE_LEAVE_ALLOWANCES_REQUEST:
+      return { ...state, isLoading: true, error: "" };
+    case types.DELETE_LEAVE_ALLOWANCES_SUCCESS:
+      return { ...state, isLoading: false, message: payload.message };
+    case types.DELETE_LEAVE_ALLOWANCES_FAILURE:
+      return { ...state, isLoading: false, error };
+  }
+};
+
 const registerLeaveReducer = (state, action) => {
   const { type, payload, error } = action;
   switch (type) {
@@ -194,6 +158,7 @@ const reducer = combineReducers({
   approveLeaves: approveLeavesReducer,
   updateLeave: updateLeaveReducer,
   deleteLeave: deleteLeaveReducer,
+  allowancesDeleteReducer: allowancesDeleteReducer,
 });
 
 const Provider = ({ children }) => {
@@ -214,6 +179,7 @@ const Provider = ({ children }) => {
             console.log(`Get leaves request successful.`);
             dispatch({
               type: types.FETCH_LEAVES_SUCCESS,
+
               payload: leaves,
             });
           } else {
@@ -232,27 +198,31 @@ const Provider = ({ children }) => {
     [currentOrg]
   );
 
-  const fetchLeaveAllowances = React.useCallback(() => {
-    dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_REQUEST });
-    API.leaves.allowances
-      .getAll({})
-      .then(({ success, allowances, error }) => {
-        if (success) {
+  const fetchLeaveAllowances = React.useCallback(
+    (fromDate, toDate) => {
+      dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_REQUEST });
+      API.leaves.allowances
+        .getAll({ query: { from: fromDate, to: toDate } })
+        .then(({ success, allowances, error }) => {
+          if (success) {
+            // console.log(allowances);
+            dispatch({
+              type: types.FETCH_LEAVE_ALLOWANCES_SUCCESS,
+              payload: allowances,
+            });
+          } else {
+            dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_FAILURE, error });
+          }
+        })
+        .catch((e) => {
           dispatch({
-            type: types.FETCH_LEAVE_ALLOWANCES_SUCCESS,
-            payload: allowances,
+            type: types.FETCH_LEAVE_ALLOWANCES_FAILURE,
+            error: categorizeError(e),
           });
-        } else {
-          dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_FAILURE, error });
-        }
-      })
-      .catch((e) => {
-        dispatch({
-          type: types.FETCH_LEAVE_ALLOWANCES_FAILURE,
-          error: categorizeError(e),
         });
-      });
-  }, [currentOrg]);
+    },
+    [currentOrg]
+  );
 
   const addLeave = (notify) => (leaveInfo) => {
     dispatch({ type: types.REGISTER_LEAVE_REQUEST });
@@ -341,6 +311,34 @@ const Provider = ({ children }) => {
       });
   };
 
+  const deleteLeaveBalance = (notify) => (leaveBalanceId) => {
+    dispatch({ type: types.DELETE_LEAVE_ALLOWANCES_REQUEST });
+    API.leaves.allowances
+      .deleteById(leaveBalanceId)
+      .then(({ success, message, error }) => {
+        if (success) {
+          console.log("",message);
+          dispatch({
+            type: types.DELETE_LEAVE_ALLOWANCES_SUCCESS,
+            payload: message,
+          });
+        } else {
+          dispatch({
+            type: types.DELETE_LEAVE_ALLOWANCES_FAILURE,
+            error,
+          });
+        }
+        notify({ success, message, error });
+      })
+      .catch((e) => {
+        const error = String(e);
+        dispatch({
+          type: types.DELETE_LEAVE_ALLOWANCES_FAILURE,
+          error,
+        });
+      });
+  };
+
   return (
     <Context.Provider
       value={{
@@ -351,6 +349,7 @@ const Provider = ({ children }) => {
         approveLeaves,
         updateLeave,
         deleteLeave,
+        deleteLeaveBalance,
       }}
     >
       {children}

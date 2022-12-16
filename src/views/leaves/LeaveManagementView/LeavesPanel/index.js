@@ -1,43 +1,15 @@
 import React from "react";
-
-// import moment from "moment";
-
-import { Box, Button, ButtonGroup, makeStyles } from "@material-ui/core";
-
-// import
-// { UploadCloud as ImportIcon,
-// Download as ExportIcon,
-// Printer as PrintIcon,
-// ChevronRight as ViewMoreIcon,
-// ChevronLeft as ViewLessIcon,
-// } from "react-feather";
-
+import { Box, Button, ButtonGroup } from "@material-ui/core";
 import useOrg from "../../../../providers/org";
-
 import getWeekDates from "../../../../helpers/get-week-dates";
 import arrayToMap from "../../../../utils/arrayToMap";
-
 import { getTableDataForExport, makeExcel } from "../../../../helpers/export";
-
-import {
-  Users as EmployeesIcon,
-  UploadCloud as ImportIcon,
-  Download as ExportIcon,
-  Printer as PrintIcon,
-  Plus as AddIcon,
-  Grid as GridIcon,
-  List as ListIcon,
-} from "react-feather";
-// import RequestForm from "./RequestForm";
-
+import { Download as ExportIcon } from "react-feather";
 import EmployeesOnLeave from "./EmployeesOnLeave";
-
 import LeaveFormDialog from "./LeaveFormDialog";
 import Filterbar from "./Filterbar";
 import List from "./List";
-import ExportButton from "../../../../components/common/ExportButton";
-
-// import Summary from "./Summary";
+import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 
 function periodIncludesToday(from, to) {
   const today = new Date();
@@ -49,32 +21,23 @@ function periodIncludesToday(from, to) {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  dialog: {},
-}));
-
 const LeavesPanel = ({
   state,
-  // notify,
   onFetchLeaves,
   onRegisterLeave,
   onApproveLeaves,
   onUpdateLeave,
   onDeleteLeave,
 }) => {
-  const classes = useStyles();
-
   const { org } = useOrg();
-
-  console.log(`Leave management state #2: \n ${state}`);
-
   const employeesMap = arrayToMap(org.employees || [], "_id");
+  const leaveTypeMap = arrayToMap(org.leaveTypes || [], "_id");
+
   const leaveTypes = [
-    { label: "Annual Leave", value: "annual" },
-    { label: "Sick Leave", value: "sick" },
-    { label: "Special Leave", value: "special" },
-    { label: "Maternal Leave", value: "maternal" },
-    { label: "Study Leave", value: "study" },
+    ...(org.leaveTypes || []).map(({ _id, name }) => ({
+      label: name,
+      value: _id,
+    })),
   ];
 
   const departmentOptions = [
@@ -90,7 +53,11 @@ const LeavesPanel = ({
       value: _id,
     })
   );
-  const leaveTypeOptions = [{ label: "ALL", value: "ALL" }, ...leaveTypes];
+  const leaveTypeOptions = [
+    { label: "Choose leaveTypes", value: -1 },
+    ...leaveTypes,
+  ];
+
   const durationOptions = [
     { label: "First half of the day", value: 1 },
     { label: "Second half of the day", value: 2 },
@@ -153,6 +120,7 @@ const LeavesPanel = ({
         ? status === statusFilterValue
         : true,
   };
+
   const [filters, setFilters] = React.useState(initialFiltersValue);
   const handleFiltersChange = (e) => {
     const { name, value } = e.target;
@@ -182,8 +150,16 @@ const LeavesPanel = ({
         field: "duration",
       },
       {
-        label: "Period",
-        field: "from",
+        label: "Start Date",
+        field: "startDate",
+      },
+      {
+        label: "End Date",
+        field: "endDate",
+      },
+      {
+        label: "Comment",
+        field: "comment",
       },
       {
         label: "Status",
@@ -202,7 +178,6 @@ const LeavesPanel = ({
   };
 
   const handleApproveLeaveClick = (selected) => {
-    // setSelectedLeave(state.fetchLeaves.leaves[selected]);
     // TODO: Implement action approveLeave
     onApproveLeaves([selected]);
   };
@@ -244,6 +219,7 @@ const LeavesPanel = ({
             size="small"
             onClick={handleRegisterClick}
             aria-label="request leave"
+            startIcon={<AddCircleRoundedIcon size="16px" />}
           >
             Register Leave
           </Button>
@@ -291,6 +267,7 @@ const LeavesPanel = ({
       {/* List */}
       <List
         employeesMap={employeesMap}
+        leaveTypeMap={leaveTypeMap}
         leaves={state.fetchLeaves.leaves}
         requesting={state.fetchLeaves.isLoading}
         error={state.fetchLeaves.error}

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: "flex-start",
     letterSpacing: 0,
-    padding: "10px 8px",
+    padding: "10px 10px",
     textTransform: "none",
     width: "100%",
   },
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginRight: "auto",
     textTransform: "uppercase",
+    fontSize: "13px",
   },
   active: {
     color: theme.palette.primary.main,
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     "& $icon": {
       color: theme.palette.primary.main,
     },
+    backgroundColor: "#f2f7f7",
   },
 }));
 

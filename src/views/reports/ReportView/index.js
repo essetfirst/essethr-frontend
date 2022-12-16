@@ -1,51 +1,44 @@
 import React from "react";
 
-import {
-  // Avatar,
-  // Box,
-  // Card,
-  // CardActions,
-  // CardContent,
-  // CardHeader,
-  // Divider,
-  Grid,
-  // Link,
-  // Typography,
-} from "@material-ui/core";
-
-import { PersonOutlined } from "@material-ui/icons";
-
-// import API from "../../../api";
+import { Grid } from "@material-ui/core";
 
 import PageView from "../../../components/PageView";
 
 import TabbedComponent from "../../../components/TabbedComponent";
-// import CustomReport from "./CustomReport";
 import { BarChart } from "react-feather";
 import CardList from "../../../components/CardList";
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
+import TimeToLeaveIcon from "@material-ui/icons/TimeToLeave";
+import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 
 const StandardReportsPanel = () => {
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item sm={12} md={6} lg={4}>
+      <Grid
+        container
+        spacing={2}
+        direction="row"
+        justify="center"
+        alignItems="flex-start"
+      >
+        <Grid item sm={12} md={12} lg={10}>
           <CardList
             cards={[
               {
                 title: "Payroll hours report",
-                icon: <PersonOutlined fontSize="large" />,
+                icon: <MonetizationOnIcon fontSize="large" />,
                 description: "Employee paryoll bound hours. ",
                 link: "/app/reports/payroll-hours-view",
               },
               {
                 title: "Absentee report",
-                icon: <PersonOutlined fontSize="large" />,
+                icon: <RemoveCircleOutlineIcon fontSize="large" />,
                 description: "Summary of employee absence. ",
                 link: "/app/reports/absentees-view",
               },
               {
                 title: "Leave balance report",
-                icon: <PersonOutlined fontSize="large" />,
+                icon: <TimeToLeaveIcon fontSize="large" />,
                 description: "Employee leave balance. ",
                 link: "/app/reports/leave-balances-view",
               },

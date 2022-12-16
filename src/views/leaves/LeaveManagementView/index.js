@@ -1,15 +1,9 @@
 import React from "react";
 import { useSnackbar } from "notistack";
-
 import { TimeToLeave as LeaveIcon } from "@material-ui/icons";
-
-import API from "../../../api";
-
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
-
 import PageView from "../../../components/PageView";
 import TabbedComponent from "../../../components/TabbedComponent";
-
 import LeavesPanel from "./LeavesPanel";
 import EntitlementsPanel from "./EntitlementsPanel";
 import useLeave from "../../../providers/leave";
@@ -23,18 +17,22 @@ const LeaveManagementView = () => {
     approveLeaves,
     updateLeave,
     deleteLeave,
+    deleteLeaveBalance,
   } = useLeave();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { notificationSnackbar } = useNotificationSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
-
-  console.log("Leave management state: ", fetchLeaveAllowances);
-
   const handleLoadLeaves = (startDate, endDate) => {
-    fetchLeaves(startDate, endDate);
+    fetchLeaves();
   };
-  const handleLoadAllowances = () => {
+  const handleLoadAllowances = (startDate, endDate) => {
+    console.log("Goastttttttttttttttttttt", fetchLeaveAllowances);
     fetchLeaveAllowances();
+  };
+
+  const onDeleteLeaveBalanceClicked = (leaveBalanceId) => {
+    console.log(leaveBalanceId);
+    deleteLeaveBalance(notify)(leaveBalanceId);
   };
 
   const handleRegisterLeave = (leaveInfo) => {
@@ -55,7 +53,7 @@ const LeaveManagementView = () => {
 
   return (
     <PageView
-      title="Leave management"
+      title="Leave Management"
       pageTitle={"Leaves"}
       icon={
         <span style={{ verticalAlign: "middle" }}>
@@ -86,6 +84,7 @@ const LeaveManagementView = () => {
                 state={state.fetchLeaveAllowances}
                 onFetchAllowances={handleLoadAllowances}
                 notify={notify}
+                onDeleteLeaveBalanceClicked={onDeleteLeaveBalanceClicked}
               />
             ),
           },

@@ -9,17 +9,14 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Collapse,
   Container,
-  Fade,
-  Grow,
   IconButton,
   makeStyles,
   Typography,
 } from "@material-ui/core";
 
-// import { ArrowLeftOutlined as BackIcon } from "@material-ui/icons";
-import { ArrowLeft as BackIcon } from "react-feather";
+import { ArrowLeftOutlined as BackIcon } from "@material-ui/icons";
+// import { ArrowLeft as BackIcon } from "react-feather";
 
 import Page from "../Page";
 
@@ -27,8 +24,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     minHeight: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    fontFamily: "Poppins",
   },
 }));
 

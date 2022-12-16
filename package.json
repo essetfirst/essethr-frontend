@@ -30,6 +30,7 @@
     "formik": "^2.2.0",
     "framer-motion": "^7.6.19",
     "history": "^5.0.0",
+    "http-proxy-middleware": "^2.0.6",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.14",
     "material-ui-dropzone": "^3.5.0",
@@ -66,7 +67,6 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "proxy": "https://essethr.herokuapp.com",
   "eslintConfig": {
     "extends": "react-app"
   },

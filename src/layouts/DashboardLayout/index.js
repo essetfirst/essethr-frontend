@@ -63,33 +63,9 @@ const useStyles = makeStyles((theme) => ({
 const DashboardLayout = () => {
   const classes = useStyles();
 
-  // const navigate = useNavigate();
-  // const { pathname } = useLocation();
-
-  // const [alert, setAlert] = React.useState();
+  const [alert, setAlert] = React.useState(false);
 
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-
-  // const startingUrl = "/";
-  // const homeUrl = "/app/dashboard";
-  // const paths = pathname.replace("/app/", "");
-  // console.log(paths);
-  // const pathList = [
-  //   { url: homeUrl, label: "Home" },
-  //   ...(pathname === homeUrl
-  //     ? []
-  //     : paths.split("/").map((path) => {
-  //         console.log(path);
-  //         return (
-  //           path && {
-  //             url: startingUrl + path,
-  //             label: path || path[0].toUpperCase() + path.substring(1),
-  //           }
-  //         );
-  //       })),
-  // ];
-
-  // const lastPathIndex = pathList.length - 1;
 
   return (
     <div className={classes.root}>
@@ -105,38 +81,8 @@ const DashboardLayout = () => {
         <div className={classes.contentContainer}>
           <div className={classes.content}>
             <PerfectScrollbar>
-              {/* <Container> */}
-              {/* <div className={classes.breadcrumbs}>
-                <Container>
-                  <Breadcrumbs
-                    separator={<NavigateNextIcon fontSize="small" />}
-                    aria-label="breadcrumb"
-                  >
-                    {pathList.map(({ label, url }, index) =>
-                      index !== lastPathIndex ? (
-                        <Link
-                          key={label}
-                          color="inherit"
-                          href={url}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate(url);
-                          }}
-                        >
-                          {label}
-                        </Link>
-                      ) : (
-                        <Typography key={label} color="textPrimary">
-                          {label}
-                        </Typography>
-                      )
-                    )}
-                  </Breadcrumbs>
-                </Container>
-              </div> */}
               <RegisterFromDevice />
               <Outlet />
-              {/* </Container> */}
             </PerfectScrollbar>
           </div>
         </div>

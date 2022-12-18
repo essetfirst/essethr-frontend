@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTheme } from "../../providers/theme";
-
+import { Menu as MenuIcon } from "@material-ui/icons";
+import BusinessIcon from "@material-ui/icons/Business";
+import Brightness4Icon from "@material-ui/icons/Brightness4";
+import Brightness7Icon from "@material-ui/icons/Brightness7";
+import { LogOut as LogoutIcon } from "react-feather";
+import useAuth from "../../providers/auth";
+import useOrg from "../../providers/org";
+import API from "../../api";
 import clsx from "clsx";
+import PermIdentityIcon from "@material-ui/icons/PermIdentity";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import {
   makeStyles,
   AppBar,
@@ -13,40 +21,40 @@ import {
   IconButton,
   Toolbar,
   Typography,
+  MenuItem,
+  Menu,
+  Button,
+  Avatar,
 } from "@material-ui/core";
-
-import { Menu as MenuIcon } from "@material-ui/icons";
-import BusinessIcon from "@material-ui/icons/Business";
-import Brightness4Icon from "@material-ui/icons/Brightness4";
-import Brightness7Icon from "@material-ui/icons/Brightness7";
-
-import { LogOut as LogoutIcon } from "react-feather";
-
-import useAuth from "../../providers/auth";
-import useOrg from "../../providers/org";
-
-import API from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
-  avatar: {
-    width: 32,
-    height: 32,
-    marginRight: 5,
-  },
+
   text: {
     fontFamily: "Poppins",
+  },
+  avatar: {
+    borderRadius: 50,
   },
 }));
 
 const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
   const { darkMode, toggleDarkMode } = useTheme();
-
   const { auth, logout } = useAuth();
   const { currentOrg, setCurrentOrg, setOrg } = useOrg();
   const [orgs, setOrgs] = React.useState([]);
   const [orgName, setOrgName] = React.useState("");
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const fetchOrganizations = React.useCallback(() => {
     API.orgs
@@ -71,15 +79,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
     fetchOrganizations();
   }, [fetchOrganizations]);
 
-  const handleOrgChange = (e) => {
-    const { value } = e.target;
-    setCurrentOrg(value);
-    const org = orgs.filter((o) => o._id === value);
-    setCurrentOrg(value);
-    setOrg(org);
-    setOrgName(org.branch);
-  };
-
   const handleLogout = () => {
     logout(() => {
       localStorage.clear();
@@ -94,80 +93,24 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             <MenuIcon />
           </IconButton>
         </Hidden>
-
-        <RouterLink to="/">
-          <BusinessIcon
-            style={{ color: "#fff", fontSize: "2rem", marginRight: "10px" }}
-          />
-        </RouterLink>
-        <RouterLink to="/">
-          <Typography
-            component="span"
-            variant="h4"
-            style={{ color: "#fff" }}
-            className={classes.text}
-          >
-            Esset HR
-          </Typography>
-        </RouterLink>
-
-        <Box flexGrow={1} />
-        {/* <Hidden smDown>
-          {auth.isAuth &&
-            Array.isArray(orgs) &&
-            orgs.length > 0 &&
-            (auth.user.role === "ADMIN" ? (
-              <TextField
-                select
-                label="Branch"
-                name="currentOrg"
-                onChange={handleOrgChange}
-                value={currentOrg}
-                variant="outlined"
-                size="small"
-              >
-                {orgs.map(({ _id, name, branch }) => (
-                  <MenuItem style={{ color: "#fff" }} value={_id} key={_id}>
-                    {branch || name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            ) : (
-              <Typography variant="subtitle1">{orgName}</Typography>
-            ))}
-        </Hidden> */}
-        {/* <Box alignItems="center" display="flex" mr={1}>
-          <IconButton
-            component={RouterLink}
-            to={"/app/account"}
-            color="inherit"
-          >
-            <UserIcon />
-          </IconButton>
-          <Hidden smDown>
+        <Hidden smDown>
+          <RouterLink to="/">
+            <BusinessIcon
+              style={{ color: "#fff", fontSize: "2rem", marginRight: "10px" }}
+            />
+          </RouterLink>
+          <RouterLink to="/app/dashboard">
             <Typography
-              className={classes.name}
-              color="inherit"
-              variant="body2"
-              component={RouterLink}
-              to={"/app/account"}
-            >
-              {orgs.user}
-            </Typography>
-          </Hidden>
-        </Box> */}
-
-        {/* <Hidden smDown>
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <Typography
+              component="span"
+              variant="h4"
+              style={{ color: "#fff" }}
               className={classes.text}
-              color="inherit"
-              variant="body2"
             >
-              {moment().format("ddd, h:mm:ss a")}{" "}
+              Esset HR
             </Typography>
-          </Box>
-        </Hidden> */}
+          </RouterLink>
+        </Hidden>
+        <Box flexGrow={1} />
 
         <Box alignItems="center" display="flex" ml={2}>
           <IconButton
@@ -184,21 +127,55 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
           </IconButton>
         </Box>
         <Box alignItems="center" display="flex" ml={2}>
-          <IconButton onClick={handleLogout} color="inherit" title="logout">
-            <LogoutIcon />
-            <Hidden smDown>
+          <IconButton onClick={handleClick} color="inherit" title="menu">
+            <Avatar
+              variant="rounded"
+              className={classes.avatar}
+              fontSize="medium"
+            >
               <Typography
+                component="span"
+                variant="h4"
+                style={{ color: "#fff" }}
                 className={classes.text}
-                color="inherit"
-                variant="body2"
-                component={RouterLink}
-                to={"/app/account"}
-                style={{ marginLeft: "7px", fontWeight: "bolder" }}
               >
-                LogOut
+                {auth.user.firstName
+                  ? auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)
+                  : "N/A"}
               </Typography>
-            </Hidden>
+            </Avatar>
           </IconButton>
+          <Box alignItems="center" display="flex" ml={1}>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem
+                onClick={() => {
+                  navigate("/app/account");
+                }}
+              >
+                {" "}
+                <IconButton color="inherit" title="profile">
+                  <PermIdentityIcon style={{ marginRight: "5px" }} />
+                  <Typography color="inherit" variant="body2">
+                    Profile
+                  </Typography>
+                </IconButton>
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <IconButton color="inherit" title="logout">
+                  <ExitToAppIcon style={{ marginRight: "5px" }} />
+                  <Typography color="inherit" variant="body2">
+                    Log out
+                  </Typography>
+                </IconButton>
+              </MenuItem>
+            </Menu>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

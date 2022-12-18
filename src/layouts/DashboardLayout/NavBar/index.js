@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
@@ -13,8 +12,6 @@ import {
   List,
   Typography,
   makeStyles,
-  // TextField,
-  // MenuItem,
 } from "@material-ui/core";
 
 import {
@@ -100,7 +97,7 @@ const adminNavItems = [
 
 const useStyles = makeStyles(() => ({
   mobileDrawer: {
-    width: 246,
+    width: 206,
   },
   desktopDrawer: {
     width: 246,
@@ -112,7 +109,7 @@ const useStyles = makeStyles(() => ({
     width: 54,
     height: 54,
     marginRight: "10px",
-    borderRadius: 4,
+    borderRadius: 50,
   },
   name: {
     fontSize: "1rem",
@@ -127,9 +124,20 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
     cursor: "pointer",
   },
+  contactUsButton: {
+    cursor: "pointer",
+    fontFamily: "Poppins",
+  },
 }));
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = ({
+  onMobileClose,
+  openMobile,
+  onMinimize,
+  minimized,
+  onLogout,
+  ...rest
+}) => {
   const classes = useStyles();
   const location = useLocation();
   const { auth } = useAuth();
@@ -145,29 +153,40 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       {auth.isAuth && (
         <>
           <Box
-            display="flex"
+            display="inline-block"
             alignItems="center"
-            justifyContent="left"
+            justifyContent="center"
             p={1}
             mr={1}
             ml={1}
             component={RouterLink}
             to="/app/account"
           >
-            <Avatar variant="rounded" className={classes.avatar}>
-              {auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)}
-            </Avatar>
-            <Box display="flex" flexDirection="column" mt={1}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              mt={1}
+            >
+              <Avatar variant="rounded" className={classes.avatar}>
+                {auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)}
+              </Avatar>
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              mt={1}
+            >
               <Typography
                 className={classes.name}
                 color="textSecondary"
                 variant="body2"
               >
-                User: {auth.user.name}
+                {auth.user.name}
               </Typography>
-              {/* <Typography color="textSecondary" variant="body1">
-                {auth.user.email}
-              </Typography> */}
               <Typography
                 color="textSecondary"
                 variant="body2"
@@ -176,16 +195,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                 {auth.user.role}
               </Typography>
               <Box mt={1} />
-              {/* <Button
-                // fullWidth
-                variant="outlined"
-                size="small"
-                onClick={handleLogout}
-                endIcon={<LogoutIcon fontSize="small" size="18" />}
-                aria-label="logout"
-              >
-                Logout
-              </Button> */}
             </Box>
           </Box>
           <Box p={1} mr={1} ml={1} mb={1}></Box>
@@ -232,7 +241,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           p={1}
           ml={1}
           mr={1}
-          bgcolor="background.dark"
+          // bgcolor="background.dark"
         >
           <Typography
             align="center"
@@ -256,8 +265,9 @@ const NavBar = ({ onMobileClose, openMobile }) => {
               color="primary"
               component="a"
               href="https://futuretech.et"
-              variant="contained"
+              variant="outlined"
               size="small"
+              className={classes.contactUsButton}
             >
               Contact us
             </Button>

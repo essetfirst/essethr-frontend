@@ -345,7 +345,7 @@ const EmployeeListView = () => {
           position: "right",
           otherProps: {
             color: "primary",
-            disabled: !(state.employees.length > 0),
+            disabled: !(state.employees.length >= 0),
           },
         },
         {
@@ -356,7 +356,7 @@ const EmployeeListView = () => {
           position: "right",
           otherProps: {
             color: "primary",
-            disabled: !(state.employees.length > 0),
+            disabled: !(state.employees.length >= 0),
           },
         },
       ]}

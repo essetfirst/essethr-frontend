@@ -51,9 +51,8 @@ const ResultsTable = ({
         size="small"
         columns={[
           {
-            label: "NAME",
+            label: "Full NAME",
             field: "firstName",
-            sortable: true,
             renderCell: ({ _id, firstName, surName, phone }) => (
               <Box display="flex" alignItems="center">
                 <CustomAvatar color="secondary" size="1">
@@ -86,7 +85,6 @@ const ResultsTable = ({
           {
             label: "Job Title",
             field: "position",
-            sortable: true,
             renderCell: ({ position }) => (
               <Typography variant="h6">
                 {(positionsMap[position] || {}).title || "N/A"},

@@ -7,31 +7,30 @@ export { theme as customTheme } from "./customTheme";
 export const defaultTheme = createMuiTheme({
   palette: {
     type: "light",
-    // background: {
-    //   dark: "#F4F6F8",
-    //   default: colors.common.white,
-    //   paper: colors.common.white,
-    // },
+    background: {
+      dark: "#F4F6F8",
+      default: colors.common.white,
+      paper: colors.common.white,
+    },
     primary: {
-      // main: colors.indigo[500],
       main: colors.teal[500],
     },
-    // secondary: {
-    //   main: colors.deepOrange[500],
-    // },
-    // success: {
-    //   main: colors.green[500],
-    // },
-    // error: {
-    //   main: colors.red[500],
-    // },
-    // warning: {
-    //   main: colors.deepPurple[500],
-    // },
-    // text: {
-    //   primary: colors.blueGrey[800],
-    //   secondary: colors.blueGrey[600],
-    // },
+    secondary: {
+      main: colors.deepOrange[500],
+    },
+    success: {
+      main: colors.green[500],
+    },
+    error: {
+      main: colors.red[500],
+    },
+    warning: {
+      main: colors.deepPurple[500],
+    },
+    text: {
+      primary: colors.blueGrey[800],
+      secondary: colors.blueGrey[600],
+    },
   },
   shadows,
   typography,
@@ -44,7 +43,16 @@ export const darkTheme = createMuiTheme({
       main: colors.teal[500],
     },
     secondary: {
-      main: colors.red[800],
+      main: colors.deepOrange[500],
+    },
+    success: {
+      main: colors.green[500],
+    },
+    error: {
+      main: colors.red[500],
+    },
+    warning: {
+      main: colors.deepPurple[500],
     },
   },
 

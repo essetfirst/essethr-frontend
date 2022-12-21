@@ -1,8 +1,6 @@
 import React from "react";
-
 import {
   Box,
-  // Button,
   Card,
   CardContent,
   CardHeader,
@@ -17,13 +15,10 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-
-import {
-  Edit2 as EditIcon,
-  Phone as PhoneIcon,
-  Mail as EmailIcon,
-  Zap as AddressIcon,
-} from "react-feather";
+import PhoneIcon from "@material-ui/icons/Phone";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import EmailIcon from "@material-ui/icons/Email";
+import EditRoundedIcon from "@material-ui/icons/EditRounded";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -67,26 +62,8 @@ const PropertyList = ({ propertiesMap }) => {
           <ListItemText
             primary={
               <Box style={{ flex: "1 1 0%", marginTop: "0px" }}>
-                <Typography
-                  variant="subtitle2"
-                  // style={{
-                  //   margin: "0px",
-                  //   fontSize: "0.875rem",
-                  //   fontWeight: 500,
-                  //   lineHeight: 1.57,
-                  // }}
-                >
-                  {property}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  // style={{
-                  //   margin: "0px",
-                  //   fontSize: "0.875rem",
-                  //   fontWeight: "400",
-                  //   lineHeight: "1.57",
-                  // }}
-                >
+                <Typography variant="subtitle2">{property}</Typography>
+                <Typography variant="body2">
                   {propertiesMap[property]}
                 </Typography>
               </Box>
@@ -95,7 +72,7 @@ const PropertyList = ({ propertiesMap }) => {
               flex: "1 1 auto",
               minWidth: "0px",
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               marginTop: "0px",
               marginBottom: "0px",
             }}
@@ -112,162 +89,30 @@ const GeneralDetails = ({ details }) => {
 
   return (
     <Box>
-      {/* <Box>
-        <Typography variant="h3" gutterBottom>
-          General
-        </Typography>
-      </Box> */}
       <Grid container spacing={2}>
-        {/* Personal details */}
-        <Grid item xs={12} sm={12} md={12}>
-          <Card style={{ padding: 0 }}>
-            <CardHeader
-              title={"Personal details"}
-              // subheader={"Edit employee personal details"}
-            />
+        <Grid item xs={12} sm={12} md={6}>
+          <Card style={{ padding: 0, height: "100%" }}>
+            <CardHeader title={"Personal details"} />
             <Divider />
             <CardContent style={{ padding: "0px" }}>
-              {/*                
-              <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    label="Date of Birth (Age)"
-                    name="birthDay"
-                    value={`${details.birthDay} (${
-                      new Date().getFullYear() -
-                      new Date(details.birthDay).getFullYear()
-                    })`}
-                    variant="outlined"
-                    margin="dense"
-                    size="small"
-                  />
-                </Grid>
-              </Grid> */}
               <PropertyList
                 propertiesMap={{
                   Email: details.email,
                   Gender: details.gender,
-                  Age: 26,
+                  BirthDate: details.birthDay,
                 }}
               />
             </CardContent>
           </Card>
         </Grid>
-
-        {/* Contact details section */}
-        <Grid item xs={12} sm={12}>
-          <Card>
-            <CardHeader
-              title={"Contact details"}
-              // subheader={"Edit employee contact details"}
-              actions={
-                <IconButton onClick={handleEditClick} aria-label="edit">
-                  <EditIcon />
-                </IconButton>
-              }
-            />
-            <Divider />
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    label="Work Phone"
-                    value={details.phone}
-                    variant="outlined"
-                    margin="dense"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment>
-                          <PhoneIcon className={classes.icon} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    label="Mobile Phone (Optional)"
-                    value={details.phone2}
-                    variant="outlined"
-                    margin="dense"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment>
-                          <PhoneIcon className={classes.icon} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    label="Email (Optional)"
-                    value={details.email}
-                    variant="outlined"
-                    margin="dense"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment>
-                          <EmailIcon className={classes.icon} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    label="Main address "
-                    value={details.address}
-                    variant="outlined"
-                    margin="dense"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment>
-                          <AddressIcon className={classes.icon} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    label="Alternative address (Optional)"
-                    value={details.address2}
-                    variant="outlined"
-                    margin="dense"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment>
-                          <AddressIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-
         {/* Job details section */}
         <Grid item xs={12} sm={12} md={6}>
           <Card>
             <CardHeader
               title={"Job details"}
-              subheader={"Edit job details"}
               actions={
                 <IconButton onClick={handleEditClick} aria-label="edit">
-                  <EditIcon />
+                  <EditRoundedIcon />
                 </IconButton>
               }
             />
@@ -322,15 +167,118 @@ const GeneralDetails = ({ details }) => {
           </Card>
         </Grid>
 
+        {/* Contact details section */}
+        <Grid item xs={12} sm={12}>
+          <Card>
+            <CardHeader
+              title={"Contact details"}
+              actions={
+                <IconButton onClick={handleEditClick} aria-label="edit">
+                  <EditRoundedIcon />
+                </IconButton>
+              }
+            />
+            <Divider />
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    label="Work Phone"
+                    value={details.phone}
+                    variant="outlined"
+                    margin="dense"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment>
+                          <PhoneIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    label="Mobile Phone (Optional)"
+                    value={details.phone2 ? details.phone2 : "N/A"}
+                    variant="outlined"
+                    margin="dense"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment>
+                          <PhoneIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    label="Email (Optional)"
+                    value={details.email}
+                    variant="outlined"
+                    margin="dense"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment>
+                          <EmailIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    label="Main address "
+                    value={details.address}
+                    variant="outlined"
+                    margin="dense"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment>
+                          <LocationOnIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    label="Alternative address (Optional)"
+                    value={details.address2 ? details.address2 : "N/A"}
+                    variant="outlined"
+                    margin="dense"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment>
+                          <LocationOnIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
         {/* Contract details section */}
         <Grid item xs={12} sm={12} md={12}>
           <Card>
             <CardHeader
               title={"Contract details"}
-              // subheader={"Edit contract details"}
               actions={
                 <IconButton onClick={handleEditClick} aria-label="edit">
-                  <EditIcon />
+                  <EditRoundedIcon />
                 </IconButton>
               }
             />

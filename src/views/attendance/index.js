@@ -10,7 +10,7 @@ import { Clock as TimeIcon } from "react-feather";
 const AttendanceView = () => {
   return (
     <PageView
-      title="Time management"
+      title="Attendance"
       icon={
         <span style={{ verticalAlign: "middle" }}>
           <TimeIcon fontSize="large" />

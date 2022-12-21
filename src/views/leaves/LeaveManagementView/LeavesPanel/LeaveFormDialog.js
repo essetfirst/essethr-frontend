@@ -92,7 +92,8 @@ const LeaveFormDialog = ({
               } else {
                 requestInfo.duration = computeDateDiff(values.from, values.to);
               }
-              onSubmit(requestInfo);
+              onSubmit(values);
+              handleDialogClose();
             }}
             onCancel={handleDialogClose}
           />

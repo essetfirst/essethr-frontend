@@ -168,18 +168,14 @@ const Provider = ({ children }) => {
 
   const fetchLeaves = React.useCallback(
     (fromDate, toDate) => {
-      console.log(`We are making leaves get request...`);
       dispatch({ type: types.FETCH_LEAVES_REQUEST });
       API.leaves
         .getAll({ query: { from: fromDate, to: toDate } })
         .then(({ success, leaves, error }) => {
-          console.log(`Get leaves response.`);
-
           if (success) {
             console.log(`Get leaves request successful.`);
             dispatch({
               type: types.FETCH_LEAVES_SUCCESS,
-
               payload: leaves,
             });
           } else {
@@ -228,16 +224,17 @@ const Provider = ({ children }) => {
     dispatch({ type: types.REGISTER_LEAVE_REQUEST });
     API.leaves
       .add(leaveInfo)
-      .then(({ success, message, error }) => {
+      .then(({ success, leaveInfo, error }) => {
+        console.log("Comeeeeeeeeeeeeeeeeeee", leaveInfo);
         if (success) {
           dispatch({
             type: types.REGISTER_LEAVE_SUCCESS,
-            payload: message,
+            payload: leaveInfo,
           });
         } else {
           dispatch({ type: types.REGISTER_LEAVE_FAILURE, error });
         }
-        notify({ success, message, error });
+        notify({ success, leaveInfo, error });
       })
       .catch((e) => {
         dispatch({ type: types.REGISTER_LEAVE_FAILURE, error: String(e) });
@@ -317,7 +314,7 @@ const Provider = ({ children }) => {
       .deleteById(leaveBalanceId)
       .then(({ success, message, error }) => {
         if (success) {
-          console.log("",message);
+          console.log("", message);
           dispatch({
             type: types.DELETE_LEAVE_ALLOWANCES_SUCCESS,
             payload: message,
@@ -356,5 +353,4 @@ const Provider = ({ children }) => {
     </Context.Provider>
   );
 };
-
 export default Provider;

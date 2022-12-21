@@ -55,7 +55,6 @@ const List = ({
   onApproveLeaveClicked,
   onDeleteLeaveClicked,
 }) => {
-  console.log("[LeaveList]: Line 53 -> leaves: ", leaves);
   return (
     <TableComponent
       size="small"

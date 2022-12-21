@@ -21,14 +21,12 @@ import {
   ApartmentOutlined as OrganizationIcon,
 } from "@material-ui/icons";
 
-import {
-  BarChart as BarChartIcon,
-  Settings as SettingsIcon,
-  Users as UsersIcon,
-  Clock as TimeIcon,
-  Linkedin as OrgIcon,
-} from "react-feather";
-
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import GroupIcon from "@material-ui/icons/Group";
+import TimerIcon from "@material-ui/icons/Timer";
+import AssessmentIcon from "@material-ui/icons/Assessment";
+import SettingsIcon from "@material-ui/icons/Settings";
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import NavItem from "./NavItem";
 
 import useAuth from "../../../providers/auth";
@@ -41,18 +39,18 @@ const navItems = [
   },
   {
     href: "/app/org",
-    icon: OrganizationIcon,
+    icon: VerifiedUserIcon,
     title: "Admin",
   },
   {
     href: "/app/employees",
-    icon: UsersIcon,
+    icon: GroupIcon,
     title: "Employees",
   },
   {
     href: "/app/attendance",
-    icon: TimeIcon,
-    title: "Time management",
+    icon: TimerIcon,
+    title: "Attendance",
   },
   {
     href: "/app/leaves",
@@ -66,7 +64,7 @@ const navItems = [
   },
   {
     href: "/app/reports",
-    icon: BarChartIcon,
+    icon: AssessmentIcon,
     title: "Reports",
   },
 
@@ -75,22 +73,17 @@ const navItems = [
     icon: SettingsIcon,
     title: "Settings",
   },
-  // {
-  //   href: "/app/account",
-  //   icon: UserIcon,
-  //   title: "Account",
-  // },
 ];
 
 const adminNavItems = [
   {
     href: "/app/orgs",
-    icon: OrgIcon,
+    icon: OrganizationIcon,
     title: "Organizations",
   },
   {
     href: "/app/users",
-    icon: UsersIcon,
+    icon: SupervisedUserCircleIcon,
     title: "Users",
   },
 ];
@@ -213,12 +206,9 @@ const NavBar = ({
           ))}
         </List>
       </Box>
+      <Divider />
       {auth && auth.user && auth.user.role === "ADMIN" && (
-        <Box height="100%" p={2} pb={1}>
-          <Typography variant="body2" color="textSecondary">
-            ADMIN
-          </Typography>
-
+        <Box height="100%" p={1} pb={1}>
           <List>
             {adminNavItems.map((item) => (
               <NavItem
@@ -265,7 +255,7 @@ const NavBar = ({
               color="primary"
               component="a"
               href="https://futuretech.et"
-              variant="outlined"
+              variant="contained"
               size="small"
               className={classes.contactUsButton}
             >

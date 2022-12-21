@@ -23,11 +23,11 @@ const LeaveManagementView = () => {
   const { notificationSnackbar } = useNotificationSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
   const handleLoadLeaves = (startDate, endDate) => {
-    fetchLeaves();
+    console.log(state.fetchLeaves.leave);
+    fetchLeaves(startDate, endDate);
   };
   const handleLoadAllowances = (startDate, endDate) => {
-    console.log("Goastttttttttttttttttttt", fetchLeaveAllowances);
-    fetchLeaveAllowances();
+    fetchLeaveAllowances(startDate, endDate);
   };
 
   const onDeleteLeaveBalanceClicked = (leaveBalanceId) => {
@@ -36,6 +36,7 @@ const LeaveManagementView = () => {
   };
 
   const handleRegisterLeave = (leaveInfo) => {
+    console.log(leaveInfo);
     addLeave(notify)(leaveInfo);
   };
 

@@ -18,6 +18,8 @@ import BranchTransferDialog from "./BranchTransferDialog";
 import ResultsTable from "./ResultsTable";
 import ResultsGrid from "./ResultsGrid";
 import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
+import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
+import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
 import {
   Users as EmployeesIcon,
   UploadCloud as ImportIcon,
@@ -314,18 +316,17 @@ const EmployeeListView = () => {
   return (
     <PageView
       className={classes.root}
-      title="Employees"
-      backPath={"app/dashboard"}
+      title="Employee Management"
       icon={
         <span style={{ verticalAlign: "middle" }}>
-          <EmployeesIcon fontSize="large" />
+          <GroupRoundedIcon fontSize="large" />
         </span>
       }
       actions={[
         {
           type: "button",
           label: "create",
-          icon: { node: <AddIcon size="16px" /> },
+          icon: { node: <AddCircleRoundedIcon size="16px" /> },
           handler: handleCreateClick,
           otherProps: { variant: "contained", color: "primary", size: "small" },
         },
@@ -363,6 +364,8 @@ const EmployeeListView = () => {
     >
       <Box mb={2} />
       <Toolbar
+        viewType={viewType}
+        onViewTypeChange={handleViewChange}
         filters={filters}
         onFilterChange={handleFilterChange}
         // onFiltersReset={handleFiltersReset}
@@ -389,27 +392,6 @@ const EmployeeListView = () => {
         employee={selectedEmployee}
         onTransfer={handleBranchTransfer}
       />
-
-      <Box display="flex" justifyContent="flex-end" mt={1}>
-        <ToggleButtonGroup value={viewType}>
-          <ToggleButton value="list" size="small" onClick={handleViewChange}>
-            <ListIcon
-              fontSize="small"
-              size="16"
-              style={{ marginRight: "5px" }}
-            />
-            <span>List</span>
-          </ToggleButton>
-          <ToggleButton value="grid" size="small" onClick={handleViewChange}>
-            <GridIcon
-              fontSize="small"
-              size="16"
-              style={{ marginRight: "5px" }}
-            />
-            <span>Grid</span>
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
 
       {viewType === "list" ? (
         <ResultsTable

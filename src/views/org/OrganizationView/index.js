@@ -5,37 +5,29 @@ import { useParams, useNavigate } from "react-router-dom";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardContent,
-  CardHeader,
   Container,
   Divider,
   Grid,
-  IconButton,
   Typography,
   makeStyles,
 } from "@material-ui/core";
 
 import {
-  // EditOutlined as EditIcon,
   LocationOnOutlined as AddressIcon,
   MailOutlineOutlined as MailIcon,
   PhoneOutlined as PhoneIcon,
 } from "@material-ui/icons";
 
 import { Edit as EditIcon, ArrowDown as ArrowDownIcon } from "react-feather";
-import { DatePicker } from "@material-ui/pickers";
-
 import PageView from "../../../components/PageView";
 import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 import TabbedComponent from "../../../components/TabbedComponent";
-import ApartmentIcon from "@material-ui/icons/Apartment";
 import API from "../../../api";
-
 import useAuth from "../../../providers/auth";
 import useOrg from "../../../providers/org";
 import arrayToMap from "../../../utils/arrayToMap";
@@ -45,7 +37,7 @@ import PositionList from "./PositionList";
 import AttendancePolicy from "./AttendancePolicy";
 import LeaveTypeList from "./LeaveTypeList";
 import HolidayList from "./HolidayList";
-import BranchList from "./BranchList";
+import VerifiedUserRoundedIcon from "@material-ui/icons/VerifiedUserRounded";
 
 const types = {
   REQUESTING: "REQUESTING",
@@ -91,7 +83,6 @@ const OrganizationView = ({ id }) => {
   const navigate = useNavigate();
 
   const params = useParams();
-  const { auth } = useAuth();
 
   const { notificationSnackbar } = useNotificationSnackbar();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -136,15 +127,14 @@ const OrganizationView = ({ id }) => {
   }, []);
 
   React.useEffect(() => {
-    if (orgId) {
-      fetchOrg(orgId);
-      if (!org) {
-        navigate("/app/dashboard");
-        notify("Organization not found", "error");
-        return;
-      }
+    if (org) {
+      dispatch({ type: types.REQUEST_SUCCESS, payload: org });
     }
-  }, [orgId, fetchOrg]);
+
+    if ((orgId && !org) || (org && orgId !== org._id)) {
+      fetchOrg(orgId);
+    }
+  }, [orgId, org, fetchOrg]);
 
   const handleEditOrgClick = () => {
     navigate("/app/orgs/edit", orgId);
@@ -466,12 +456,11 @@ const OrganizationView = ({ id }) => {
 
   return (
     <PageView
-      pageTitle={"Organization"}
       className={classes.root}
       title={`${state.org.name}`}
       icon={
         <span style={{ marginLeft: "23px" }}>
-          <ApartmentIcon fontSize="medium" />
+          <VerifiedUserRoundedIcon fontSize="medium" />
         </span>
       }
     >
@@ -542,8 +531,7 @@ const OrganizationView = ({ id }) => {
                   <Grid item sm={4}>
                     <Box display="flex" justifyContent="flex-end">
                       <Button
-                        variant="contained"
-                        color="primary"
+                        variant="outlined"
                         onClick={handleEditOrgClick}
                         endIcon={<EditIcon size={15} />}
                         aria-label="edit org"
@@ -568,10 +556,6 @@ const OrganizationView = ({ id }) => {
                     indicatorColor: "primary",
                   }}
                   tabs={[
-                    // {
-                    //   label: "Branches",
-                    //   panel: <BranchList />,
-                    // },
                     {
                       label: "Departments",
                       panel: (

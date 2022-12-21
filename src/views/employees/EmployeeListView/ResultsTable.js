@@ -5,14 +5,11 @@ import { Box, Chip, Link, Typography } from "@material-ui/core";
 import TableComponent from "../../../components/TableComponent";
 import CustomAvatar from "../../../components/CustomAvatar";
 import PrintableMultipleEmployeeIDCards from "./PrintableMultipleEmployeeIDCards";
-import LoadingComponent from "../../../components/LoadingComponent";
-import {
-  Edit2 as EditIcon,
-  Delete as DeleteIcon,
-  Phone as PhoneIcon,
-  Printer as PrintIcon,
-  Eye,
-} from "react-feather";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import PhoneIcon from "@material-ui/icons/Phone";
+import PrintIcon from "@material-ui/icons/Print";
 
 const ResultsTable = ({
   org,
@@ -144,7 +141,7 @@ const ResultsTable = ({
         data={employees || {}}
         rowActions={[
           {
-            icon: <Eye fontSize="small" />,
+            icon: <VisibilityIcon fontSize="small" />,
             label: "View employee",
             handler: ({ _id }) => onViewClicked(_id),
           },

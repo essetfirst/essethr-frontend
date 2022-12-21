@@ -131,11 +131,15 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             <Avatar
               variant="rounded"
               className={classes.avatar}
-              fontSize="medium"
+              fontSize="small"
+              style={{
+                width: "30px",
+                height: "30px",
+              }}
             >
               <Typography
                 component="span"
-                variant="h4"
+                variant="h6"
                 style={{ color: "#fff" }}
                 className={classes.text}
               >

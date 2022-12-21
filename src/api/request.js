@@ -29,23 +29,22 @@ const makeRequest = async (url, method, params, data) => {
     options["data"] = data;
   }
 
-  return await axios(getURLPath(url), options)
-    .then((res) => {
-      console.log(
-        "%c Response: 👉",
-        "background: #222; color: #bada55",
-        res.data
-      );
-      return res.data;
-    })
-    .catch((err) => {
-      console.error(
-        "%c Error: 👉",
-        "background: #222; color:  #ff3333",
-        err.response
-      );
-      throw err;
-    });
+  try {
+    const res = await axios(getURLPath(url), options);
+    console.log(
+      "%c Response: 👉",
+      "background: #222; color: #bada55",
+      res.data
+    );
+    return res.data;
+  } catch (err) {
+    console.error(
+      "%c Error: 👉",
+      "background: #222; color:  #ff3333",
+      err.response
+    );
+    throw err;
+  }
 };
 
 export const postRequest = (url, data) => {

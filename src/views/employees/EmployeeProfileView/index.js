@@ -5,29 +5,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   makeStyles,
   Box,
-  // AppBar,
-  // Avatar,
-  // Button,
-  // Grid,
-  // Hidden,
-  // ButtonGroup,
   Typography,
-  IconButton,
   Menu,
   MenuItem,
-  Card,
-  CardHeader,
-  Divider,
   Chip,
   Link,
   Grid,
   Button,
   Container,
 } from "@material-ui/core";
-
 import {
   ArrowBack as BackIcon,
-  MoreVert as MoreVertIcon,
   Edit as EditIcon,
   KeyboardArrowDown as ActionsIcon,
 } from "@material-ui/icons";
@@ -37,7 +25,6 @@ import { useReactToPrint } from "react-to-print";
 import PageView from "../../../components/PageView";
 import TabbedComponent from "../../../components/TabbedComponent";
 import CustomAvatar from "../../../components/CustomAvatar";
-// import PrintComponent from "../../../components/PrintComponent";
 
 import API from "../../../api";
 import arrayToMap from "../../../utils/arrayToMap";
@@ -53,8 +40,6 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import FemaleNoprofileImage from "../../../assets/images/female_no_profile.jpg";
 import MaleNoprofileImage from "../../../assets/images/male_no_profile.jpg";
 import EmployeeBranchTransferDialog from "./EmployeeBranchTransferDialog";
-
-// const getInitials = (name) => name[0].toUpperCase() + name.slice(1);
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -73,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: 84,
     height: 84,
-    // backgroundColor: colors.orange[200],
   },
 }));
 
@@ -101,12 +85,10 @@ const EmployeeProfileView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const params = useParams();
-
-  const { org, updateEmployee } = useOrg();
-
+  const { org } = useOrg();
   const [state, dispatch] = React.useReducer(fetchReducer, fetchInitialState);
-
   const employeePrintableCardRef = React.useRef();
+
   const handlePrint = useReactToPrint({
     content: () => employeePrintableCardRef.current,
   });
@@ -212,14 +194,7 @@ const EmployeeProfileView = () => {
                     className={classes.avatar}
                   />
                   <Box ml={2}>
-                    <Typography variant="h1">
-                      {name}{" "}
-                      {/* <Chip
-                        size="small"
-                        color={state.employee ? "primary" : "default"}
-                        label={(state.employee || {}).status || "active"}
-                      /> */}
-                    </Typography>
+                    <Typography variant="h1">{name} </Typography>
                     <Typography variant="body2">
                       {state.employee
                         ? (state.employee.positionDetails || {}).title
@@ -227,7 +202,25 @@ const EmployeeProfileView = () => {
                       {" • "}
                       {state.employee
                         ? (state.employee.departmentDetails || {}).name
-                        : "Department"}
+                        : "Department"}{" "}
+                      <Chip
+                        size="small"
+                        style={
+                          state.employee && state.employee.status === "Active"
+                            ? {
+                                backgroundColor: "#4caf50",
+                                color: "#fff",
+                                marginLeft: "10px",
+                              }
+                            : {
+                                backgroundColor: "#f44336",
+                                color: "#fff",
+                                marginLeft: "10px",
+                              }
+                        }
+                        color={state.employee ? "primary" : "default"}
+                        label={(state.employee || {}).status || "active"}
+                      />
                     </Typography>
                   </Box>
                 </Box>
@@ -255,54 +248,6 @@ const EmployeeProfileView = () => {
               </Grid>
             </Grid>
           </Box>
-          {/* <Card>
-            <CardHeader
-              avatar={
-                <CustomAvatar
-                  size="2"
-                  src={
-                    state.employee && state.employee.gender === "Male"
-                      ? MaleNoprofileImage
-                      : FemaleNoprofileImage || "https://picsum.photos/200"
-                  }
-                  alt={`${name}`}
-                  className={classes.avatar}
-                />
-              }
-              title={
-                <Typography variant="h3">
-                  {name}{" "}
-                  <Chip
-                    size="small"
-                    color={state.employee ? "primary" : "default"}
-                    label={(state.employee || {}).status || "active"}
-                  />
-                </Typography>
-              }
-              subheader={
-                <>
-                  <Typography variant="body2">
-                    {state.employee
-                      ? (state.employee.positionDetails || {}).title
-                      : "Job Title"}
-                    {" • "}
-                    {state.employee
-                      ? (state.employee.departmentDetails || {}).name
-                      : "Department"}
-                  </Typography>
-                </>
-              }
-              action={
-                <>
-                  <IconButton
-                    onClick={handleProfileMenuClick}
-                    aria-label="settings"
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                </>
-              }
-            /> */}
 
           <Menu
             id="employee-profile-menu"
@@ -316,8 +261,8 @@ const EmployeeProfileView = () => {
               Transfer Branch
             </MenuItem>
             <MenuItem onClick={handlePrint}>Print ID Card</MenuItem>
-            {/* <MenuItem onClick={handleTerminateClick}>Terminate</MenuItem> */}
-            {/* <MenuItem onClick={handleTerminateClick}>Delete</MenuItem> */}
+            <MenuItem onClick={handleTerminateClick}>Terminate</MenuItem>
+            <MenuItem onClick={handleTerminateClick}>Delete</MenuItem>
           </Menu>
           {state.employee && (
             <EmployeeBranchTransferDialog
@@ -334,7 +279,6 @@ const EmployeeProfileView = () => {
           {/* </Card> */}
 
           <TabbedComponent
-            // appBarProps={{ color: "primary" }}
             tabsProps={{ textColor: "primary", indicatorColor: "primary" }}
             tabs={[
               {

@@ -101,9 +101,10 @@ const EmployeeFormView = ({ employeeId }) => {
   const handleCreateEmployee = async (employeeInfo) => {
     return await API.employees
       .create(employeeInfo)
-      .then(({ success, employee, error }) => {
+      .then(({ success, error }) => {
+        console.log(employeeInfo);
         if (success) {
-          addEmployee(employee);
+          addEmployee(employeeInfo);
           notify({ success, message: "Employee add successful!" });
           navigate("/app/employees");
           return true;
@@ -123,6 +124,7 @@ const EmployeeFormView = ({ employeeId }) => {
   };
 
   const handleUpdateEmployee = async (employeeInfo) => {
+    console.log(employeeInfo);
     return await API.employees
       .editById(employeeInfo._id, employeeInfo)
       .then(({ success, error }) => {
@@ -142,9 +144,13 @@ const EmployeeFormView = ({ employeeId }) => {
       });
   };
   const handleSubmitForm = (values) => {
-    return isCreateForm
-      ? handleCreateEmployee(values)
-      : handleUpdateEmployee(values);
+    console.log(values);
+
+    if (isCreateForm) {
+      handleCreateEmployee(values);
+    } else {
+      handleUpdateEmployee(values);
+    }
   };
 
   const handleCancel = () => navigate("/app/employees", { replace: true });
@@ -237,8 +243,6 @@ const EmployeeFormView = ({ employeeId }) => {
                 })
               ) {
                 setStatus(isCreateForm ? "Create" : "Saved changes.");
-              } else {
-                setStatus("Something went wrong.");
               }
               resetForm();
             }}

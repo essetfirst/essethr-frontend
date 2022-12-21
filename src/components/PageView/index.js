@@ -15,17 +15,12 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { ArrowLeftOutlined as BackIcon } from "@material-ui/icons";
-// import { ArrowLeft as BackIcon } from "react-feather";
-
 import Page from "../Page";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
     minHeight: "100%",
-    paddingBottom: theme.spacing(2),
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     fontFamily: "Poppins",
   },
 }));
@@ -105,7 +100,12 @@ const PageView = ({
       >
         <Box display="flex" flexDirection="column" height="100%">
           <Container>
-            <Typography variant="h2" color="textSecondary" gutterBottom>
+            <Typography
+              variant="h2"
+              color="textSecondary"
+              gutterBottom
+              className={classes.root}
+            >
               {backPath && (
                 <IconButton
                   variant="outlined"

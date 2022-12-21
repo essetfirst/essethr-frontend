@@ -32,6 +32,9 @@ export const defaultTheme = createMuiTheme({
       secondary: colors.blueGrey[600],
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
   shadows,
   typography,
 });
@@ -45,15 +48,9 @@ export const darkTheme = createMuiTheme({
     secondary: {
       main: colors.deepOrange[500],
     },
-    success: {
-      main: colors.green[500],
-    },
-    error: {
-      main: colors.red[500],
-    },
-    warning: {
-      main: colors.deepPurple[500],
-    },
+  },
+  shape: {
+    borderRadius: 8,
   },
 
   shadows,

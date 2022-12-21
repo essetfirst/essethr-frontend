@@ -14,6 +14,18 @@ const Provider = ({ persistKey = "org", children }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const { auth } = useAuth();
 
+  // const readOrg = React.useCallback(() => {
+  //   try {
+  //     const { org, currentOrg } = JSON.parse(localStorage.getItem(persistKey));
+  //     // setCurrentOrg(currentOrg);
+  //     // setOrg(org);
+  //   } catch (e) {
+  //     console.warn(e);
+  //   }
+  // }, [persistKey]);
+
+  const saveOrg = React.useCallback();
+
   const fetchOrg = React.useCallback((currentOrg) => {
     dispatch({ type: types.REQUESTING });
     API.orgs

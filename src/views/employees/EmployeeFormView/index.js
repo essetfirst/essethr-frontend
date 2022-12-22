@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 125,
   },
   title: {
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(1),
     display: "flex",
     fontFamily: "Poppins",
     fontSize: "20px",
@@ -74,7 +74,7 @@ const EmployeeFormView = ({ employeeId }) => {
         .getById(params.id || employeeId)
         .then(({ success, employee, error }) => {
           if (success) {
-            setEmployee(employee);
+            setEmployee(org.employees);
           } else {
             console.error(error);
           }
@@ -99,28 +99,30 @@ const EmployeeFormView = ({ employeeId }) => {
   const clickLabel = isCreateForm ? "Create" : "Update";
 
   const handleCreateEmployee = async (employeeInfo) => {
-    return await API.employees
-      .create(employeeInfo)
-      .then(({ success, error }) => {
-        console.log(employeeInfo);
-        if (success) {
-          addEmployee(employeeInfo);
-          notify({ success, message: "Employee add successful!" });
-          navigate("/app/employees");
-          return true;
-        } else {
-          console.error(error);
-          notify({
-            success: false,
-            error: "Couldnt add employee!",
-          });
-          return false;
-        }
-      })
-      .catch((e) => {
-        console.error(e.message);
-        return false;
+    try {
+      const { success, message, error } = await API.employees.create(
+        employeeInfo
+      );
+      if (success) {
+        addEmployee(employeeInfo);
+        notify({
+          message: message,
+          type: "success",
+        });
+        navigate("/app/employees");
+      } else {
+        notify({
+          message: error,
+          type: "error",
+        });
+      }
+    } catch (e) {
+      console.error(e.message);
+      notify({
+        message: e.message,
+        type: "error",
       });
+    }
   };
 
   const handleUpdateEmployee = async (employeeInfo) => {
@@ -244,6 +246,8 @@ const EmployeeFormView = ({ employeeId }) => {
               ) {
                 setStatus(isCreateForm ? "Create" : "Saved changes.");
               }
+
+              console.log({ ...values });
               resetForm();
             }}
           >

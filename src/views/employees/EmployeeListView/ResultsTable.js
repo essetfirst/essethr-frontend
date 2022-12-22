@@ -84,7 +84,7 @@ const ResultsTable = ({
             field: "position",
             renderCell: ({ position }) => (
               <Typography variant="h6">
-                {(positionsMap[position] || {}).title || "N/A"},
+                {(positionsMap[position] || {}).title || "N/A"}
               </Typography>
             ),
           },
@@ -94,10 +94,10 @@ const ResultsTable = ({
             sortable: false,
             renderCell: ({ position }) => (
               <Typography variant="h6">
-                ETB{" "}
                 {parseFloat((positionsMap[position] || {}).salary || 0).toFixed(
                   2
-                )}
+                )}{" "}
+                ETB
               </Typography>
             ),
           },
@@ -106,11 +106,9 @@ const ResultsTable = ({
             label: "Hired",
             field: "hireDate",
             renderCell: ({ hireDate }) =>
-              `${moment(hireDate).format("MMM DD,  Y")} (${
-                moment(new Date()).diff(hireDate, "M") <= 1
-                  ? "A month"
-                  : moment(new Date()).diff(hireDate, "M") + " months"
-              } ago)`,
+              `${moment(hireDate).format("MMM DD,  Y")} (
+                ${moment(hireDate).fromNow()}
+              )`,
           },
           {
             label: "STATUS",

@@ -93,13 +93,11 @@ const EmployeeProfileView = () => {
     content: () => employeePrintableCardRef.current,
   });
 
-  const fetchEmployee = React.useCallback(() => {
+  const fetchEmployee = React.useCallback(async () => {
     dispatch({ type: types.FETCH_EMPLOYEE_REQUEST });
-    API.employees
+    await API.employees
       .getDetails(params.id)
-      // .getById(params.id)
       .then(({ success, employee, error }) => {
-        console.log("Gopopeopdihusgdyusgydgysgdhsgdhsgh", employee);
         success
           ? dispatch({
               type: types.FETCH_EMPLOYEE_SUCCESS,

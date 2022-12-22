@@ -5,7 +5,7 @@ import { useSnackbar } from "notistack";
 import { Grid } from "@material-ui/core";
 
 import API from "../../../api";
-
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import useAuth from "../../../providers/auth";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 
@@ -52,6 +52,8 @@ const Account = () => {
     getInitialState(auth.user)
   );
 
+  console.log(state.user);
+
   const handleUpdateAccount = (accountInfo) => {
     dispatch({ type: types.ACCOUNT_EDIT_REQUEST });
     API.users
@@ -88,7 +90,14 @@ const Account = () => {
   };
 
   return (
-    <PageView title="Account" pageTitle="">
+    <PageView
+      title="Account"
+      icon={
+        <span style={{ verticalAlign: "middle" }}>
+          <AccountBoxIcon fontSize="large" />
+        </span>
+      }
+    >
       <Grid container spacing={3}>
         <Grid item lg={4} md={6} xs={12}>
           <Profile user={state.user} onUploadImage={handleUploadImage} />

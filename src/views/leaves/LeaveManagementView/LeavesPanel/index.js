@@ -196,10 +196,6 @@ const LeavesPanel = ({
     );
   }, [filters.fromDate, filters.toDate]);
 
-  React.useEffect(() => {
-    fetchLeaves();
-  }, [fetchLeaves]);
-
   const employeesOnLeave = (state.fetchLeaves.leaves || []).filter((l) => {
     if (periodIncludesToday(l.from, l.to)) {
       return true;
@@ -207,6 +203,10 @@ const LeavesPanel = ({
       return false;
     }
   });
+
+  React.useEffect(() => {
+    fetchLeaves();
+  }, [fetchLeaves]);
 
   return (
     <div>

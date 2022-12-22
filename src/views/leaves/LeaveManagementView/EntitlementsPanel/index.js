@@ -1,12 +1,8 @@
 import React from "react";
+
 import { Formik } from "formik";
 import * as Yup from "yup";
-import API from "../../../../api";
-import useOrg from "../../../../providers/org";
-import arrayToMap from "../../../../utils/arrayToMap";
-import TableComponent from "../../../../components/TableComponent";
-import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
-import { Delete as DeleteIcon } from "react-feather";
+
 import {
   Box,
   Button,
@@ -20,13 +16,19 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import API from "../../../../api";
+
+import useOrg from "../../../../providers/org";
+
+import arrayToMap from "../../../../utils/arrayToMap";
+import TableComponent from "../../../../components/TableComponent";
+
 const AllocateAllowanceDialog = ({
   open,
   onClose,
   employees,
   leaveTypes,
   onSubmit,
-  onDeleteLeaveBalanceClicked,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -51,9 +53,9 @@ const AllocateAllowanceDialog = ({
             leaveType: Yup.string()
               .required("'Leave type' is required")
               .notOneOf([-1], "'Employee id' is required"),
-            days: Yup.number().positive(
-              "'Balance in days' can not be negative"
-            ),
+            // days: Yup.number().positive(
+            //   "'Balance in days' can not be negative"
+            // ),
           })}
           onSubmit={onSubmit}
         >
@@ -96,7 +98,7 @@ const AllocateAllowanceDialog = ({
                         select
                         error={Boolean(touched.leaveType && errors.leaveType)}
                         helperText={touched.leaveType && errors.leaveType}
-                        label="leave Type"
+                        label="Employee"
                         name="leaveType"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -141,25 +143,18 @@ const AllocateAllowanceDialog = ({
   );
 };
 
-const EntitlementsPanel = ({
-  state,
-  notify,
-  onFetchAllowances,
-  onDeleteLeaveBalanceClicked,
-}) => {
+const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   const { org } = useOrg();
 
-  console.log("[EntitlementsPanel]: Line 185 -> state: ", org);
+  console.log("[EntitlementsPanel]: Line 185 -> state: ", state);
 
   const employeesMap = arrayToMap(org.employees || [], "_id");
 
   const [allocateDialogOpen, setAllocateDialogOpen] = React.useState(false);
   const handleAllocateDialogClose = () => setAllocateDialogOpen(false);
-
   const handleAllocateClick = () => {
     setAllocateDialogOpen(true);
   };
-
   const handleAllocateAllowance = async (allowanceInfo) => {
     console.log("Allowance info: ", allowanceInfo);
     const { employeeId } = allowanceInfo;
@@ -174,14 +169,10 @@ const EntitlementsPanel = ({
     }
   };
 
-  React.useEffect(
-    () => {
-      console.log("Aloowancessssssssss", state);
-      onFetchAllowances();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  React.useEffect(() => {
+    // console.log("Allowances state: ", state);
+    onFetchAllowances();
+  }, []);
 
   const employees = Object.values(employeesMap).map(
     ({ _id, firstName, surName, lastName }) => ({
@@ -189,6 +180,10 @@ const EntitlementsPanel = ({
       name: `${firstName} ${surName} ${lastName}`,
     })
   );
+  // const employees = [
+  //   { _id: 1, name: "Abraham Gebrekidan" },
+  //   { _id: 2, name: "Endalk Hussien" },
+  // ];
 
   const leaveTypes = [
     { name: "Annual", key: "annual", duration: 16 },
@@ -206,7 +201,6 @@ const EntitlementsPanel = ({
             size="small"
             onClick={handleAllocateClick}
             aria-label="allocate leave balance"
-            startIcon={<AddCircleRoundedIcon size="16px" />}
           >
             Allocate Balance
           </Button>
@@ -219,65 +213,92 @@ const EntitlementsPanel = ({
         leaveTypes={leaveTypes}
         onSubmit={handleAllocateAllowance}
       />
-
       {/* Summary usage and leave by type */}
+
       <TableComponent
-        size="small"
+        size="medium"
         columns={[
           {
             label: "Employee",
             field: "employeeId",
             renderCell: ({ employeeId }) => {
+              if (!employeeId && !employeesMap[employeeId]) {
+                return (
+                  <Typography variant="h6" style={{ fontStyle: "italic" }}>
+                    User Deleted
+                  </Typography>
+                );
+              }
               const { firstName, surName } = employeesMap[employeeId] || {};
+              if (!firstName && !surName) {
+                return (
+                  <Typography variant="h6" style={{ fontStyle: "italic" }}>
+                    User Deleted
+                  </Typography>
+                );
+              }
               const name = `${firstName} ${surName}`;
               return <Typography variant="h6">{name}</Typography>;
             },
           },
-
+          {
+            label: "Allocated",
+            align: "center",
+            renderCell: ({ allocated }) => {
+              const allocatedTotal =
+                allocated.annual + allocated.maternal + allocated.special;
+              return <Typography variant="h6">{allocatedTotal}</Typography>;
+            },
+          },
+          {
+            label: "Remaining",
+            align: "center",
+            renderCell: ({ allocated, remaining }) => {
+              const remainingTotal =
+                allocated.annual + allocated.maternal + allocated.special
+                  ? allocated.annual +
+                    allocated.maternal +
+                    allocated.special -
+                    (allocated.annual
+                      ? allocated.annual
+                      : allocated.maternal
+                      ? allocated.maternal
+                      : allocated.special)
+                  : 0;
+              return (
+                <Typography variant="h6">
+                  {remaining ? remainingTotal : 0}
+                </Typography>
+              );
+            },
+          },
           {
             label: "Annual leave",
             field: "annual",
             align: "center",
-            renderCell: ({ allocated }) => allocated.annual,
+            renderCell: ({ allocated }) => (
+              <Typography variant="h6">{allocated.annual}</Typography>
+            ),
           },
           {
             label: "Special leave",
             field: "special",
             align: "center",
-            renderCell: ({ allocated }) => allocated.special,
+            renderCell: ({ allocated }) => (
+              <Typography variant="h6">{allocated.special}</Typography>
+            ),
           },
           {
-            label: "Maternity leave",
+            label: "Maternal leave",
             field: "maternal",
             align: "center",
-            renderCell: ({ allocated }) => allocated.maternal,
-          },
-          {
-            label: "Allocated",
-            align: "center",
-            renderCell: ({ allocatedTotal }) => allocatedTotal,
-          },
-          {
-            label: "Remaining",
-            align: "center",
-            renderCell: ({ allocatedTotal, usedTotal }) =>
-              allocatedTotal - usedTotal,
+            renderCell: ({ allocated }) => (
+              <Typography variant="h6">{allocated.maternal}</Typography>
+            ),
           },
         ]}
         data={state.allowances}
         selectionEnabled
-        rowActions={[
-          // {
-          //   label: "Edit Leave",
-          //   icon: <EditIcon />,
-          //   handler: ({ _id }) => onEditLeaveClicked(_id),
-          // },
-          {
-            label: "Delete Leave",
-            icon: <DeleteIcon />,
-            handler: ({ _id }) => onDeleteLeaveBalanceClicked(_id),
-          },
-        ]}
       />
     </div>
   );

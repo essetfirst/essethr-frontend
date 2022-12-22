@@ -4,21 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
 import moment from "moment";
-
+import TimerOffIcon from "@material-ui/icons/TimerOff";
 import { Button, ButtonGroup, Box, Divider } from "@material-ui/core";
-
+import AlarmAddIcon from "@material-ui/icons/AlarmAdd";
 import {
   UploadCloud as ImportIcon,
   Download as ExportIcon,
-
-  // Printer as PrintIcon,
-  // Search as SearchIcon,
-  // RotateCcw as RefreshIcon,
-  // ChevronLeft as PrevArrowIcon,
-  // ChevronRight as NextArrowIcon,
 } from "react-feather";
-
-// import API from "../../api";
 
 import useOrg from "../../providers/org";
 import useNotificationSnackbar from "../../providers/notification-snackbar";
@@ -61,8 +53,8 @@ const AttendancePanel = () => {
   };
 
   React.useEffect(() => {
-    fetchAttendance(null, null, attendanceDate);
-  }, [attendanceDate]);
+    fetchAttendance();
+  }, [fetchAttendance]);
 
   const [filters, setFilters] = React.useState({
     searchTerm: "",
@@ -123,42 +115,25 @@ const AttendancePanel = () => {
   };
 
   const handleImportClick = () => {};
+
   const handleExportClick = async () => {
-    if (
-      Object.keys(state.attendanceByDate).length > 0 &&
-      state.attendanceByDate[attendanceDate] &&
-      state.attendanceByDate[attendanceDate].length > 0
-    ) {
-      const filename = `Attendance (${attendanceDate})`;
+    console.log("Im about Export data", state);
+    const columns = [
+      { label: "Date", field: "date" },
+      { label: "EmployeeId", field: "employeeId" },
+      { label: "Employee", field: "employeeName" },
+      { label: "Checkin", field: "checkin" },
+      { label: "Checkout", field: "checkout" },
+      { label: "Worked Hours", field: "workedHours" },
+      { label: "Remark", field: "remark" },
+      { label: "Status", field: "status" },
+    ];
 
-      const rows = state.attendanceByDate[attendanceDate].map(
-        ({ checkin, checkout, ...rest }) => ({
-          checkin:
-            checkin !== undefined ? moment(checkin).format("hh:mm A") : "N/A",
-          checkout:
-            checkout !== undefined ? moment(checkout).format("hh:mm A") : "N/A",
-          ...rest,
-        })
-      );
-      const columns = [
-        { label: "Date", field: "date" },
-        { label: "EmployeeId", field: "employeeId" },
-        { label: "Employee", field: "employeeName" },
-        { label: "Checkin", field: "checkin" },
-        { label: "Checkout", field: "checkout" },
-        { label: "Worked Hours", field: "workedHours" },
-        { label: "Remark", field: "remark" },
-        { label: "Status", field: "status" },
-      ];
-
-      makeExcel(getTableDataForExport(rows, columns), filename);
-    }
+    console.log(state);
+    await makeExcel(getTableDataForExport(state.attendanceByDate, columns));
   };
 
-  // const handlePrintClick = () => {};
-
   const handleRefreshClick = () => {
-    // console.log("[AttendancePanel]: Line 203 -> Refreshing...");
     fetchAttendance(null, null, attendanceDate);
   };
 
@@ -194,17 +169,17 @@ const AttendancePanel = () => {
     navigate("/app/employees/" + id);
   };
 
-  // React.useEffect(() => {
-  //   // console.log(
-  //   //   "[AttendancePanel]: Line 268 -> We are in useEffect, attendanceDate has changed: "
-  //   // );
+  React.useEffect(() => {
+    console.log(
+      "[AttendancePanel]: Line 268 -> We are in useEffect, attendanceDate has changed: "
+    );
 
-  //   fetchAttendance(null, null, attendanceDate);
-  //   localStorage.setItem(
-  //     "attendanceByDate",
-  //     JSON.stringify(state.attendanceByDate)
-  //   );
-  // }, [attendanceDate]);
+    fetchAttendance(null, null, attendanceDate);
+    localStorage.setItem(
+      "attendanceByDate",
+      JSON.stringify(state.attendanceByDate)
+    );
+  }, [attendanceDate]);
 
   return (
     <div>
@@ -216,6 +191,7 @@ const AttendancePanel = () => {
             size="small"
             onClick={handleClockinClick}
             aria-label="clock in"
+            startIcon={<AlarmAddIcon />}
           >
             Clock in
           </Button>
@@ -225,13 +201,14 @@ const AttendancePanel = () => {
             size="small"
             onClick={handleClockoutClick}
             aria-label="clock out"
+            endIcon={<TimerOffIcon />}
           >
             Clock out
           </Button>
         </ButtonGroup>
         <ButtonGroup>
           <Button
-            variant="text"
+            variant="outlined"
             color="primary"
             size="small"
             startIcon={<ImportIcon />}
@@ -242,16 +219,15 @@ const AttendancePanel = () => {
           </Button>
           {/* <Divider orientation="vertical"  /> */}
           <Button
-            variant="text"
+            variant="outlined"
             color="primary"
             size="small"
             startIcon={<ExportIcon />}
             onClick={handleExportClick}
             aria-label="download attendance"
             title="Export attendance to excel"
-            style={{ marginLeft: "16px" }}
           >
-            Download
+            Export
           </Button>
         </ButtonGroup>
       </Box>

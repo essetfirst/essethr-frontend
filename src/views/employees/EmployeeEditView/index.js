@@ -38,14 +38,14 @@ const EmployeeEditView = ({ id }) => {
     }
   };
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     const foundEmployee = (org.employees || []).find(
       (e) => e._id === employeeId
     );
     if (foundEmployee) {
       setEmployee(foundEmployee);
     } else {
-      await fetchEmployee(employeeId);
+      fetchEmployee(employeeId);
     }
   }, [employeeId]);
 
@@ -57,11 +57,9 @@ const EmployeeEditView = ({ id }) => {
       );
       if (success) {
         updateEmployee(employeeInfo);
-        // Show dialog
         return true;
       } else {
         console.error(error);
-        // show dialog
         return false;
       }
     } catch (e) {

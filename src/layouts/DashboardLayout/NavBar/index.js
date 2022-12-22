@@ -28,7 +28,7 @@ import AssessmentIcon from "@material-ui/icons/Assessment";
 import SettingsIcon from "@material-ui/icons/Settings";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import NavItem from "./NavItem";
-
+import RecentActorsIcon from "@material-ui/icons/RecentActors";
 import useAuth from "../../../providers/auth";
 
 const navItems = [
@@ -83,7 +83,7 @@ const adminNavItems = [
   },
   {
     href: "/app/users",
-    icon: SupervisedUserCircleIcon,
+    icon: RecentActorsIcon,
     title: "Users",
   },
 ];
@@ -221,6 +221,7 @@ const NavBar = ({
           </List>
         </Box>
       )}
+      <Divider />
       <Hidden mdDown>
         <Box
           height="100%"
@@ -231,7 +232,6 @@ const NavBar = ({
           p={1}
           ml={1}
           mr={1}
-          // bgcolor="background.dark"
         >
           <Typography
             align="center"
@@ -253,7 +253,6 @@ const NavBar = ({
           >
             <Button
               color="primary"
-              component="a"
               href="https://futuretech.et"
               variant="contained"
               size="small"

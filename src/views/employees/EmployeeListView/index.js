@@ -80,13 +80,6 @@ const EmployeeListView = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
-  React.useEffect(() => {
-    org &&
-      org.employees &&
-      dispatch({ type: types.RECEIVE_EMPLOYEES, payload: org.employees });
-    console.log(org.name);
-  }, [org, org.employees]);
-
   const employeesMap = arrayToMap(state.employees, "_id");
   const departmentsMap = arrayToMap(org.departments, "_id");
   const positionsMap = arrayToMap(org.positions, "_id");
@@ -231,10 +224,10 @@ const EmployeeListView = () => {
   const handleDeleteClick = async (_id) => {
     return await API.employees
       .deleteById(_id)
-      .then(({ success, error }) => {
+      .then(({ success, message, error }) => {
         if (success) {
           deleteEmployee(_id);
-          notify({ success: true, message: "Employee Delete Succuss" });
+          notify({ success: true, message: message });
           console.log(_id);
         } else {
           console.error(error);
@@ -312,6 +305,16 @@ const EmployeeListView = () => {
   const handlePrintClick = () => {
     handlePrintList();
   };
+
+  React.useEffect(() => {
+    org &&
+      org.employees &&
+      dispatch({
+        type: types.RECEIVE_EMPLOYEES,
+        payload: org.employees,
+      });
+    console.log(org.employees);
+  }, [org, org.employees]);
 
   return (
     <PageView

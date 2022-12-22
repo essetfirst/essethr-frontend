@@ -166,33 +166,31 @@ const Provider = ({ children }) => {
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const fetchLeaves = React.useCallback(
-    (fromDate, toDate) => {
-      dispatch({ type: types.FETCH_LEAVES_REQUEST });
-      API.leaves
-        .getAll({ query: { from: fromDate, to: toDate } })
-        .then(({ success, leaves, error }) => {
-          if (success) {
-            console.log(`Get leaves request successful.`);
-            dispatch({
-              type: types.FETCH_LEAVES_SUCCESS,
-              payload: leaves,
-            });
-          } else {
-            console.log(`Get leaves request not successful.`);
-            dispatch({ type: types.FETCH_LEAVES_FAILURE, error });
-          }
-        })
-        .catch((e) => {
-          console.log(`Get leaves request not successful.`);
+  const fetchLeaves = React.useCallback(() => {
+    dispatch({ type: types.FETCH_LEAVES_REQUEST });
+    API.leaves
+      .getAll()
+      .then(({ success, leaves, error }) => {
+        if (success) {
+          console.log(`Get leaves request successful.`, leaves);
           dispatch({
-            type: types.FETCH_LEAVES_FAILURE,
-            error: categorizeError(e),
+            type: types.FETCH_LEAVES_SUCCESS,
+            payload: leaves,
+            error: "",
           });
+        } else {
+          console.log(`Get leaves request not successful.`);
+          dispatch({ type: types.FETCH_LEAVES_FAILURE, error });
+        }
+      })
+      .catch((e) => {
+        console.log(`Get leaves request not successful.`);
+        dispatch({
+          type: types.FETCH_LEAVES_FAILURE,
+          error: categorizeError(e),
         });
-    },
-    [currentOrg]
-  );
+      });
+  }, [currentOrg]);
 
   const fetchLeaveAllowances = React.useCallback(
     (fromDate, toDate) => {
@@ -201,7 +199,6 @@ const Provider = ({ children }) => {
         .getAll({ query: { from: fromDate, to: toDate } })
         .then(({ success, allowances, error }) => {
           if (success) {
-            // console.log(allowances);
             dispatch({
               type: types.FETCH_LEAVE_ALLOWANCES_SUCCESS,
               payload: allowances,
@@ -224,13 +221,14 @@ const Provider = ({ children }) => {
     dispatch({ type: types.REGISTER_LEAVE_REQUEST });
     API.leaves
       .add(leaveInfo)
-      .then(({ success, leaveInfo, error }) => {
-        console.log("Comeeeeeeeeeeeeeeeeeee", leaveInfo);
+      .then(({ success, message, error }) => {
+        console.log("Comeeeeeeeeeeeeeeeeeee", message);
         if (success) {
           dispatch({
             type: types.REGISTER_LEAVE_SUCCESS,
-            payload: leaveInfo,
+            payload: message,
           });
+          fetchLeaves();
         } else {
           dispatch({ type: types.REGISTER_LEAVE_FAILURE, error });
         }
@@ -252,6 +250,7 @@ const Provider = ({ children }) => {
             type: types.APPROVE_LEAVES_SUCCESS,
             payload: message,
           });
+          fetchLeaves();
         } else {
           dispatch({ type: types.APPROVE_LEAVES_FAILURE, error });
         }
@@ -274,6 +273,7 @@ const Provider = ({ children }) => {
             type: types.UPDATE_LEAVE_SUCCESS,
             payload: message,
           });
+          fetchLeaves();
         } else {
           dispatch({ type: types.UPDATE_LEAVE_FAILURE, error });
         }
@@ -296,6 +296,7 @@ const Provider = ({ children }) => {
             type: types.DELETE_LEAVE_SUCCESS,
             payload: message,
           });
+          fetchLeaves();
         } else {
           dispatch({ type: types.DELETE_LEAVE_FAILURE, error });
         }
@@ -333,6 +334,7 @@ const Provider = ({ children }) => {
           type: types.DELETE_LEAVE_ALLOWANCES_FAILURE,
           error,
         });
+        notify({ success: false, error: categorizeError(e) });
       });
   };
 

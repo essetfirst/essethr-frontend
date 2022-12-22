@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Card,
-  // CardActions,
   CardContent,
   Divider,
   Typography,
@@ -16,7 +15,9 @@ import {
 } from "@material-ui/core";
 import { Camera as ImageUploadIcon } from "@material-ui/icons";
 const useStyles = makeStyles(() => ({
-  root: {},
+  root: {
+    height: "100%",
+  },
   avatar: {
     height: 100,
     width: 100,
@@ -26,8 +27,6 @@ const useStyles = makeStyles(() => ({
 
 const Profile = ({ className, user, onUploadImage, ...rest }) => {
   const classes = useStyles();
-  // const [imageFile, setImageFile] = React.useState("");
-
   const handleFileSelection = (e) => {};
 
   return (
@@ -59,37 +58,23 @@ const Profile = ({ className, user, onUploadImage, ...rest }) => {
             alignItems: "center",
             padding: 5,
           }}
-        >
-          <input
-            name="image"
-            style={{ display: "none" }}
-            type="file"
-            accept={["image/png", "image/jpg", "image/svg"]}
-            onChange={handleFileSelection}
-          />
-        </label>
+        ></label>
       </CardContent>
       <Divider />
-      <Box p={2} display="flex" justifyContent="center" alignItems="center">
+      <Box p={6} display="flex" justifyContent="center" alignItems="center">
         <Button
           variant="contained"
           color="primary"
-          component="span"
-          startIcon={<ImageUploadIcon fontSize="small" />}
-          aria-label="upload image"
+          component="label"
+          startIcon={<ImageUploadIcon />}
         >
           Upload Image
+          <input
+            type="file"
+            style={{ display: "none" }}
+            onChange={handleFileSelection}
+          />
         </Button>
-
-        {/* <input type="file" name="image" hidden onClick={handleFileChange} />
-        <Button
-          color="primary"
-          fullWidth
-          variant="text"
-          onClick={onUploadImage}
-        >
-          Upload picture
-        </Button> */}
       </Box>
     </Card>
   );

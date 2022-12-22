@@ -2,13 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Box, Chip, Typography } from "@material-ui/core";
-
 import TableComponent from "../../../../components/TableComponent";
-import {
-  Edit2 as EditIcon,
-  Delete as DeleteIcon,
-  ToggleRight as TransferIcon,
-} from "react-feather";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+
 const MONTHS = [
   "Jan",
   "Feb",
@@ -149,7 +147,7 @@ const List = ({
       rowActions={[
         {
           label: "Approve Leave",
-          icon: <TransferIcon />,
+          icon: <ThumbUpIcon />,
           handler: ({ _id }) => onApproveLeaveClicked(_id),
         },
         {

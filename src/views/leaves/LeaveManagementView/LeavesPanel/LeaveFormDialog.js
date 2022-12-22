@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import FormikFormFields from "../../../../components/common/FormikFormFields";
 import { leaveFormFields } from "./leaveFormFields";
@@ -22,8 +22,6 @@ const LeaveFormDialog = ({
   leaveTypes,
   durations,
 }) => {
-  console.log("LeaveForm state: ", leaveTypes);
-
   const employeeOptions = [
     { label: "Choose employee", value: -1 },
     ...employees,
@@ -42,7 +40,6 @@ const LeaveFormDialog = ({
     if (reason === "clickaway") {
       return;
     }
-
     onClose();
   };
 
@@ -92,7 +89,7 @@ const LeaveFormDialog = ({
               } else {
                 requestInfo.duration = computeDateDiff(values.from, values.to);
               }
-              onSubmit(values);
+              onSubmit(requestInfo);
               handleDialogClose();
             }}
             onCancel={handleDialogClose}

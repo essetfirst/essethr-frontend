@@ -19,9 +19,11 @@ const LeaveManagementView = () => {
     deleteLeave,
     deleteLeaveBalance,
   } = useLeave();
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { notificationSnackbar } = useNotificationSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
+
   const handleLoadLeaves = (startDate, endDate) => {
     console.log(state.fetchLeaves.leave);
     fetchLeaves(startDate, endDate);

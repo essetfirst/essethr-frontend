@@ -96,6 +96,7 @@ const Provider = ({ persistKey = "org", children }) => {
 
   /*************** Employee handlers *********************************/
   const addEmployee = (employeeInfo) => {
+    console.log(employeeInfo);
     dispatch({ type: types.ADD_EMPLOYEE, payload: employeeInfo });
   };
   const updateEmployee = (employeeInfo) => {

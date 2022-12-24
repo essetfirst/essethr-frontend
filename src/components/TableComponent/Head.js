@@ -54,7 +54,7 @@ const Head = ({
             label,
             align,
             sortable = true,
-            // filterable,
+            filterable,
             disablePadding,
           }) => (
             <TableCell

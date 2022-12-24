@@ -6,7 +6,6 @@ import { Menu as MenuIcon } from "@material-ui/icons";
 import BusinessIcon from "@material-ui/icons/Business";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
-import { LogOut as LogoutIcon } from "react-feather";
 import useAuth from "../../providers/auth";
 import useOrg from "../../providers/org";
 import API from "../../api";
@@ -23,7 +22,7 @@ import {
   Typography,
   MenuItem,
   Menu,
-  Button,
+  TextField,
   Avatar,
 } from "@material-ui/core";
 
@@ -42,7 +41,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
   const { darkMode, toggleDarkMode } = useTheme();
   const { auth, logout } = useAuth();
-  const { currentOrg, setCurrentOrg, setOrg } = useOrg();
+  const { currentOrg, setCurrentOrg, setOrg, org } = useOrg();
   const [orgs, setOrgs] = React.useState([]);
   const [orgName, setOrgName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -76,6 +75,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   }, [auth]);
 
   React.useEffect(() => {
+    console.log(org);
     fetchOrganizations();
   }, [fetchOrganizations]);
 
@@ -120,12 +120,25 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             }}
           >
             {darkMode ? (
-              <Brightness7Icon fontSize="medium" />
+              <Brightness7Icon fontSize="default" />
             ) : (
-              <Brightness4Icon fontSize="medium" />
+              <Brightness4Icon fontSize="default" />
             )}
           </IconButton>
         </Box>
+        <Hidden lgDown>
+          <Box alignItems="center" display="flex" ml={2}>
+            <Typography
+              component="span"
+              variant="h6"
+              style={{ color: "#fff" }}
+              className={classes.text}
+            >
+              {org.name}
+            </Typography>
+          </Box>
+        </Hidden>
+
         <Box alignItems="center" display="flex" ml={2}>
           <IconButton onClick={handleClick} color="inherit" title="menu">
             <Avatar
@@ -136,17 +149,18 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
                 width: "30px",
                 height: "30px",
               }}
+              src={require("../../assets/images/hope.jpg")}
             >
-              <Typography
+              {/* <Typography
                 component="span"
                 variant="h6"
                 style={{ color: "#fff" }}
                 className={classes.text}
               >
-                {auth.user.firstName
+                {/* {auth.user.firstName
                   ? auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)
-                  : "N/A"}
-              </Typography>
+                  : "N/A"} */}
+              {/* </Typography> */}
             </Avatar>
           </IconButton>
           <Box alignItems="center" display="flex" ml={1}>

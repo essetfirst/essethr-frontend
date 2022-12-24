@@ -185,8 +185,8 @@ const EmployeeProfileView = () => {
                     size="2"
                     src={
                       state.employee && state.employee.gender === "Male"
-                        ? MaleNoprofileImage
-                        : FemaleNoprofileImage || "https://picsum.photos/200"
+                        ? require("../../../assets/images/male_no_profile.png")
+                        : require("../../../assets/images/female_no_profile.png")
                     }
                     alt={`${name}`}
                     className={classes.avatar}

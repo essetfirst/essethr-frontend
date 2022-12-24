@@ -24,6 +24,7 @@ import {
   Container,
   MenuItem,
 } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,6 +55,14 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "20px",
     fontWeight: 600,
   },
+  buttonProgress: {
+    color: "#cee2f4",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
 const EmployeeFormView = ({ employeeId }) => {
@@ -68,13 +77,15 @@ const EmployeeFormView = ({ employeeId }) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
+  const [loading, setLoading] = React.useState(false);
+
   React.useEffect(() => {
     const fetchEmployee = () => {
       API.employees
         .getById(params.id || employeeId)
         .then(({ success, employee, error }) => {
           if (success) {
-            setEmployee(org.employees);
+            setEmployee(employee);
           } else {
             console.error(error);
           }
@@ -85,7 +96,6 @@ const EmployeeFormView = ({ employeeId }) => {
     };
     (params.id || employeeId) && fetchEmployee();
   }, [params.id, employeeId]);
-  console.log(employee);
 
   const [formSubmitStatus, setStatus] = React.useState("");
   const isCreateForm = pathname.includes("new");
@@ -99,22 +109,26 @@ const EmployeeFormView = ({ employeeId }) => {
   const clickLabel = isCreateForm ? "Create" : "Update";
 
   const handleCreateEmployee = async (employeeInfo) => {
+    setLoading(true);
     try {
-      const { success, message, error } = await API.employees.create(
+      const { success, message, employee, error } = await API.employees.create(
         employeeInfo
       );
       if (success) {
+        console.log(employee);
         addEmployee(employeeInfo);
         notify({
           message: message,
           type: "success",
         });
+        setLoading(false);
         navigate("/app/employees");
       } else {
         notify({
           message: error,
           type: "error",
         });
+        setLoading(false);
       }
     } catch (e) {
       console.error(e.message);
@@ -122,6 +136,7 @@ const EmployeeFormView = ({ employeeId }) => {
         message: e.message,
         type: "error",
       });
+      setLoading(false);
     }
   };
 
@@ -129,25 +144,26 @@ const EmployeeFormView = ({ employeeId }) => {
     console.log(employeeInfo);
     return await API.employees
       .editById(employeeInfo._id, employeeInfo)
-      .then(({ success, error }) => {
+      .then(({ success, message, error }) => {
         if (success) {
           updateEmployee(employeeInfo);
-          notify({ success, message: "Employee update successful!" });
+          notify({ success, message: message });
           navigate("/app/employees");
           return true;
         } else {
           console.error(error);
+          notify({ error, message: error });
           return false;
         }
       })
       .catch((e) => {
         console.error(e.message);
+        notify({ error: e.message });
         return false;
       });
   };
   const handleSubmitForm = (values) => {
     console.log(values);
-
     if (isCreateForm) {
       handleCreateEmployee(values);
     } else {
@@ -238,16 +254,14 @@ const EmployeeFormView = ({ employeeId }) => {
                 handleSubmitForm({
                   ...values,
                   status:
-                    values.endDate && values.endDate < new Date().toDateString()
+                    values.endDate &&
+                    values.endDate >= new Date().toDateString()
                       ? "Inactive"
                       : "Active",
                   org: currentOrg,
                 })
-              ) {
-                setStatus(isCreateForm ? "Create" : "Saved changes.");
-              }
-
-              console.log({ ...values });
+              )
+                console.log({ ...values });
               resetForm();
             }}
           >
@@ -461,7 +475,14 @@ const EmployeeFormView = ({ employeeId }) => {
                     variant="contained"
                     onClick={handleSubmit}
                   >
-                    {formSubmitStatus ? formSubmitStatus : clickLabel}
+                    {formSubmitStatus ? (
+                      <CircularProgress
+                        className={classes.buttonProgress}
+                        size={24}
+                      />
+                    ) : (
+                      <>{clickLabel === "Create" ? "Create" : "Update"}</>
+                    )}
                   </Button>
                 </Box>
               </form>

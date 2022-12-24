@@ -1,5 +1,10 @@
 import React from "react";
-
+import { Typography, Button, Box, Grid, IconButton } from "@material-ui/core";
+import { SentimentVeryDissatisfied } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
+import Fab from "@material-ui/core/Fab";
+import AutorenewIcon from "@material-ui/icons/Autorenew";
+import PageView from "./PageView";
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -20,20 +25,64 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
+
       return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            padding: 2,
-            color: "#fa2345",
-          }}
-        >
-          <h1>Something went wrong. Dont worry we will try again!</h1>
-          {/* <p>{(this.state.errorInfo || {}).componentStack}</p> */}
-        </div>
+        <PageView>
+          <Grid container spacing={2} justify="center">
+            <Grid item xs={12}>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexDirection="row"
+                marginTop={15}
+                p={1}
+                m={1}
+                borderRadius={8}
+              >
+                <SentimentVeryDissatisfied
+                  style={{ fontSize: "15rem", color: "#fa2345" }}
+                />
+                <Typography
+                  variant="h1"
+                  style={{ marginLeft: "1rem", color: "#fa2345" }}
+                  gutterBottom
+                >
+                  Oops!
+                  <br />
+                  Something went wrong.
+                  <br />
+                  Please try again later.
+                  <br />
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                borderRadius={8}
+              >
+                <Fab
+                  variant="extended"
+                  color="primary"
+                  aria-label="add"
+                  style={{
+                    margin: "1rem",
+                    backgroundColor: "#fa2345",
+                    color: "white",
+                  }}
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  <AutorenewIcon />
+                  {"    "}
+                  Reload Page
+                </Fab>
+              </Box>
+            </Grid>
+          </Grid>
+        </PageView>
       );
     }
 

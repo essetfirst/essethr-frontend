@@ -20,13 +20,12 @@ import ResultsGrid from "./ResultsGrid";
 import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
+import LoadingComponent from "../../../components/LoadingComponent";
+
 import {
-  Users as EmployeesIcon,
   UploadCloud as ImportIcon,
   Download as ExportIcon,
   Printer as PrintIcon,
-  Plus as AddIcon,
-  Grid as GridIcon,
   List as ListIcon,
 } from "react-feather";
 
@@ -41,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const types = {
-  ADD_EMPLOYEES: "ADD_EMPLOYEES",
   FETCH_EMPLOYEES: "FETCH_EMPLOYEES",
   RECEIVE_EMPLOYEES: "RECEIVE_EMPLOYEES",
   FETCHING_ERROR: "FETCHING_ERROR",
@@ -56,8 +54,6 @@ const initialState = {
 const reducer = (state, action) => {
   const { type, payload, error } = action;
   switch (type) {
-    case types.ADD_EMPLOYEES:
-      return { ...state, employees: [...state.employees, ...payload] };
     case types.FETCH_EMPLOYEES:
       return { ...state, isFetching: true, error: null };
     case types.RECEIVE_EMPLOYEES:
@@ -93,8 +89,6 @@ const EmployeeListView = () => {
     maxAge: 65,
     minSalary: 0,
     maxSalary: 65000,
-    sortBy: "",
-    sortOrder: "",
   };
   const [filters, setFilters] = React.useState("");
 
@@ -104,11 +98,11 @@ const EmployeeListView = () => {
   };
   const handleFiltersReset = () => setFilters(initialFiltersValue);
 
-  const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
+  const initialSortParamsValue = {
+    sortBy: "firstName",
+    sortDirection: "asc",
+  };
   const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
-
-  const handleSortParamsChange = (newSortParams) =>
-    setSortParams({ ...newSortParams });
 
   const comparisonFns = {
     searchTerm: ({ firstName, surName, lastName }, searchTermFilterValue) =>
@@ -231,11 +225,15 @@ const EmployeeListView = () => {
           console.log(_id);
         } else {
           console.error(error);
-          notify({ success: false, message: "Employee Delete faild" });
+          notify({ success: false, message: message });
         }
       })
       .catch((e) => {
         console.error(e.message);
+        notify({
+          success: false,
+          message: "Couldnt delete employee.",
+        });
       });
   };
 
@@ -306,14 +304,31 @@ const EmployeeListView = () => {
     handlePrintList();
   };
 
+  const [ordirDir, setOrdirDir] = React.useState("desc");
+
+  const onSortParamsChange = (sortParams, orderDir) => {
+    const sortedEmployees = sort(state.employees, sortParams, orderDir);
+    dispatch({
+      type: types.RECEIVE_EMPLOYEES,
+      payload: sortedEmployees,
+    });
+  };
+
+  const handleSortClick = (sortParams) => {
+    const orderDir = ordirDir === "asc" ? "desc" : "asc";
+    setOrdirDir(orderDir);
+    onSortParamsChange(sortParams, orderDir);
+  };
+
   React.useEffect(() => {
     org &&
       org.employees &&
       dispatch({
         type: types.RECEIVE_EMPLOYEES,
         payload: org.employees,
+        isFetching: false,
+        error: null,
       });
-    console.log(org.employees);
   }, [org, org.employees]);
 
   return (
@@ -402,10 +417,8 @@ const EmployeeListView = () => {
           employees={(state.employees || []).filter((d) =>
             String(d.firstName).includes(filters)
           )}
-          onSortParamsChange={(sortBy, sortOrder) =>
-            handleSortParamsChange({ sortBy, sortOrder })
-          }
           departmentsMap={departmentsMap}
+          onSortParamsChange={handleSortClick}
           positionsMap={positionsMap}
           onViewClicked={handleProfileViewClick}
           onEditClicked={handleEditClick}

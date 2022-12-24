@@ -24,7 +24,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function sort(list, sortBy, sortOrder = "asc") {
+function sort(list, sortBy, sortOrder) {
   return stableSort(list, getComparator(sortOrder, sortBy));
 }
 

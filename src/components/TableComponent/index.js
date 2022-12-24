@@ -56,7 +56,7 @@ const TableComponent = ({
   emptyDataText,
   rowActions = [],
 
-  selectionEnabled = false,
+  selectionEnabled = true,
   toolbarSelectionTitle,
   selectionActions = [],
 
@@ -87,7 +87,8 @@ const TableComponent = ({
 
   /***************************** SORTING HANDLERS ***********************************/
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
+    const isAsc = orderBy === property && order === "desc";
+    console.log(isAsc, orderBy, property);
     const newOrderDir = isAsc ? "desc" : "asc";
     const newOrderBy = property;
     setOrder(newOrderDir);
@@ -334,7 +335,7 @@ TableComponent.propTypes = {
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
 
-  size: PropTypes.oneOf(["small", "large"]),
+  size: PropTypes.oneOf(["small", "medium", "large", "xlarge", "large"]),
 
   requestState: PropTypes.shape({
     requesting: PropTypes.bool,

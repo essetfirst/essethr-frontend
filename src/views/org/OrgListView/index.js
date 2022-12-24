@@ -81,9 +81,9 @@ const OrgListView = () => {
     setFilters({ ...filters, [name]: value });
   };
 
-  function fetchOrgs() {
+  async function fetchOrgs() {
     dispatch({ type: types.REQUESTING });
-    API.orgs
+    await API.orgs
       .getAll({ query: {} })
       .then(({ success, orgs, error }) => {
         success

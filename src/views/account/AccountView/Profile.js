@@ -36,7 +36,7 @@ const Profile = ({ className, user, onUploadImage, ...rest }) => {
           <Avatar
             className={classes.avatar}
             variant="square"
-            src={user.avatar}
+            src={require("../../../assets/images/hope.jpg")}
           />
           <Box mt={2} />
           <Typography color="textPrimary" gutterBottom variant="h3">

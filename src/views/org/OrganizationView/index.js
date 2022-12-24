@@ -111,30 +111,37 @@ const OrganizationView = ({ id }) => {
   const [state, dispatch] = React.useReducer(reducer, getInitialState(org));
 
   const orgId = id || params.id || currentOrg;
-  const fetchOrg = React.useCallback((orgId) => {
-    dispatch({ type: types.REQUESTING });
-    API.orgs
-      .getById(orgId)
-      .then(({ success, org, error }) => {
-        success
-          ? dispatch({ type: types.REQUEST_SUCCESS, payload: org })
-          : dispatch({ type: types.REQUEST_ERROR, error });
-      })
-      .catch((e) => {
-        console.error(e.message);
-        dispatch({ type: types.REQUEST_ERROR, error: "Something went wrong." });
-      });
-  }, []);
+  const fetchOrg = React.useCallback(
+    (orgId) => {
+      dispatch({ type: types.REQUESTING });
+      API.orgs
+        .getById(orgId)
+        .then(({ success, org, error }) => {
+          success
+            ? dispatch({ type: types.REQUEST_SUCCESS, payload: org })
+            : dispatch({ type: types.REQUEST_ERROR, error });
+        })
+        .catch((e) => {
+          console.error(e.message);
+          dispatch({
+            type: types.REQUEST_ERROR,
+            error: "Something went wrong.",
+          });
+        });
+    },
+    [currentOrg, params.id]
+  );
 
   React.useEffect(() => {
-    if (org) {
-      dispatch({ type: types.REQUEST_SUCCESS, payload: org });
-    }
-
-    if ((orgId && !org) || (org && orgId !== org._id)) {
+    if (orgId) {
       fetchOrg(orgId);
+      if (!org) {
+        navigate("/app/dashboard");
+        notify("Organization not found", "error");
+        return;
+      }
     }
-  }, [orgId, org, fetchOrg]);
+  }, [orgId, fetchOrg]);
 
   const handleEditOrgClick = () => {
     navigate("/app/orgs/edit", orgId);

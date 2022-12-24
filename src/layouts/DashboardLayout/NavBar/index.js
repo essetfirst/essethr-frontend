@@ -139,6 +139,8 @@ const NavBar = ({
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+
+    console.log(auth);
   }, [location.pathname]);
 
   const content = (
@@ -162,9 +164,11 @@ const NavBar = ({
               justifyContent="center"
               mt={1}
             >
-              <Avatar variant="rounded" className={classes.avatar}>
-                {auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)}
-              </Avatar>
+              <Avatar
+                variant="rounded"
+                className={classes.avatar}
+                src={require("../../../assets/images/hope.jpg")}
+              />
             </Box>
             <Box
               display="flex"

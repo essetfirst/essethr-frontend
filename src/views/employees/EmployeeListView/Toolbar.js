@@ -101,21 +101,18 @@ const Toolbar = ({
             <FilterBar
               filters={filters}
               departmentOptions={[
-                { label: "ALL", value: "ALL" },
                 ...departments.map((d) => ({
                   label: d.name,
                   value: d._id,
                 })),
               ]}
               positionOptions={[
-                { label: "ALL", value: "ALL" },
                 ...positions.map((p) => ({
                   label: p.title,
                   value: p._id,
                 })),
               ]}
               genderOptions={[
-                { label: "ALL", value: "ALL" },
                 { label: "Male", value: "Male" },
                 { label: "Female", value: "Female" },
               ]}

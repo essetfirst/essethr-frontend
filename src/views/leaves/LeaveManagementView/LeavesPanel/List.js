@@ -22,29 +22,10 @@ const MONTHS = [
   "Dec",
 ];
 
-const LEAVE_TYPE_COLOR = {
-  annual: "orange",
-  maternal: "purple",
-  vacation: "lime",
-};
-
-const Dot = ({ color = "red" }) => (
-  <div
-    style={{
-      width: "16px",
-      height: "16px",
-      backgroundColor: color,
-      display: "inline-block",
-      margin: "5px",
-      borderRadius: "50%",
-      verticalAlign: "middle",
-    }}
-  />
-);
-
 const List = ({
   leaves,
   isLoading,
+  requesting,
   error,
   onRetry,
   employeesMap,
@@ -52,116 +33,122 @@ const List = ({
   onEditLeaveClicked,
   onApproveLeaveClicked,
   onDeleteLeaveClicked,
+  onSortParamChange,
 }) => {
   return (
-    <TableComponent
-      size="small"
-      requestState={{ isLoading, error, onRetry }}
-      columns={[
-        {
-          field: "employeeId",
-          label: "Employee",
-          renderCell: ({ employeeId }) => {
-            const { firstName, surName } = employeesMap[employeeId] || {};
-            const name = `${firstName} ${surName}`;
-            return <Typography variant="h6">{name}</Typography>;
+    <>
+      <TableComponent
+        size="small"
+        columns={[
+          {
+            field: "employeeId",
+            label: "Employee",
+            renderCell: ({ employeeId }) => {
+              const { firstName, surName } = employeesMap[employeeId] || {};
+              const name = `${firstName} ${surName}`;
+              return <Typography variant="h6">{name}</Typography>;
+            },
           },
-        },
-        {
-          field: "leaveType",
-          label: "Leave Type",
-          renderCell: ({ leaveType }) => {
-            const { name } = leaveTypeMap[leaveType] || {};
-            const values = `${name}`;
-            return <Typography variant="h6">{values}</Typography>;
+          {
+            field: "leaveType",
+            label: "Leave Type",
+            renderCell: ({ leaveType }) => {
+              const { name } = leaveTypeMap[leaveType] || {};
+              const values = `${name}`;
+              return <Typography variant="h6">{values}</Typography>;
+            },
           },
-        },
-        {
-          field: "duration",
-          label: "Duration",
-          renderCell: ({ duration }) => (
-            <Typography>
-              {duration === 1
-                ? "A day"
-                : duration === 0.5
-                ? "Half a day"
-                : `${duration} days`}
-            </Typography>
-          ),
-        },
-        {
-          field: "from",
-          label: "Period",
-          renderCell: ({ startDate, endDate }) => {
-            const fromDate = new Date(startDate);
-            const toDate = new Date(endDate);
-            if (fromDate.toLocaleDateString() === toDate.toLocaleDateString()) {
-              return <Typography>{toDate.toDateString()}</Typography>;
-            }
-            if (
-              fromDate.getMonth() !== toDate.getMonth() &&
-              fromDate.getFullYear() === toDate.getFullYear()
-            ) {
-              return (
-                <Typography>
-                  {`${fromDate.getDate()} ${MONTHS[fromDate.getMonth()]}`} to{" "}
-                  {`${toDate.getDate()} ${MONTHS[toDate.getMonth()]}`}
-                  {", "}
-                  {toDate.getFullYear()}
-                </Typography>
-              );
-            } else {
-              return (
-                <Typography>
-                  {fromDate.getDate()} to {toDate.getDate()}{" "}
-                  {MONTHS[toDate.getMonth()]}
-                  {", "}
-                  {toDate.getFullYear()}
-                </Typography>
-              );
-            }
+          {
+            field: "duration",
+            label: "Duration",
+            renderCell: ({ duration }) => (
+              <Typography>
+                {duration === 1
+                  ? "A day"
+                  : duration === 0.5
+                  ? "Half a day"
+                  : `${duration} days`}
+              </Typography>
+            ),
           },
-        },
+          {
+            field: "from",
+            label: "Period",
+            renderCell: ({ startDate, endDate }) => {
+              const fromDate = new Date(startDate);
+              const toDate = new Date(endDate);
+              if (
+                fromDate.toLocaleDateString() === toDate.toLocaleDateString()
+              ) {
+                return <Typography>{toDate.toDateString()}</Typography>;
+              }
+              if (
+                fromDate.getMonth() !== toDate.getMonth() &&
+                fromDate.getFullYear() === toDate.getFullYear()
+              ) {
+                return (
+                  <Typography>
+                    {`${fromDate.getDate()} ${MONTHS[fromDate.getMonth()]}`} to{" "}
+                    {`${toDate.getDate()} ${MONTHS[toDate.getMonth()]}`}
+                    {", "}
+                    {toDate.getFullYear()}
+                  </Typography>
+                );
+              } else {
+                return (
+                  <Typography>
+                    {fromDate.getDate()} to {toDate.getDate()}{" "}
+                    {MONTHS[toDate.getMonth()]}
+                    {", "}
+                    {toDate.getFullYear()}
+                  </Typography>
+                );
+              }
+            },
+          },
 
-        {
-          label: "Status",
-          field: "status",
-          renderCell: ({ status }) => (
-            <Chip
-              size="small"
-              color={status === "approved" ? "primary" : "default"}
-              label={status}
-            />
-          ),
-        },
-      ]}
-      data={
-        leaves ||
-        [].sort(
-          (a, b) =>
-            new Date(a.to).toLocaleDateString() >=
-            new Date(b.to).toLocaleDateString()
-        )
-      }
-      selectionEnabled
-      rowActions={[
-        {
-          label: "Approve Leave",
-          icon: <ThumbUpIcon />,
-          handler: ({ _id }) => onApproveLeaveClicked(_id),
-        },
-        {
-          label: "Edit Leave",
-          icon: <EditIcon />,
-          handler: ({ _id }) => onEditLeaveClicked(_id),
-        },
-        {
-          label: "Delete Leave",
-          icon: <DeleteIcon />,
-          handler: ({ _id }) => onDeleteLeaveClicked(_id),
-        },
-      ]}
-    />
+          {
+            label: "Status",
+            field: "status",
+            renderCell: ({ status }) => (
+              <Chip
+                size="small"
+                color={status === "approved" ? "primary" : "default"}
+                label={status}
+              />
+            ),
+          },
+        ]}
+        data={
+          leaves ||
+          [].sort(
+            (a, b) =>
+              new Date(a.to).toLocaleDateString() >=
+              new Date(b.to).toLocaleDateString()
+          )
+        }
+        selectionEnabled={true}
+        requestState={{ requesting, error, onRetry }}
+        onSortParamsChanged={onSortParamChange}
+        rowActions={[
+          {
+            label: "Approve Leave",
+            icon: <ThumbUpIcon />,
+            handler: ({ _id }) => onApproveLeaveClicked(_id),
+          },
+          {
+            label: "Edit Leave",
+            icon: <EditIcon />,
+            handler: ({ _id }) => onEditLeaveClicked(_id),
+          },
+          {
+            label: "Delete Leave",
+            icon: <DeleteIcon />,
+            handler: ({ _id }) => onDeleteLeaveClicked(_id),
+          },
+        ]}
+      />
+    </>
   );
 };
 

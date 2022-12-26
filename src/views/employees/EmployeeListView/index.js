@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useSnackbar } from "notistack";
 import { Box, makeStyles, Typography } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import PageView from "../../../components/PageView";
 import API from "../../../api";
 import useOrg from "../../../providers/org";
@@ -17,16 +16,14 @@ import Toolbar from "./Toolbar";
 import BranchTransferDialog from "./BranchTransferDialog";
 import ResultsTable from "./ResultsTable";
 import ResultsGrid from "./ResultsGrid";
-import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
-import LoadingComponent from "../../../components/LoadingComponent";
+import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
 
 import {
   UploadCloud as ImportIcon,
   Download as ExportIcon,
   Printer as PrintIcon,
-  List as ListIcon,
 } from "react-feather";
 
 const useStyles = makeStyles((theme) => ({
@@ -80,78 +77,21 @@ const EmployeeListView = () => {
   const departmentsMap = arrayToMap(org.departments, "_id");
   const positionsMap = arrayToMap(org.positions, "_id");
 
-  const initialFiltersValue = {
-    searchTerm: "",
-    department: "ALL",
-    position: "ALL",
-    gender: "ALL",
-    minAge: 18,
-    maxAge: 65,
-    minSalary: 0,
-    maxSalary: 65000,
-  };
+  // const initialFiltersValue = {
+  //   searchTerm: "",
+  //   department: "ALL",
+  //   position: "ALL",
+  //   gender: "ALL",
+  // };
   const [filters, setFilters] = React.useState("");
 
   const handleFilterChange = () => (e) => {
     const { value } = e.target;
     setFilters(value);
   };
-  const handleFiltersReset = () => setFilters(initialFiltersValue);
-
-  const initialSortParamsValue = {
-    sortBy: "firstName",
-    sortDirection: "asc",
+  const handleFiltersReset = () => {
+    setFilters("");
   };
-  const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
-
-  const comparisonFns = {
-    searchTerm: ({ firstName, surName, lastName }, searchTermFilterValue) =>
-      searchTermFilterValue
-        ? `${firstName} ${surName} ${lastName}`.includes(searchTermFilterValue)
-        : true,
-    department: ({ department }, departmentFilterValue) =>
-      departmentFilterValue && departmentFilterValue !== "ALL"
-        ? department === departmentFilterValue
-        : true,
-    position: ({ position }, positionFilterValue) =>
-      positionFilterValue && positionFilterValue !== "ALL"
-        ? position === positionFilterValue
-        : true,
-    gender: ({ gender }, genderFilterValue) =>
-      genderFilterValue && genderFilterValue !== "ALL"
-        ? gender === genderFilterValue
-        : true,
-
-    minAge: ({ birthDay }, minAgeFilterValue) => {
-      const age = new Date().getFullYear() - new Date(birthDay).getFullYear();
-      return age >= minAgeFilterValue;
-    },
-    maxAge: ({ birthDay }, maxAgeFilterValue) => {
-      const age = new Date().getFullYear() - new Date(birthDay).getFullYear();
-      return age <= maxAgeFilterValue;
-    },
-    minSalary: ({ position }, minSalaryFilterValue) => {
-      return positionsMap[position].salary >= minSalaryFilterValue;
-    },
-    maxSalary: ({ position }, maxSalaryFilterValue) => {
-      return positionsMap[position].salary <= maxSalaryFilterValue;
-    },
-  };
-
-  const getFilteredList = React.useCallback(
-    (employees = [], filters, comparisonFns) => {
-      return filter(
-        employees,
-        Object.keys(filters).map((key) => {
-          return {
-            value: filters[key],
-            cmpFn: comparisonFns[key],
-          };
-        })
-      );
-    },
-    []
-  );
 
   const [selectedEmployee, setSelectedEmployee] = React.useState(null);
   const [branchTransferDialog, setBranchTransferDialog] = React.useState(false);
@@ -207,34 +147,53 @@ const EmployeeListView = () => {
   };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const handleDeleteDialogOpen = () => setDeleteDialogOpen(true);
+  const handleDeleteDialogClose = () => setDeleteDialogOpen(false);
 
-  const handleDeleteDialogOpen = () => {
-    setDeleteDialogOpen(true);
-  };
-  const handleDeleteDialogClose = () => {
-    setDeleteDialogOpen(false);
+  const handleDeleteClickDialog = (_id) => {
+    const employee = employeesMap[_id];
+    console.log(employee._id);
+    setSelectedEmployee(employee._id);
+    handleDeleteDialogOpen();
   };
 
-  const handleDeleteClick = async (_id) => {
-    return await API.employees
-      .deleteById(_id)
-      .then(({ success, message, error }) => {
-        if (success) {
-          deleteEmployee(_id);
-          notify({ success: true, message: message });
-          console.log(_id);
-        } else {
-          console.error(error);
-          notify({ success: false, message: message });
-        }
-      })
-      .catch((e) => {
-        console.error(e.message);
-        notify({
-          success: false,
-          message: "Couldnt delete employee.",
-        });
-      });
+  const handleDeleteClick = async () => {
+    try {
+      const { success, error, message } = await API.employees.deleteById(
+        selectedEmployee
+      );
+      if (success) {
+        deleteEmployee(selectedEmployee);
+        notify({ success, message });
+        handleDeleteDialogClose();
+      } else {
+        console.error(error);
+        notify({ success: false, message });
+        handleDeleteDialogClose();
+      }
+    } catch (e) {
+      console.error(e.message);
+      notify({ success: false, message: "Couldnt delete employee." });
+      handleDeleteDialogClose();
+    }
+  };
+
+  //delete the multiple employees
+  const handleDeleteMultipleClick = async (_ids) => {
+    try {
+      const { success, error, message } = await API.employees.deleteById(_ids);
+      if (success) {
+        deleteEmployee(_ids);
+        notify({ success, message });
+        handleDeleteDialogClose();
+      } else {
+        console.error(error);
+        notify({ success: false, message });
+      }
+    } catch (e) {
+      console.error(e.message);
+      notify({ success: false, message: "Couldnt delete employee." });
+    }
   };
 
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
@@ -249,10 +208,12 @@ const EmployeeListView = () => {
     handleImportDialogOpen();
   };
 
-  const handleExportClick = async ({ _id }) => {
-    console.log("im about to export");
-
+  const handleExportClick = async () => {
     const columns = [
+      {
+        label: "Employee ID",
+        field: "employeeId",
+      },
       {
         label: "First Name",
         field: "firstName",
@@ -262,8 +223,16 @@ const EmployeeListView = () => {
         field: "surName",
       },
       {
-        label: "Last Name",
-        field: "lastName",
+        label: "EMAIL",
+        field: "email",
+      },
+      {
+        label: "Phone",
+        field: "phone",
+      },
+      {
+        label: "Gender",
+        field: "gender",
       },
       {
         label: "Department",
@@ -291,8 +260,34 @@ const EmployeeListView = () => {
       },
     ];
 
-    console.log(state.employees);
-    await makeExcel(getTableDataForExport(state.employees, columns));
+    const rows = state.employees.map((employee) => {
+      return {
+        employeeId: employee.employeeId,
+        firstName: employee.firstName,
+        surName: employee.surName,
+        email: employee.email,
+        phone: employee.phone,
+        gender: employee.gender,
+        department: departmentsMap[employee.department]
+          ? departmentsMap[employee.department].name
+          : employee.department,
+        position: positionsMap[employee.position]
+          ? positionsMap[employee.position].title
+          : employee.position,
+        salary: positionsMap[employee.position]
+          ? positionsMap[employee.position].salary
+          : employee.position,
+        hireDate: employee.hireDate,
+        startDate: employee.startDate,
+        status: employee.status,
+      };
+    });
+
+    await makeExcel(getTableDataForExport(rows, columns));
+    notify({
+      success: true,
+      message: "Exporting data to excel successful!",
+    });
   };
 
   const printListRef = React.useRef();
@@ -304,20 +299,37 @@ const EmployeeListView = () => {
     handlePrintList();
   };
 
-  const [ordirDir, setOrdirDir] = React.useState("desc");
+  //Sorting and Filtering
+  const [sortParamss, setSortParamss] = React.useState("firstName");
+  const [orderDir, setOrdirDir] = React.useState("asc");
 
   const onSortParamsChange = (sortParams, orderDir) => {
-    const sortedEmployees = sort(state.employees, sortParams, orderDir);
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+    dispatch({
+      type: types.SORT_EMPLOYEES,
+      payload: {
+        sortParams,
+        orderDir,
+      },
+    });
+
+    const sortedEmployees = getSortedList(
+      state.employees,
+      sortParams,
+      orderDir
+    );
     dispatch({
       type: types.RECEIVE_EMPLOYEES,
       payload: sortedEmployees,
+      isFetching: false,
+      error: null,
     });
   };
 
-  const handleSortClick = (sortParams) => {
-    const orderDir = ordirDir === "asc" ? "desc" : "asc";
-    setOrdirDir(orderDir);
-    onSortParamsChange(sortParams, orderDir);
+  const handleSortRequest = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChange(sortParams, isAsc ? "desc" : "asc");
   };
 
   React.useEffect(() => {
@@ -386,7 +398,7 @@ const EmployeeListView = () => {
         onViewTypeChange={handleViewChange}
         filters={filters}
         onFilterChange={handleFilterChange}
-        // onFiltersReset={handleFiltersReset}
+        onFiltersReset={handleFiltersReset}
         departments={org.departments}
         positions={org.positions}
       />
@@ -404,6 +416,14 @@ const EmployeeListView = () => {
         }}
       />
 
+      <DeleteEmployeeDialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        employee={selectedEmployee}
+        onDelete={handleDeleteClick}
+        onMultipleDelete={handleDeleteMultipleClick}
+      />
+
       <BranchTransferDialog
         open={branchTransferDialog}
         onClose={handleBranchTransferDialogClose}
@@ -414,16 +434,29 @@ const EmployeeListView = () => {
       {viewType === "list" ? (
         <ResultsTable
           org={org}
-          employees={(state.employees || []).filter((d) =>
-            String(d.firstName).includes(filters)
-          )}
+          employees={(state.employees || []).filter((d) => {
+            return (
+              String(
+                d.firstName
+                  .toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+              ).includes(filters) ||
+              String(d.surName.toLowerCase()).includes(filters) ||
+              String(d.position).includes(filters) ||
+              String(d.department).includes(filters) ||
+              String(d.gender).includes(filters)
+            );
+          })}
           departmentsMap={departmentsMap}
-          onSortParamsChange={handleSortClick}
+          onSortParamsChange={handleSortRequest}
           positionsMap={positionsMap}
           onViewClicked={handleProfileViewClick}
           onEditClicked={handleEditClick}
           onTransferClicked={handleTransferClick}
-          onDeleteClicked={handleDeleteClick}
+          onDeleteClicked={handleDeleteClickDialog}
+          onMultipleDeleteClicked={handleDeleteMultipleClick}
+          requestState={state}
         />
       ) : (
         <ResultsGrid

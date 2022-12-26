@@ -1,5 +1,5 @@
 import XLSX from "xlsx";
-
+import moment from "moment";
 /**
  * @desc get table data as json
  * @param data
@@ -25,10 +25,12 @@ export const makeExcel = async (data, filename) => {
   // TODO: implement using XLSX
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet(data);
-  XLSX.utils.book_append_sheet(wb, ws, "filename");
+  XLSX.utils.book_append_sheet(wb, ws);
   const wopts = { bookType: "xlsx", bookSST: false, type: "array" };
   const wbout = await XLSX.write(wb, wopts);
-  downloadFile(wbout, `Employee Data ${new Date().toLocaleString()}.xlsx`, {
+  filename = "employees list";
+
+  downloadFile(wbout, `${filename}_${moment().format("YYYY-MM-DD")}.xlsx`, {
     type: "application/octet-stream",
   });
 };

@@ -12,6 +12,7 @@ import API from "../../api";
 import clsx from "clsx";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import PersonIcon from "@material-ui/icons/Person";
 import {
   makeStyles,
   AppBar,
@@ -22,8 +23,6 @@ import {
   Typography,
   MenuItem,
   Menu,
-  TextField,
-  Avatar,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -120,14 +119,20 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             }}
           >
             {darkMode ? (
-              <Brightness7Icon fontSize="default" />
+              <Brightness7Icon style={{ color: "#fff" }} />
             ) : (
-              <Brightness4Icon fontSize="default" />
+              <Brightness4Icon style={{ color: "#fff" }} />
             )}
           </IconButton>
         </Box>
-        <Hidden lgDown>
-          <Box alignItems="center" display="flex" ml={2}>
+        <Box alignItems="center" display="flex" ml={2}>
+          <IconButton
+            onClick={handleClick}
+            color="inherit"
+            title="menu"
+            style={{ fontSize: "0.5rem" }}
+          >
+            <PersonIcon style={{ color: "#fff" }} />
             <Typography
               component="span"
               variant="h6"
@@ -136,32 +141,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             >
               {org.name}
             </Typography>
-          </Box>
-        </Hidden>
-
-        <Box alignItems="center" display="flex" ml={2}>
-          <IconButton onClick={handleClick} color="inherit" title="menu">
-            <Avatar
-              variant="rounded"
-              className={classes.avatar}
-              fontSize="small"
-              style={{
-                width: "30px",
-                height: "30px",
-              }}
-              src={require("../../assets/images/hope.jpg")}
-            >
-              {/* <Typography
-                component="span"
-                variant="h6"
-                style={{ color: "#fff" }}
-                className={classes.text}
-              >
-                {/* {auth.user.firstName
-                  ? auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)
-                  : "N/A"} */}
-              {/* </Typography> */}
-            </Avatar>
           </IconButton>
           <Box alignItems="center" display="flex" ml={1}>
             <Menu

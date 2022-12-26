@@ -41,6 +41,7 @@ const HolidayList = ({
   onAddHoliday,
   onUpdateHoliday,
   onDeleteHoliday,
+  onSortParamsChange,
 }) => {
   const classes = useStyles();
 
@@ -163,10 +164,19 @@ const HolidayList = ({
             ),
           },
         ]}
-        data={(holidays || []).filter((h) =>
-          String(h.name).includes(searchTerm)
-        )}
+        data={(holidays || []).filter((h) => {
+          const { name, date } = h;
+          const searchTermLower = searchTerm.toLowerCase();
+          return (
+            name.toLowerCase().includes(searchTermLower) ||
+            moment(date)
+              .format("MMMM Do")
+              .toLowerCase()
+              .includes(searchTermLower)
+          );
+        })}
         selectionEnabled
+        onSortParamsChange={onSortParamsChange}
         rowActions={[
           {
             label: "Edit Holiday",

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
+import sort from "../../../helpers/sort";
 import {
   Box,
   Button,
@@ -38,6 +39,7 @@ import AttendancePolicy from "./AttendancePolicy";
 import LeaveTypeList from "./LeaveTypeList";
 import HolidayList from "./HolidayList";
 import VerifiedUserRoundedIcon from "@material-ui/icons/VerifiedUserRounded";
+import DialogDelete from "./DialogDelete";
 
 const types = {
   REQUESTING: "REQUESTING",
@@ -133,15 +135,13 @@ const OrganizationView = ({ id }) => {
   );
 
   React.useEffect(() => {
-    if (orgId) {
-      fetchOrg(orgId);
-      if (!org) {
-        navigate("/app/dashboard");
-        notify("Organization not found", "error");
-        return;
-      }
+    if (org) {
+      dispatch({ type: types.REQUEST_SUCCESS, payload: org });
     }
-  }, [orgId, fetchOrg]);
+    // if (orgId) {
+    //   fetchOrg(orgId);
+    // }
+  }, [org, orgId, fetchOrg]);
 
   const handleEditOrgClick = () => {
     navigate("/app/orgs/edit", orgId);
@@ -215,14 +215,13 @@ const OrganizationView = ({ id }) => {
   };
 
   const handleDeleteDepartment = (departmentId) => {
-    console.log(departmentId);
     API.orgs.departments
       .deleteById(currentOrg, departmentId)
-      .then(({ success, error }) => {
+      .then(({ success, error, message }) => {
         if (success) {
           deleteDepartment(departmentId);
           notify({
-            message: "Department deleted successfully.",
+            message: message,
             type: "success",
             success: true,
           });
@@ -237,8 +236,9 @@ const OrganizationView = ({ id }) => {
       .catch((e) => {
         console.error(e);
         notify({
-          message: "Error deleting department.",
+          message: "Something went wrong.",
           type: "error",
+          success: false,
         });
       });
   };
@@ -440,17 +440,17 @@ const OrganizationView = ({ id }) => {
     console.log(holidayId);
     API.orgs.holidays
       .deleteById(currentOrg, holidayId)
-      .then(({ success, error }) => {
+      .then(({ success, message, error }) => {
         if (success) {
           deleteHoliday(holidayId);
           notify({
-            message: "Success delete Holiday",
+            message: message,
             type: "success",
             success: true,
           });
         } else {
           notify({
-            message: "Error delete Holiday",
+            message: message,
             type: "error",
             success: false,
           });
@@ -458,7 +458,189 @@ const OrganizationView = ({ id }) => {
       })
       .catch((e) => {
         console.error(e);
+        notify({
+          message: "Error delete Holiday",
+          type: "error",
+          success: false,
+        });
       });
+  };
+
+  const getSortedList = React.useCallback(
+    (departments = [], sortBy, sortOrder) => {
+      return sort(departments, sortBy, sortOrder);
+    },
+    []
+  );
+
+  const [sortParamss, setSortParamss] = React.useState("firstName");
+  const [orderDir, setOrdirDir] = React.useState("asc");
+
+  const onSortParamsChange = (sortParams, orderDir) => {
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+
+    dispatch({
+      type: types.SORT_REQUEST,
+      payload: {
+        sortParams,
+        orderDir,
+      },
+    });
+
+    const sortedList = getSortedList(
+      state.org.departments,
+      sortParams,
+      orderDir
+    );
+
+    dispatch({
+      type: types.REQUEST_SUCCESS,
+      payload: {
+        ...state.org,
+        departments: sortedList,
+      },
+    });
+  };
+
+  const handleSortRequest = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChange(sortParams, isAsc ? "desc" : "asc");
+  };
+
+  const onSortParamsChangePosition = (sortParams, orderDir) => {
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+    dispatch({
+      type: types.SORT_REQUEST,
+      payload: {
+        sortParams,
+        orderDir,
+      },
+    });
+
+    const sortedList = getSortedList(state.org.positions, sortParams, orderDir);
+
+    dispatch({
+      type: types.REQUEST_SUCCESS,
+      payload: {
+        ...state.org,
+        positions: sortedList,
+      },
+    });
+  };
+
+  const handleSortRequestPosition = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChangePosition(sortParams, isAsc ? "desc" : "asc");
+  };
+
+  const onSortParamsChangeLeaveType = (sortParams, orderDir) => {
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+    dispatch({
+      type: types.SORT_REQUEST,
+      payload: {
+        sortParams,
+        orderDir,
+      },
+    });
+
+    const sortedList = getSortedList(
+      state.org.leaveTypes,
+      sortParams,
+      orderDir
+    );
+
+    dispatch({
+      type: types.REQUEST_SUCCESS,
+      payload: {
+        ...state.org,
+        leaveTypes: sortedList,
+      },
+    });
+  };
+
+  const handleSortRequestLeaveType = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChangeLeaveType(sortParams, isAsc ? "desc" : "asc");
+  };
+
+  const onSortParamsChangeHoliday = (sortParams, orderDir) => {
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+    dispatch({
+      type: types.SORT_REQUEST,
+      payload: {
+        sortParams,
+        orderDir,
+      },
+    });
+
+    const sortedList = getSortedList(state.org.holidays, sortParams, orderDir);
+
+    dispatch({
+      type: types.REQUEST_SUCCESS,
+      payload: {
+        ...state.org,
+        holidays: sortedList,
+      },
+    });
+  };
+
+  const handleSortRequestHoliday = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChangeHoliday(sortParams, isAsc ? "desc" : "asc");
+  };
+
+  const [deleteDialog, setDeleteDialog] = React.useState({
+    open: false,
+    id: null,
+  });
+
+  //state for tab label  for delete confirmation dialog
+  const [tabLabel, setTabLabel] = React.useState("Departments");
+
+  const handleDeleteDialogOpen = (id) => {
+    const tabLabel = document.querySelector(".Mui-selected").innerText;
+    console.log(tabLabel);
+    setTabLabel(tabLabel);
+    setDeleteDialog({
+      open: true,
+      id,
+    });
+
+    // console.log(id);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialog({
+      open: false,
+      id,
+    });
+  };
+
+  //switch case for delete dialog confirm using tab label
+  const handleDeleteDialogConfirm = () => {
+    switch (tabLabel) {
+      case "DEPARTMENTS":
+        handleDeleteDepartment(deleteDialog.id);
+        break;
+      case "POSITIONS":
+        handleDeletePosition(deleteDialog.id);
+        break;
+      case "LEAVE TYPES":
+        handleDeleteLeaveType(deleteDialog.id);
+        break;
+      case "HOLIDAYS":
+        handleDeleteHoliday(deleteDialog.id);
+        break;
+      default:
+        break;
+    }
+    setDeleteDialog({
+      open: false,
+    });
   };
 
   return (
@@ -478,6 +660,12 @@ const OrganizationView = ({ id }) => {
         )}
         {state.org && Object.keys(state.org).length > 0 && (
           <Grid container>
+            <DialogDelete
+              open={deleteDialog.open}
+              onClose={handleDeleteDialogClose}
+              onDelete={handleDeleteDialogConfirm}
+            />
+
             <Card
               style={{
                 padding: "10px",
@@ -539,11 +727,9 @@ const OrganizationView = ({ id }) => {
                     <Box display="flex" justifyContent="flex-end">
                       <Button
                         variant="outlined"
+                        color="primary"
                         onClick={handleEditOrgClick}
                         endIcon={<EditIcon size={15} />}
-                        aria-label="edit org"
-                        title="Edit branch details"
-                        className={classes.root}
                       >
                         Edit
                       </Button>
@@ -552,7 +738,6 @@ const OrganizationView = ({ id }) => {
                 </Box>
               </CardContent>
             </Card>
-
             <Grid item sm={12}>
               <Divider />
               {currentOrg === orgId && (
@@ -568,10 +753,11 @@ const OrganizationView = ({ id }) => {
                       panel: (
                         <DepartmentList
                           departments={state.org.departments}
+                          onSortParamsChange={handleSortRequest}
                           departmentsMap={departmentsMap}
                           onCreateDepartment={handleCreateDepartment}
                           onUpdateDepartment={handleUpdateDepartment}
-                          onDeleteDepartment={handleDeleteDepartment}
+                          onDeleteDepartment={handleDeleteDialogOpen}
                         />
                       ),
                     },
@@ -582,9 +768,10 @@ const OrganizationView = ({ id }) => {
                           positions={state.org.positions}
                           positionsMap={positionsMap}
                           departmentsMap={departmentsMap}
+                          onSortParamsChange={handleSortRequestPosition}
                           onCreatePosition={handleCreatePosition}
                           onUpdatePosition={handleUpdatePosition}
-                          onDeletePosition={handleDeletePosition}
+                          onDeletePosition={handleDeleteDialogOpen}
                         />
                       ),
                     },
@@ -604,8 +791,9 @@ const OrganizationView = ({ id }) => {
                           leaveTypes={state.org.leaveTypes}
                           leaveTypesMap={leaveTypesMap}
                           onAddLeaveType={handleAddLeaveType}
+                          onSortParamsChange={handleSortRequestLeaveType}
                           onUpdateLeaveType={handleUpdateLeaveType}
-                          onDeleteLeaveType={handleDeleteLeaveType}
+                          onDeleteLeaveType={handleDeleteDialogOpen}
                         />
                       ),
                     },
@@ -616,8 +804,9 @@ const OrganizationView = ({ id }) => {
                           holidays={state.org.holidays}
                           holidaysMap={holidaysMap}
                           onAddHoliday={handleAddHoliday}
+                          onSortParamsChange={handleSortRequestHoliday}
                           onUpdateHoliday={handleUpdateHoliday}
-                          onDeleteHoliday={handleDeleteHoliday}
+                          onDeleteHoliday={handleDeleteDialogOpen}
                         />
                       ),
                     },

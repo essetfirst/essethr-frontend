@@ -39,7 +39,7 @@ const FilterBar = ({
               fullWidth
               name="searchTerm"
               value={filters.searchTerm}
-              onChange={onFilterChange}
+              onChange={onFilterChange("searchTerm")}
               placeholder="Search leaves"
               variant="outlined"
               size="small"

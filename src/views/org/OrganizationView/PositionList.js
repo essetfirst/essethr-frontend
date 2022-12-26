@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const PositionList = ({
   className,
   departmentsMap,
+  onSortParamsChange,
   positions,
   positionsMap,
   onCreatePosition,
@@ -153,10 +154,15 @@ const PositionList = ({
             },
           },
         ]}
-        data={(positions || []).filter((p) =>
-          String(p.title).includes(searchTerm)
-        )}
+        data={(positions || []).filter((p) => {
+          const { title, description } = p;
+          return (
+            title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            description.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        })}
         selectionEnabled
+        onSortParamsChange={onSortParamsChange}
         rowActions={[
           {
             label: "Edit position",

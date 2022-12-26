@@ -42,8 +42,14 @@ export const defaultTheme = createMuiTheme({
 export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
+    background: {
+      dark: "#1F2937",
+      default: "#1F2937",
+      paper: "#353d4a",
+    },
+
     primary: {
-      main: colors.teal[500],
+      main: colors.blueGrey[500],
     },
     secondary: {
       main: colors.deepOrange[500],

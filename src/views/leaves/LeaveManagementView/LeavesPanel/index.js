@@ -10,6 +10,7 @@ import LeaveFormDialog from "./LeaveFormDialog";
 import Filterbar from "./Filterbar";
 import List from "./List";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
+import sort from "../../../../helpers/sort";
 
 function periodIncludesToday(from, to) {
   const today = new Date();
@@ -121,12 +122,12 @@ const LeavesPanel = ({
         : true,
   };
 
-  const [filters, setFilters] = React.useState(initialFiltersValue);
-  const handleFiltersChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+  const [filters, setFilters] = React.useState("");
+  const handleFilterChange = () => (e) => {
+    const { value } = e.target;
+    setFilters(value);
   };
-  const handleFiltersReset = () => setFilters(initialFiltersValue);
+  const handleFiltersReset = () => setFilters("");
 
   const handleRegisterClick = () => {
     setDialogAction("register");
@@ -205,8 +206,35 @@ const LeavesPanel = ({
   });
 
   React.useEffect(() => {
+    console.log("fetching leaves", state.fetchLeaves.leaves);
     fetchLeaves();
   }, [fetchLeaves]);
+
+  const getSortedList = React.useCallback((list = [], sortBy, sortOrder) => {
+    return sort(list, sortBy, sortOrder);
+  }, []);
+
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("employeeId");
+
+  const onSortParamChange = (sortParam, sortDirection) => {
+    setOrder(sortDirection);
+    setOrderBy(sortParam);
+
+    const sortedList = getSortedList(
+      state.fetchLeaves.leaves,
+      sortParam,
+      sortDirection
+    );
+
+    //change the state of the list to the sorted list to reflect the changes
+    onFetchLeaves(sortedList);
+  };
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === "asc";
+    onSortParamChange(property, isAsc ? "desc" : "asc");
+  };
 
   return (
     <div>
@@ -257,7 +285,7 @@ const LeavesPanel = ({
       {/* Filter bar */}
       <Filterbar
         filters={filters}
-        onFilterChange={handleFiltersChange}
+        onFilterChange={handleFilterChange}
         onReset={handleFiltersReset}
         departmentOptions={departmentOptions}
         leaveTypeOptions={leaveTypeOptions}
@@ -268,7 +296,11 @@ const LeavesPanel = ({
       <List
         employeesMap={employeesMap}
         leaveTypeMap={leaveTypeMap}
-        leaves={state.fetchLeaves.leaves}
+        leaves={(state.fetchLeaves.leaves || []).filter((d) => {
+          return String(
+            (employeesMap[d.employeeId] || {}).firstName.toLowerCase()
+          ).includes(filters);
+        })}
         requesting={state.fetchLeaves.isLoading}
         error={state.fetchLeaves.error}
         onRetry={() => {
@@ -277,6 +309,8 @@ const LeavesPanel = ({
         onApproveLeaveClicked={handleApproveLeaveClick}
         onEditLeaveClicked={handleEditLeaveClick}
         onDeleteLeaveClicked={handleDeleteLeaveClick}
+        requestState={state.registerLeave}
+        onSortParamChange={handleRequestSort}
       />
     </div>
   );

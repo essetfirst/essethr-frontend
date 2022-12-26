@@ -42,11 +42,11 @@ import "./index.css";
 })();
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Provider>
+  <Provider>
+    <BrowserRouter>
       <App />
-    </Provider>
-  </BrowserRouter>,
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
 

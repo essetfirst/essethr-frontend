@@ -21,6 +21,7 @@ const ResultsTable = ({
   onEditClicked,
   onTransferClicked,
   onDeleteClicked,
+  onMultipleDeleteClicked,
   requestState,
   ...rest
 }) => {
@@ -39,7 +40,7 @@ const ResultsTable = ({
 
   const handleDeleteAll = (selected) => () => {
     selected.forEach((id) => {
-      onDeleteClicked(id);
+      onMultipleDeleteClicked(id);
     });
   };
 
@@ -162,7 +163,7 @@ const ResultsTable = ({
               },
             ]}
             selectionEnabled={true}
-            requestState={requestState}
+            requestState={requestState === "loading" ? "loading" : "success"}
             selectionActions={[
               {
                 label: "Print IDs",
@@ -177,7 +178,6 @@ const ResultsTable = ({
                 size: "small",
               },
             ]}
-            // onSelectionChanged={(selected) => setSelected(selected)}
             onSortParamsChange={onSortParamsChange}
             {...rest}
           />

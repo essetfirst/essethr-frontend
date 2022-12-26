@@ -27,11 +27,11 @@ const FilterBar = ({
         <Grid item xs={4}>
           <TextField
             fullWidth
-            select
             label="Department"
             name="department"
             value={filters.department}
             onChange={onFilterChange("department")}
+            select
             variant="outlined"
             margin="dense"
             size="small"
@@ -81,7 +81,7 @@ const FilterBar = ({
             ))}
           </TextField>
         </Grid>
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <Typography>Age group</Typography>
           <Grid container spacing={1}>
             <Grid item xs={6}>
@@ -111,8 +111,8 @@ const FilterBar = ({
               />
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={6}>
+        </Grid> */}
+        {/* <Grid item xs={6}>
           <Typography>Salary range</Typography>
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -144,7 +144,9 @@ const FilterBar = ({
               />
             </Grid>
           </Grid>
-        </Grid>
+        </Grid>{" "}
+        label="Department" name="department" value={filters.department}
+        onChange={onFilterChange("department")} */}
         <Grid item xs={12}>
           <Box display="flex" justifyContent="flex-end">
             <Button variant="contained" onClick={onResetFilters}>

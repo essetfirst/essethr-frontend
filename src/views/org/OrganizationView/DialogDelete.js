@@ -1,15 +1,15 @@
 import React from "react";
+
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Typography,
+  Button,
 } from "@material-ui/core";
-
-const DeleteEmployeeDialog = ({ open, onClose, onDelete }) => {
+import DialogActions from "@material-ui/core/DialogActions";
+const DialogDelete = ({ open, onClose, onDelete }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
@@ -35,7 +35,7 @@ const DeleteEmployeeDialog = ({ open, onClose, onDelete }) => {
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Are you sure you want to delete this employee?
+          Are you sure you want to delete this item ?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -57,4 +57,4 @@ const DeleteEmployeeDialog = ({ open, onClose, onDelete }) => {
   );
 };
 
-export default DeleteEmployeeDialog;
+export default DialogDelete;

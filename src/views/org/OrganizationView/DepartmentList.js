@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const DepartmentList = ({
   className,
   departments,
+  onSortParamsChange,
   departmentsMap,
   onCreateDepartment,
   onUpdateDepartment,
@@ -66,7 +67,7 @@ const DepartmentList = ({
   };
 
   const handleDeleteClick = (_id) => {
-    console.log(_id);
+    // console.log(_id);
     onDeleteDepartment(_id);
   };
 
@@ -142,10 +143,13 @@ const DepartmentList = ({
             },
           },
         ]}
-        data={(departments || []).filter((d) =>
-          String(d.name).includes(searchTerm)
-        )}
+        data={(departments || []).filter((d) => {
+          const { name, location } = d;
+          const names = `${name || ""} ${location || ""}`;
+          return names.toLowerCase().includes(searchTerm.toLowerCase());
+        })}
         selectionEnabled
+        onSortParamsChange={onSortParamsChange}
         rowActions={[
           {
             label: "Edit department",

@@ -23,12 +23,10 @@ const App = ({ config: appConfig }) => {
   const { persistKey } = auth || {};
 
   const { darkMode } = useTheme();
-
-  console.log(darkMode);
-
-  let mode = React.useMemo(() => {
-    return darkMode ? darkTheme : defaultTheme;
-  }, [darkMode]);
+  const mode = React.useMemo(
+    () => (darkMode ? darkTheme : defaultTheme),
+    [darkMode]
+  );
 
   return (
     <ThemeProvider theme={mode}>

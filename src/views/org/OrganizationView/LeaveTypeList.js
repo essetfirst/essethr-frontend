@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const LeaveTypeList = ({
   leaveTypes,
+  onSortParamsChange,
   leaveTypesMap,
   onAddLeaveType,
   onUpdateLeaveType,
@@ -169,6 +170,7 @@ const LeaveTypeList = ({
           String(lt.name).includes(searchTerm)
         )}
         selectionEnabled
+        onSortParamsChange={onSortParamsChange}
         rowActions={[
           {
             label: "Edit leave type",

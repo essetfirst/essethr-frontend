@@ -22,6 +22,7 @@ import useOrg from "../../../../providers/org";
 
 import arrayToMap from "../../../../utils/arrayToMap";
 import TableComponent from "../../../../components/TableComponent";
+import LoadingComponent from "../../../../components/LoadingComponent";
 
 const AllocateAllowanceDialog = ({
   open,
@@ -214,7 +215,6 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
         onSubmit={handleAllocateAllowance}
       />
       {/* Summary usage and leave by type */}
-
       <TableComponent
         size="medium"
         columns={[

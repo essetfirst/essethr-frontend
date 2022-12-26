@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Box, Divider, Typography } from "@material-ui/core";
+import { Box, Divider, Typography, Card, CardContent } from "@material-ui/core";
 
 import { useBarcode } from "@createnextapp/react-barcode";
 
@@ -10,7 +10,6 @@ import CustomAvatar from "../../../components/CustomAvatar";
 
 const EmployeeIDCard = ({ employee }) => {
   const { id, org, name, image, department, jobTitle } = employee;
-
   const { inputRef } = useBarcode({
     value: String(id),
     options: {
@@ -21,46 +20,71 @@ const EmployeeIDCard = ({ employee }) => {
 
   return (
     <Box p={2} width={350} display="flex" flexDirection="column">
-      <Box ml={1}>
-        <Typography variant="h4">{org}</Typography>
-        <Box mt={1} />
-        <Divider />
-      </Box>
-      <Box display="flex" mt={1}>
-        <CustomAvatar src={image} size="3">
-          {String(name)
-            .split(" ")
-            .map((n) => n[0])
-            .join("")}
-        </CustomAvatar>
-        <Box
-          ml={1}
-          width="100%"
-          height="100%"
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-end"
+      <Card
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          //backgroundColor will be must be look like id card from the company
+          backgroundColor: "#fff",
+          borderRadius: 10,
+          boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
+        }}
+      >
+        <CardContent
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
         >
-          <Typography variant="h5">{name}</Typography>
-          <Typography variant="h6" color="textSecondary">
-            {jobTitle}
-            {" • "}
-            {department}
-          </Typography>
-          <Box m={1} />
-          {/* <Typography>{gender}</Typography> */}
-          <Box
-            width="100%"
-            height="100%"
-            display="flex"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-            // alignSelf="flex-start"
-          >
-            <img ref={inputRef} alt={"barcode"} height={30} width={70} />
+          <Box display="flex" mt={1}>
+            <CustomAvatar src={image} size="3">
+              {String(name)
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
+            </CustomAvatar>
+            <Box
+              ml={1}
+              width="100%"
+              height="100%"
+              display="flex"
+              flexDirection="column"
+              justifyContent="flex-end"
+            >
+              <Typography
+                color="textSecondary"
+                style={{ fontWeight: "bold", color: "#000", fontSize: 18 }}
+              >
+                {org}
+              </Typography>
+              <Typography style={{ color: "#000" }}>Name: {name}</Typography>
+              <Typography color="textSecondary" style={{ color: "#000" }}>
+                {jobTitle}
+                {" • "}
+                {department}
+              </Typography>
+              <Box m={1} />
+              {/* <Typography>{gender}</Typography> */}
+              <Box
+                width="100%"
+                height="100%"
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                // alignSelf="flex-start"
+              >
+                <img ref={inputRef} alt={"barcode"} height={10} width={100} />
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </Box>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

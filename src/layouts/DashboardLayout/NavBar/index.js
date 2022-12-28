@@ -19,8 +19,9 @@ import {
   TimeToLeaveOutlined as LeaveIcon,
   DashboardOutlined as DashboardIcon,
   ApartmentOutlined as OrganizationIcon,
+  MenuBookOutlined as MenuBookIcon,
 } from "@material-ui/icons";
-
+import MenuIcon from "@material-ui/icons/Menu";
 import GroupIcon from "@material-ui/icons/Group";
 import TimerIcon from "@material-ui/icons/Timer";
 import AssessmentIcon from "@material-ui/icons/Assessment";
@@ -29,6 +30,9 @@ import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import NavItem from "./NavItem";
 import RecentActorsIcon from "@material-ui/icons/RecentActors";
 import useAuth from "../../../providers/auth";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 const navItems = [
   {
@@ -120,6 +124,46 @@ const useStyles = makeStyles(() => ({
     cursor: "pointer",
     fontFamily: "Poppins",
   },
+  minimizedDrawer: {
+    width: 50,
+    top: 64,
+    height: "calc(100% - 64px)",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "fixed",
+    msOverflowStyle: "none",
+    scrollbarWidth: "none",
+    scrollbarHeight: "none",
+    scrollBehavior: "smooth",
+    scrollbarColor: "transparent transparent",
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+
+    "& .MuiSvgIcon-root": {
+      fontSize: "1.8rem",
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
+  },
+  menuIcon: {
+    cursor: "pointer",
+    position: "absolute",
+    left: 220,
+    top: 10,
+    zIndex: 100,
+
+    "& .MuiSvgIcon-root": {
+      fontSize: "2rem",
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      color: "grey",
+    },
+  },
 }));
 
 const NavBar = ({
@@ -134,16 +178,51 @@ const NavBar = ({
   const location = useLocation();
   const { auth } = useAuth();
 
+  const [minimize, setMinimize] = React.useState(false);
+
+  const handleMinimize = () => {
+    setMinimize(!minimize);
+    onMinimize();
+  };
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (minimized) {
+      setMinimize(true);
+    }
+  }, [minimized]);
+
+  const minContent = (
+    <Box
+      onClick={handleMinimize}
+      style={{
+        cursor: "pointer",
+        "& .MuiSvgIcon-root": {
+          fontSize: "0.5rem",
+        },
+
+        "& .MuiTypography-root": {
+          fontSize: "1rem",
+          fontFamily: "Poppins",
+        },
+
+        transition: "width 2.5s",
+      }}
+      className={classes.menuIcon}
+    >
+      {minimize ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+    </Box>
+  );
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
       {auth.isAuth && (
         <>
+          {minContent}
           <Box
             display="inline-block"
             alignItems="center"
@@ -280,14 +359,82 @@ const NavBar = ({
           <PerfectScrollbar>{content}</PerfectScrollbar>
         </Drawer>
       </Hidden>
+      {!minimize && (
+        <Hidden mdDown>
+          <Drawer
+            anchor={minimize ? "bottom" : "top"}
+            classes={{ paper: classes.desktopDrawer }}
+            open
+            variant="persistent"
+          >
+            <PerfectScrollbar>{content}</PerfectScrollbar>
+          </Drawer>
+        </Hidden>
+      )}
       <Hidden mdDown>
         <Drawer
-          anchor="left"
-          classes={{ paper: classes.desktopDrawer }}
-          open
+          anchor={minimize ? "bottom" : "bottom"}
+          classes={{
+            paper: classes.minimizedDrawer,
+            paperAnchorBottom: classes.minimizedDrawer,
+
+            paperAnchorDockedBottom: classes.minimizedDrawer,
+          }}
+          open={minimize}
           variant="persistent"
         >
-          <PerfectScrollbar>{content}</PerfectScrollbar>
+          <PerfectScrollbar>
+            <List>
+              <Box
+                onClick={handleMinimize}
+                style={{
+                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {minimize ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </Box>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                component={RouterLink}
+                to="/app/account"
+                mt={2}
+                mb={10}
+              >
+                <Box>
+                  <Avatar
+                    variant="rounded"
+                    src={require("../../../assets/images/hope.jpg")}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+
+                      border: "1px solid #fff",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </Box>
+              </Box>
+
+              {navItems.map((item) => (
+                <NavItem
+                  href={item.href}
+                  // key={item.title}
+                  // title={item.title}
+                  icon={item.icon}
+                />
+              ))}
+            </List>
+          </PerfectScrollbar>
         </Drawer>
       </Hidden>
     </>

@@ -2,7 +2,7 @@
 export default {
   h1: {
     fontWeight: 500,
-    fontSize: 29,
+    fontSize: 35,
     letterSpacing: "-0.24px",
   },
   h2: {
@@ -36,6 +36,6 @@ export default {
     letterSpacing: "-0.06px",
   },
   overline: {
-    fontWeight: 500,
+    fontWeight: 800,
   },
 };

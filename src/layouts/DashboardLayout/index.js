@@ -65,12 +65,34 @@ const DashboardLayout = () => {
 
   const [alert, setAlert] = React.useState(false);
 
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setAlert(false);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [alert]);
+
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
     <div className={classes.root}>
       {/* Start: this is a notification board from us developers to users */}
-      {alert && <Alert>{alert}</Alert>}
+      {alert && (
+        <Alert
+          severity="info"
+          style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: "100%",
+            zIndex: "9999",
+          }}
+        >
+          <strong>Hi there!</strong> We are still working on this feature. We
+          will notify you when it's ready.
+        </Alert>
+      )}
+
       {/* End */}
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <NavBar

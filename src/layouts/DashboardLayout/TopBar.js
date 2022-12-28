@@ -74,7 +74,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   }, [auth]);
 
   React.useEffect(() => {
-    console.log(org);
     fetchOrganizations();
   }, [fetchOrganizations]);
 

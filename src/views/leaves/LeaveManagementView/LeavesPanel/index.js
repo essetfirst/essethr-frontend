@@ -11,6 +11,7 @@ import Filterbar from "./Filterbar";
 import List from "./List";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 import sort from "../../../../helpers/sort";
+import DeleteDialog from "./DeleteDialog";
 
 function periodIncludesToday(from, to) {
   const today = new Date();
@@ -55,8 +56,11 @@ const LeavesPanel = ({
     })
   );
   const leaveTypeOptions = [
-    { label: "Choose leaveTypes", value: -1 },
-    ...leaveTypes,
+    { label: "ALL", value: "ALL" },
+    ...(org.leaveTypes || []).map(({ _id, name }) => ({
+      label: name,
+      value: _id,
+    })),
   ];
 
   const durationOptions = [
@@ -76,8 +80,13 @@ const LeavesPanel = ({
   const [selectedLeave, setSelectedLeave] = React.useState(null);
   const [dialogAction, setDialogAction] = React.useState(null);
   const [requestDialogOpen, setRequestDialogOpen] = React.useState(false);
-  const handleRequestDialogOpen = () => setRequestDialogOpen(true);
+
+  const handleRequestDialogOpen = () => {
+    setRequestDialogOpen(true);
+  };
+
   const handleRequestDialogClose = () => {
+    setSelectedLeave(null);
     setRequestDialogOpen(false);
   };
 
@@ -134,12 +143,10 @@ const LeavesPanel = ({
     handleRequestDialogOpen();
   };
 
-  const handleExportClick = async ({ _id }) => {
-    console.log("im about to export");
-
+  const handleExportClick = async () => {
     const columns = [
       {
-        label: "employeeId",
+        label: "ID",
         field: "employeeId",
       },
       {
@@ -168,24 +175,47 @@ const LeavesPanel = ({
       },
     ];
 
-    console.log(state.fetchLeaves.leaves);
-    await makeExcel(getTableDataForExport(state.fetchLeaves.leaves, columns));
+    const rows = state.fetchLeaves.leaves.map((leave) => {
+      const {
+        employeeId,
+        leaveType,
+        duration,
+        startDate,
+        endDate,
+        comment,
+        status,
+      } = leave;
+      return {
+        employeeId:
+          employeesMap[employeeId].firstName +
+          " " +
+          employeesMap[employeeId].surName,
+        leaveType: leaveTypeMap[leaveType]?.name,
+        duration,
+        startDate,
+        endDate,
+        comment,
+        status,
+      };
+    });
+
+    await makeExcel(getTableDataForExport(rows, columns));
   };
 
   const handleEditLeaveClick = (selected) => {
+    console.log("im about to edit", selected);
     setSelectedLeave(state.fetchLeaves.leaves.find((l) => l._id === selected));
     setDialogAction("update");
     handleRequestDialogOpen();
   };
 
   const handleApproveLeaveClick = (selected) => {
-    // TODO: Implement action approveLeave
     onApproveLeaves([selected]);
   };
 
   const handleDeleteLeaveClick = (selected) => {
-    // TODO: Implement dialog for deleteLeave
-    onDeleteLeave(selected);
+    console.log("im about to delete", selected._id);
+    onDeleteLeave(selected._id);
   };
   const weekDays = getWeekDates(new Date(), 0);
 
@@ -206,7 +236,6 @@ const LeavesPanel = ({
   });
 
   React.useEffect(() => {
-    console.log("fetching leaves", state.fetchLeaves.leaves);
     fetchLeaves();
   }, [fetchLeaves]);
 
@@ -218,6 +247,8 @@ const LeavesPanel = ({
   const [orderBy, setOrderBy] = React.useState("employeeId");
 
   const onSortParamChange = (sortParam, sortDirection) => {
+    console.log("sortParam", sortParam);
+    console.log("sortDirection", sortDirection);
     setOrder(sortDirection);
     setOrderBy(sortParam);
 
@@ -226,14 +257,26 @@ const LeavesPanel = ({
       sortParam,
       sortDirection
     );
-
-    //change the state of the list to the sorted list to reflect the changes
-    onFetchLeaves(sortedList);
   };
 
   const handleRequestSort = (event, property) => {
+    console.log("property", property);
     const isAsc = orderBy === property && order === "asc";
     onSortParamChange(property, isAsc ? "desc" : "asc");
+  };
+
+  const [deleteLeaveDialogOpen, setDeleteLeaveDialogOpen] =
+    React.useState(false);
+
+  const handleDeleteLeaveDialogOpen = (_id) => {
+    console.log("im about to delete", _id);
+    setSelectedLeave(state.fetchLeaves.leaves.find((l) => l._id === _id));
+
+    setDeleteLeaveDialogOpen(true);
+  };
+
+  const handleDeleteLeaveDialogClose = () => {
+    setDeleteLeaveDialogOpen(false);
   };
 
   return (
@@ -255,6 +298,7 @@ const LeavesPanel = ({
         <ButtonGroup>
           <Button
             size="small"
+            variant="outlined"
             onClick={handleExportClick}
             startIcon={<ExportIcon size="16px" />}
             aria-label="export leave data"
@@ -263,6 +307,14 @@ const LeavesPanel = ({
           </Button>
         </ButtonGroup>
       </Box>
+
+      {/* delete dialog */}
+      <DeleteDialog
+        open={deleteLeaveDialogOpen}
+        onClose={handleDeleteLeaveDialogClose}
+        onDelete={handleDeleteLeaveClick}
+        selected={selectedLeave}
+      />
 
       {/* Leave dialog */}
       <LeaveFormDialog
@@ -308,7 +360,7 @@ const LeavesPanel = ({
         }}
         onApproveLeaveClicked={handleApproveLeaveClick}
         onEditLeaveClicked={handleEditLeaveClick}
-        onDeleteLeaveClicked={handleDeleteLeaveClick}
+        onDeleteLeaveClicked={handleDeleteLeaveDialogOpen}
         requestState={state.registerLeave}
         onSortParamChange={handleRequestSort}
       />

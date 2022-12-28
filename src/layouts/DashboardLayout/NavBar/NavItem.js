@@ -4,7 +4,14 @@ import PropTypes from "prop-types";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import clsx from "clsx";
-import { Button, ListItem, makeStyles, Typography } from "@material-ui/core";
+import {
+  Button,
+  colors,
+  ListItem,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -28,16 +35,26 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "auto",
     textTransform: "uppercase",
     fontSize: "13px",
+    fontWeight: "bold",
+    fontFamily: "Poppins",
   },
   active: {
-    color: theme.palette.primary.main,
+    color: colors.teal[500],
     "& $title": {
-      fontWeight: theme.typography.fontWeightMedium,
+      fontWeight: theme.typography.fontWeightBold,
     },
     "& $icon": {
       color: theme.palette.primary.main,
     },
-    backgroundColor: "#f2f7f7",
+    backgroundColor: "rgba(0, 0, 0, 0.08)",
+
+    "&:hover": {
+      backgroundColor: "rgba(0, 0, 0, 0.08)",
+    },
+
+    "&:hover $title": {
+      fontWeight: theme.typography.fontWeightMedium,
+    },
   },
 }));
 

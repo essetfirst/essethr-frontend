@@ -12,6 +12,7 @@ import {
   TextField,
   ListItemAvatar,
   Avatar,
+  Typography,
 } from "@material-ui/core";
 
 import { SearchOutlined as SearchIcon } from "@material-ui/icons";
@@ -42,26 +43,16 @@ const EmployeeSelect = ({ employees, onSelectionChange }) => {
 
   const handleChange = (e) => setSearchTerm(e.target.value);
 
-  // const selectionChange = React.useCallback(
-  //   () => onSelectionChange(selected),
-  //   [selected, onSelectionChange]
-  // );
+  const selectionChange = React.useCallback(
+    () => onSelectionChange(selected),
+    [selected, onSelectionChange]
+  );
   // React.useEffect(() => {
   //   selectionChange(selected);
   // }, [selected, selectionChange]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      flex="1"
-      height="100%"
-      width="100%"
-    >
-      {/* <Typography variant="h3" align="center" gutterBottom>
-        Select employees for payroll
-      </Typography> */}
-
+    <Box display="flex" flexDirection="column" flex="1">
       <Box p={2}>
         <TextField
           fullWidth

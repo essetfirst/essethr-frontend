@@ -6,6 +6,7 @@ import TableComponent from "../../../../components/TableComponent";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import DeleteDialog from "./DeleteDialog";
 
 const MONTHS = [
   "Jan",
@@ -119,17 +120,10 @@ const List = ({
             ),
           },
         ]}
-        data={
-          leaves ||
-          [].sort(
-            (a, b) =>
-              new Date(a.to).toLocaleDateString() >=
-              new Date(b.to).toLocaleDateString()
-          )
-        }
+        data={leaves || []}
         selectionEnabled={true}
         requestState={{ requesting, error, onRetry }}
-        onSortParamsChanged={onSortParamChange}
+        onSortParamChange={onSortParamChange}
         rowActions={[
           {
             label: "Approve Leave",

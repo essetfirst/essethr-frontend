@@ -11,32 +11,42 @@ import {
   Typography,
   colors,
   makeStyles,
-  // Divider,
+  Divider,
 } from "@material-ui/core";
 
 import {
-  // TimeToLeave as LeaveIcon,
-  // ArrowUpward as ArrowUpwardIcon,
   PeopleOutlined as PeopleIcon,
+  ArrowUpward as ArrowUpwardIcon,
 } from "@material-ui/icons";
-
-import useOrg from "../../../providers/org";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
+
+    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.15)",
+    borderRadius: 10,
   },
   avatar: {
-    backgroundColor: colors.green[600],
+    backgroundColor: colors.teal[500],
     height: 56,
     width: 56,
-    borderRadius: 5,
+
+    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.25)",
+    borderRadius: "50%",
+    position: "relative",
+    color: "#fff",
+    fontSize: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   differenceIcon: {
-    color: colors.green[900],
+    color: colors.cyan[400],
+    fontFamily: "Poppins",
   },
   differenceValue: {
-    color: colors.green[900],
+    color: colors.cyan[600],
+    fontFamily: "Poppins",
     marginRight: theme.spacing(1),
   },
 }));
@@ -49,74 +59,46 @@ const TotalEmployees = ({
 }) => {
   const classes = useStyles();
 
-  const { org } = useOrg();
-
-  // const newEmployees = (() => {
-  //   (org.employees || []).map(
-  //     ({ firstName, surName, lastName, image, startDate }) => ({
-  //       name: `${firstName} ${surName} ${lastName}`,
-  //       avatar: image,
-  //       length: getDateDiff(new Date(), startDate),
-  //     })
-  //   );
-  // })();
-
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardContent>
         <Grid container justify="space-between" spacing={3}>
           <Grid item>
-            <Typography color="textSecondary" gutterBottom variant="h6">
+            <Typography
+              color="textSecondary"
+              gutterBottom
+              variant="h6"
+              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
+            >
               TOTAL EMPLOYEES
             </Typography>
-            <Typography color="textPrimary" variant="h3">
-              {currentMonthEmployeesCount}
+            <Typography
+              color="textPrimary"
+              variant="h3"
+              style={{ fontWeight: 600, fontFamily: "Poppins", fontSize: 30 }}
+            >
+              <span style={{ color: "#00BFA6" }}>
+                {" "}
+                {currentMonthEmployeesCount}
+              </span>
             </Typography>
           </Grid>
           <Grid item>
-            <Avatar variant="square" className={classes.avatar}>
+            <Avatar className={classes.avatar}>
               <PeopleIcon />
             </Avatar>
           </Grid>
         </Grid>
         <Box mt={2} />
-        {/* <Divider /> */}
-        <Box mt={2} />
-        <Grid container spacing={1}>
-          {/* <Grid
-            item
-            component={Box}
-            display="flex"
-            flexDirection="column"
-            width="100%"
-            xs
-          >
-            <Typography
-              color="textSecondary"
-              align="center"
-              gutterBottom
-              variant="h6"
-            >
-              NEW
-            </Typography>
-            <Typography color="textPrimary" variant="h3" align="center">
-              2
-            </Typography>
-          </Grid>
-          <Grid item component={Box} width="100%" xs>
-            <Typography
-              color="textSecondary"
-              align="center"
-              gutterBottom
-              variant="h6"
-            >
-              OLD
-            </Typography>
-            <Typography color="textPrimary" align="center" variant="h3">
-              200
-            </Typography>
-          </Grid> */}
-        </Grid>
+        <Box mt={2} display="flex" alignItems="center">
+          <ArrowUpwardIcon className={classes.differenceIcon} />
+          <Typography className={classes.differenceValue} color="textSecondary">
+            76%
+          </Typography>
+          <Typography color="textSecondary" variant="caption">
+            Since last month
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );

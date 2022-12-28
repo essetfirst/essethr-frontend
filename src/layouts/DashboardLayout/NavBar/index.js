@@ -21,7 +21,6 @@ import {
   ApartmentOutlined as OrganizationIcon,
 } from "@material-ui/icons";
 
-import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import GroupIcon from "@material-ui/icons/Group";
 import TimerIcon from "@material-ui/icons/Timer";
 import AssessmentIcon from "@material-ui/icons/Assessment";
@@ -139,8 +138,6 @@ const NavBar = ({
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
-
-    console.log(auth);
   }, [location.pathname]);
 
   const content = (

@@ -50,10 +50,6 @@ const TabbedComponent = ({ title, tabs, variant, appBarProps, tabsProps }) => {
 
   const [selectedTab, setSelectedTab] = React.useState(0);
 
-  //   const setStartTab = React.useEffect((index) => {
-  //     setSelectedTab(index);
-  //   });
-
   const handleChange = (e, newSelectedTab) => setSelectedTab(newSelectedTab);
 
   let tabList = [],

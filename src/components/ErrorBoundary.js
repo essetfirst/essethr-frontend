@@ -5,6 +5,23 @@ import { makeStyles } from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
 import AutorenewIcon from "@material-ui/icons/Autorenew";
 import PageView from "./PageView";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+    },
+  },
+
+  SentimentVeryDissatisfied: {
+    //aniimate the icon
+  },
+}));
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -12,23 +29,24 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
-    // logErrorToMyService(error, errorInfo);
     this.setState({ ...this.state, errorInfo });
   }
 
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-
       return (
         <PageView>
-          <Grid container spacing={2} justify="center">
+          <Grid
+            container
+            spacing={2}
+            justify="center"
+            alignItems="center"
+            style={{ marginTop: "2rem" }}
+          >
             <Grid item xs={12}>
               <Box
                 display="flex"
@@ -41,14 +59,21 @@ class ErrorBoundary extends React.Component {
                 borderRadius={8}
               >
                 <SentimentVeryDissatisfied
-                  style={{ fontSize: "15rem", color: "#fa2345" }}
+                  //aniimate the icon
+                  style={{
+                    fontSize: "15rem",
+                  }}
                 />
                 <Typography
                   variant="h1"
-                  style={{ marginLeft: "1rem", color: "#fa2345" }}
+                  style={{
+                    marginLeft: "1rem",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
                   gutterBottom
                 >
-                  Oops!
+                  {/* only oops will be red color */}
+                  <span style={{ color: "#f44336" }}>Oops!</span>
                   <br />
                   Something went wrong.
                   <br />
@@ -56,28 +81,33 @@ class ErrorBoundary extends React.Component {
                   <br />
                 </Typography>
               </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                borderRadius={8}
-              >
+              {/* show error info with a button to reload the page */}
+
+              {/* {this.state.errorInfo && (
+                <Typography
+                  variant="h5"
+                  style={{
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                  gutterBottom
+                >
+                  {this.state.errorInfo.componentStack}
+                </Typography>
+              )} */}
+
+              <Box display="flex" justifyContent="center" alignItems="center">
                 <Fab
                   variant="extended"
-                  color="primary"
                   aria-label="add"
-                  style={{
-                    margin: "1rem",
-                    backgroundColor: "#fa2345",
-                    color: "white",
-                  }}
                   onClick={() => {
                     window.location.reload();
+                  }}
+                  style={{
+                    borderRadius: "50px",
                   }}
                 >
                   <AutorenewIcon />
                   {"    "}
-                  Reload Page
                 </Fab>
               </Box>
             </Grid>

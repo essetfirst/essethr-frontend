@@ -8,10 +8,12 @@ import { useNavigate } from "react-router-dom";
 import PageView from "../../../components/PageView";
 import ImportDataFile from "./ImportDataFile";
 import { readExcelFile } from "../../../helpers/import";
+import GetAppIcon from "@material-ui/icons/GetApp";
 import {
   Backdrop,
   Box,
   Button,
+  ButtonGroup,
   Card,
   CardContent,
   Checkbox,
@@ -146,6 +148,11 @@ const PayrollGenerateView = () => {
     typeof handleRetry == "function" && handleRetry();
   };
 
+  // useEffect for org.employee list update
+  React.useEffect(() => {
+    console.log("Org: ", org);
+  }, [org]);
+
   return (
     <PageView title="Generate payroll" backPath={"/app/payroll"}>
       <Backdrop
@@ -235,9 +242,9 @@ const PayrollGenerateView = () => {
           payType: "daily",
           employees:
             org && org.employees
-              ? org.employees.map(({ _id, firstName, surName, lastName }) => ({
+              ? org.employees.map(({ _id, firstName, surName }) => ({
                   id: _id,
-                  name: `${firstName} ${surName} ${lastName}`,
+                  name: `${firstName} ${surName}`,
                 }))
               : [],
           commissionEnabled: false,
@@ -290,7 +297,7 @@ const PayrollGenerateView = () => {
                           fullWidth
                           error={Boolean(touched.title && errors.title)}
                           helperText={touched.title && errors.title}
-                          label="Payroll title"
+                          label="Payroll title  e.g. Autumn 2020 payment"
                           name="title"
                           value={values.title}
                           onBlur={handleBlur}
@@ -368,7 +375,7 @@ const PayrollGenerateView = () => {
                           <MenuItem value={"hourly"}>Per Hour</MenuItem>
                         </TextField>
                       </Grid>
-                      <Grid item xs={12} sm={12} md={6}>
+                      {/* <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           error={Boolean(
@@ -378,7 +385,7 @@ const PayrollGenerateView = () => {
                           margin="normal"
                           variant="outlined"
                         >
-                          <FormControlLabel
+                          {/* <FormControlLabel
                             label="Include only approved hours"
                             control={
                               <Checkbox
@@ -401,12 +408,12 @@ const PayrollGenerateView = () => {
                               {errors.onlyApprovedHours}
                             </FormControlHelperText>
                           )} */}
-                        </FormControl>
-                      </Grid>
+                      {/* </FormControl> */}
+                      {/* </Grid>{" "} */}
                     </Grid>
                   </Box>
 
-                  <Box p={2} height="100%">
+                  {/* <Box p={2} height="100%">
                     <FormControl
                       fullWidth
                       error={Boolean(touched.salesData && errors.salesData)}
@@ -465,13 +472,16 @@ const PayrollGenerateView = () => {
                         />
                       </Collapse>
                     </FormControl>
-                  </Box>
+                  </Box> */}
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} ms={12} md={6}>
-                <Paper style={{ height: "100%" }}>
-                  <Box p={2} height="100%">
+              <Grid item xs={12} sm={12} md={6}>
+                <Paper
+                  elevation={0}
+                  style={{ height: "90%", overflow: "auto" }}
+                >
+                  <Box p={2}>
                     <Typography variant="subtitle2" gutterBottom>
                       Employees in payroll
                     </Typography>
@@ -488,31 +498,25 @@ const PayrollGenerateView = () => {
                 </Paper>
               </Grid>
 
-              {/* <Grid item xs={12} ms={12} md={6}>
-                <Paper style={{ height: "100%" }}>
-                </Paper>
-              </Grid> */}
-
               <Grid item xs={12}>
                 <Divider />
                 <Box mb={2} />
                 <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="outlined"
-                    onClick={handleCancelClick}
-                    aria-label="cancel"
-                    style={{ marginRight: "16px" }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="contained"
+                  <ButtonGroup
                     color="primary"
-                    onClick={handleSubmit}
-                    aria-label="generate"
+                    aria-label="contained primary button group"
                   >
-                    Generate
-                  </Button>
+                    <Button type="submit" onClick={handleCancelClick}>
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      startIcon={<GetAppIcon />}
+                      onClick={handleGenerateClick}
+                    >
+                      Generate
+                    </Button>
+                  </ButtonGroup>
                 </Box>
               </Grid>
             </Grid>

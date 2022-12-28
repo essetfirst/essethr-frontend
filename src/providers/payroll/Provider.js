@@ -26,42 +26,6 @@ const types = {
 
 const initialState = { payrolls: [], isLoading: false, error: null };
 
-// const updatePayrollReducer = (state, action) => {
-//   const { type, payload, error } = action;
-//   switch (type) {
-//     case types.UPDATE_PAYROLL_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case types.UPDATE_PAYROLL_SUCCESS:
-//       return { ...state, payrolls: payload, isLoading: false, error: null };
-//     case types.UPDATE_PAYROLL_FAILURE:
-//       return { ...state, isLoading: false, error };
-//   }
-// };
-
-// const approvePayrollReducer = (state, action) => {
-//   const { type, payload, error } = action;
-//   switch (type) {
-//     case types.APPROVE_PAYROLL_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case types.APPROVE_PAYROLL_SUCCESS:
-//       return { ...state, payrolls: payload, isLoading: false, error: null };
-//     case types.APPROVE_PAYROLL_FAILURE:
-//       return { ...state, isLoading: false, error };
-//   }
-// };
-
-// const deletePayrollReducer = (state, action) => {
-//   const { type, payload, error } = action;
-//   switch (type) {
-//     case types.DELETE_PAYROLL_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case types.DELETE_PAYROLL_SUCCESS:
-//       return { ...state, message: payload, isLoading: false, error: null };
-//     case types.DELETE_PAYROLL_FAILURE:
-//       return { ...state, isLoading: false, error };
-//   }
-// };
-
 const fetchPayrollsReducer = (state, action) => {
   const { type, payload, error } = action;
   switch (type) {
@@ -104,14 +68,6 @@ const fetchPayrollsReducer = (state, action) => {
   }
 };
 
-// const reducer = combineReducers({
-//   fetchPayrolls: fetchPayrollsReducer,
-//   generatePayroll: generatePayrollReducer,
-//   updatePayroll: updatePayrollReducer,
-//   approvePayroll: approvePayrollReducer,
-//   deletePayroll: deletePayrollReducer,
-// });
-
 const Provider = ({ children }) => {
   const { currentOrg } = useOrg();
   const [state, dispatch] = React.useReducer(
@@ -119,18 +75,19 @@ const Provider = ({ children }) => {
     initialState
   );
 
-  console.log("[PayrollProvider]: Line 121 -> state", state);
-
-  const onFetchPayrolls = React.useCallback(async () => {
+  const onFetchPayrolls = React.useCallback(() => {
     try {
       dispatch({ type: types.FETCH_PAYROLL_REQUEST });
-      const { success, payrolls, error } = await API.payroll.getAll({});
-      success
-        ? dispatch({ type: types.FETCH_PAYROLL_SUCCESS, payload: payrolls })
-        : dispatch({ type: types.FETCH_PAYROLL_ERROR, error });
-    } catch (error) {
-      console.error(error);
-      dispatch({ type: types.FETCH_PAYROLL_ERROR, error });
+      const { success, payrolls, error } = API.payroll.getAll(currentOrg._id);
+      if (success) {
+        console.log("Payrollsssssssssss: ", payrolls);
+        dispatch({ type: types.FETCH_PAYROLL_SUCCESS, payload: payrolls });
+      } else {
+        dispatch({ type: types.FETCH_PAYROLL_FAILURE, error });
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: types.FETCH_PAYROLL_FAILURE, error: e });
     }
   }, [currentOrg]);
 

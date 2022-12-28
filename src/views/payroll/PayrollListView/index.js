@@ -6,12 +6,8 @@ import { useSnackbar } from "notistack";
 import { makeStyles, Chip, Typography, Link } from "@material-ui/core";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import {
-  Search as SearchIcon,
   Check as ApproveIcon,
   Delete as DeleteIcon,
-  // UploadCloud as ImportIcon,
-  // Download as ExportIcon,
-  // Printer as PrintIcon,
   ChevronRight as ArrowRightIcon,
 } from "react-feather";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -61,28 +57,19 @@ const PayrollListView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  // const { state, onFetchPayrolls, onUpdatePayroll, onDeletePayroll } =
-  //   usePayroll() || {};
-
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { notificationSnackbar } = useNotificationSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
 
-  // const fetchPayrolls = onFetchPayrolls(notify);
-  const handleUpdatePayroll = async () => {
-    // onUpdatePayroll();
-  };
-  const handleDeletePayroll = async () => {
-    // onDeletePayroll();
-  };
-  // const handleDeletePayroll = onDeletePayroll(notify);
+  const handleUpdatePayroll = async () => {};
+  const handleDeletePayroll = async () => {};
 
   const fetchPayroll = React.useCallback(() => {
     dispatch({ type: types.REQUESTING });
     API.payroll
-      .getAll()
+      .getAll({})
       .then(({ success, payroll, error }) => {
         success
           ? dispatch({ type: types.REQUEST_SUCCESS, payload: payroll })
@@ -103,7 +90,7 @@ const PayrollListView = () => {
   React.useEffect(() => {
     console.log("Stateeeeeeeeeee", state);
     fetchPayroll();
-  }, []);
+  }, [fetchPayroll]);
 
   const handleRetry = () => {
     // onFetchPayrolls();
@@ -173,7 +160,7 @@ const PayrollListView = () => {
           {
             field: "title",
             label: "Title",
-            renderCell: ({ _id, title }) => (
+            renderCell: ({ _id, payrollTitle }) => (
               <Typography
                 variant="subtitle2"
                 // component={Link}
@@ -181,7 +168,7 @@ const PayrollListView = () => {
                 onClick={() => handleRowClick({ _id })}
                 style={{ cursor: "pointer" }}
               >
-                {title}
+                {payrollTitle}
               </Typography>
             ),
           },

@@ -172,19 +172,16 @@ const Provider = ({ children }) => {
       .getAll()
       .then(({ success, leaves, error }) => {
         if (success) {
-          console.log(`Get leaves request successful.`, leaves);
           dispatch({
             type: types.FETCH_LEAVES_SUCCESS,
             payload: leaves,
             error: "",
           });
         } else {
-          console.log(`Get leaves request not successful.`);
           dispatch({ type: types.FETCH_LEAVES_FAILURE, error });
         }
       })
       .catch((e) => {
-        console.log(`Get leaves request not successful.`);
         dispatch({
           type: types.FETCH_LEAVES_FAILURE,
           error: categorizeError(e),
@@ -222,17 +219,17 @@ const Provider = ({ children }) => {
     API.leaves
       .add(leaveInfo)
       .then(({ success, message, error }) => {
-        console.log("Comeeeeeeeeeeeeeeeeeee", message);
         if (success) {
           dispatch({
             type: types.REGISTER_LEAVE_SUCCESS,
             payload: message,
           });
+          notify({ success: true, message });
           fetchLeaves();
         } else {
           dispatch({ type: types.REGISTER_LEAVE_FAILURE, error });
+          notify({ success: false, error });
         }
-        notify({ success, leaveInfo, error });
       })
       .catch((e) => {
         dispatch({ type: types.REGISTER_LEAVE_FAILURE, error: String(e) });
@@ -273,7 +270,7 @@ const Provider = ({ children }) => {
             type: types.UPDATE_LEAVE_SUCCESS,
             payload: message,
           });
-          fetchLeaves();
+          // fetchLeaves();
         } else {
           dispatch({ type: types.UPDATE_LEAVE_FAILURE, error });
         }

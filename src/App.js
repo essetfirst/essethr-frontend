@@ -10,7 +10,7 @@ import AttendanceProvider from "./providers/attendance/Provider";
 import LeaveProvider from "./providers/leave/Provider";
 import NotificationSnackbarProvider from "./providers/notification-snackbar/Provider";
 import defaultConfig from "./config";
-import { defaultTheme, darkTheme } from "./theme";
+import { lightTheme, darkTheme } from "./theme";
 import ErrorBoundary from "./components/ErrorBoundary";
 import RoutesComponent from "./Routes";
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -24,7 +24,7 @@ const App = ({ config: appConfig }) => {
 
   const { darkMode } = useTheme();
   const mode = React.useMemo(
-    () => (darkMode ? darkTheme : defaultTheme),
+    () => (darkMode ? darkTheme : lightTheme),
     [darkMode]
   );
 

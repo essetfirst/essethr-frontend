@@ -7,7 +7,6 @@ import TabbedComponent from "../../../components/TabbedComponent";
 import LeavesPanel from "./LeavesPanel";
 import EntitlementsPanel from "./EntitlementsPanel";
 import useLeave from "../../../providers/leave";
-import sort from "../../../helpers/sort";
 
 const LeaveManagementView = () => {
   const {
@@ -49,9 +48,12 @@ const LeaveManagementView = () => {
   };
 
   const handleUpdateLeave = (leaveId, leaveUpdate) => {
+    console.log(leaveId, leaveUpdate);
     updateLeave(notify)(leaveId, leaveUpdate);
   };
+
   const handleDeleteLeave = (leaveId) => {
+    console.log(leaveId);
     deleteLeave(notify)(leaveId);
   };
 

@@ -76,20 +76,26 @@ const LeaveFormDialog = ({
               )
             }
             onSubmit={(values) => {
-              let requestInfo = {
-                ...values,
-              };
-
-              console.log("Gooajdhsgdguydguisgdhsdhsgdgshdgh", requestInfo);
-              if (values.duration === 1 || values.duration === 2) {
-                requestInfo.duration = 0.5;
-                requestInfo.to = values.from;
-              } else if (values.duration === 3) {
-                requestInfo.duration = 1;
+              if (action === "register") {
+                onSubmit({
+                  ...values,
+                  duration: computeDateDiff(
+                    values.startDate,
+                    values.endDate
+                  ).toString(),
+                });
               } else {
-                requestInfo.duration = computeDateDiff(values.from, values.to);
+                onSubmit({
+                  ...values,
+                  duration: computeDateDiff(
+                    values.startDate,
+                    values.endDate
+                  ).toString(),
+                });
               }
-              onSubmit(requestInfo);
+
+              console.log(action);
+
               handleDialogClose();
             }}
             onCancel={handleDialogClose}

@@ -37,20 +37,14 @@ const useStyles = makeStyles((theme) => ({
 
 const DashboardView = () => {
   const classes = useStyles();
-  const navigate = useNavigate();
-
   const { org } = useOrg();
   const { employees, departments, positions } = org;
-
-  // const handleAddEmployeeClick = () => {
-  //   navigate("/app/employees/new");
-  // };
-
-  // const handleAddReportClick = () => {
-  //   navigate("/app/reports/");
-  // };
-
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    console.log("org", org);
+    console.log("employees", employees);
+    console.log("departments", departments);
+    console.log("positions", positions);
+  }, []);
   return (
     <PageView
       className={classes.root}
@@ -59,30 +53,6 @@ const DashboardView = () => {
         <span style={{ verticalAlign: "middle" }}>
           <DashboardIcon />
         </span>
-      }
-      actions={
-        [
-          // {
-          //   label: "Add Employee",
-          //   icon: { node: <AddEmployeeIcon size="18" /> },
-          //   handler: handleAddEmployeeClick,
-          //   otherProps: {
-          //     size: "small",
-          //     variant: "contained",
-          //     color: "primary",
-          //   },
-          // },
-          // {
-          //   label: "Create Report",
-          //   icon: { node: <AddReportIcon size="18" /> },
-          //   handler: handleAddReportClick,
-          //   otherProps: {
-          //     size: "small",
-          //     variant: "contained",
-          //     color: "secondary",
-          //   },
-          // },
-        ]
       }
     >
       <Grid container spacing={2}>

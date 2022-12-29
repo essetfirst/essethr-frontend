@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     fontFamily: "Poppins",
     marginLeft: "-10rem",
-    // background: theme.palette.background.default,
   },
   button: {
     margin: theme.spacing(1),
@@ -53,7 +52,10 @@ ErrorBoxComponent.propTypes = {
 };
 
 ErrorBoxComponent.defaultProps = {
-  onRetry: () => {},
+  onRetry: () => {
+    console.log("Retry");
+    window.location.reload();
+  },
 };
 
 export default ErrorBoxComponent;

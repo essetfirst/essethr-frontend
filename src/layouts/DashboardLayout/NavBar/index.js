@@ -19,9 +19,7 @@ import {
   TimeToLeaveOutlined as LeaveIcon,
   DashboardOutlined as DashboardIcon,
   ApartmentOutlined as OrganizationIcon,
-  MenuBookOutlined as MenuBookIcon,
 } from "@material-ui/icons";
-import MenuIcon from "@material-ui/icons/Menu";
 import GroupIcon from "@material-ui/icons/Group";
 import TimerIcon from "@material-ui/icons/Timer";
 import AssessmentIcon from "@material-ui/icons/Assessment";
@@ -30,7 +28,6 @@ import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import NavItem from "./NavItem";
 import RecentActorsIcon from "@material-ui/icons/RecentActors";
 import useAuth from "../../../providers/auth";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 

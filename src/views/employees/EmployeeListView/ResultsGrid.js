@@ -8,71 +8,110 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 const useEmployeeCardStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    height: "100%",
+    marginTop: "10px",
+    padding: theme.spacing(2),
   },
-  cover: {},
+
+  content: {
+    flexGrow: 1,
+  },
 }));
 const CoolEmployeeCard = ({ employee, onEdit, onDelete }) => {
   const classes = useEmployeeCardStyles();
   const {
     firstName,
     surName,
-    lastName,
     departmentDetails,
     positionDetails,
     phone,
     email,
   } = employee;
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
-  console.log("deppppppppppppppp",departmentDetails);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  const name = `${firstName} ${surName} ${lastName}`;
-  const avatar = "https://icons8.com/icon/GysS4Q3exahA/name";
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const name = `${firstName} ${surName}`;
+  const avatar = `https://ui-avatars.com/api/?name=${name}&background=0D8ABC&color=fff&size=128`;
   return (
-    <Card className={classes.root}>
-      <Box m={1} p={1} display="flex" justifyContent="center">
-        <Avatar
-          style={{ width: "128px", height: "128px", borderRadius: "5px" }}
-          src={avatar}
-        />
-      </Box>
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h3" gutterBottom>
-              {name}
-            </Typography>
-          </Grid>
-          <Grid item xs>
-            <Typography variant="body1" gutterBottom>
-              <strong>Job Title: </strong>
-              {positionDetails.title}
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              <strong>Department: </strong>
-              {departmentDetails.name}
-            </Typography>
-            <Typography variant="h6" gutterBottom>
-              <strong>Work phone: </strong>
-              {phone}
-            </Typography>
-          </Grid>
-          <Grid item xs>
-            <Typography variant="h6" gutterBottom>
-              <strong>Mobile phone: </strong>
-              {"N/A"}
-            </Typography>
-            <Typography variant="h6" gutterBottom>
-              <strong>Email address: </strong>
-              {email}
-            </Typography>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+    <>
+      <Card className={classes.root}>
+        <CardContent className={classes.content}>
+          <Box display="flex" alignItems="center">
+            <Avatar src={avatar} style={{ width: "70px", height: "70px" }} />
+            <div style={{ flexGrow: 1 }}>
+              <IconButton
+                aria-label="more"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: 48 * 4.5,
+                  },
+                }}
+              >
+                <MenuItem onClick={onEdit}>
+                  <EditIcon style={{ color: "teal", margin: "0 10px" }} />
+                  Edit
+                </MenuItem>
+                <MenuItem onClick={onDelete}>
+                  <DeleteIcon style={{ color: "#cf5345", margin: "0 10px" }} />
+                  Delete
+                </MenuItem>
+              </Menu>
+            </div>
+            <Box ml={2}>
+              <Typography variant="h3" color="textPrimary" mb={2}>
+                {name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <strong>Department:</strong>{" "}
+                {departmentDetails && departmentDetails.name
+                  ? departmentDetails.name
+                  : "N/A"}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <strong>Position:</strong>{" "}
+                {positionDetails && positionDetails.title
+                  ? positionDetails.title
+                  : "N/A"}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <strong>Phone:</strong> {phone ? phone : "N/A"}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <strong>Email:</strong> {email ? email : "N/A"}
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
@@ -84,11 +123,11 @@ const ResultsGrid = ({
   onDeleteClicked,
 }) => {
   return (
-    <Box mt={1} mb={1}>
-      <Grid container spacing={2}>
-        {employees.map(({ _id, department, position, ...employeeDetails }) => {
-          return (
-            <Grid key={_id} item xs={12} sms={12} md={12}>
+    <Grid container spacing={3}>
+      {employees.map(({ _id, department, position, ...employeeDetails }) => {
+        return (
+          <>
+            <Grid key={_id} item xs={12} sms={12} md={4}>
               <CoolEmployeeCard
                 employee={{
                   _id,
@@ -100,10 +139,10 @@ const ResultsGrid = ({
                 onDelete={() => onDeleteClicked(_id)}
               />
             </Grid>
-          );
-        })}
-      </Grid>
-    </Box>
+          </>
+        );
+      })}
+    </Grid>
   );
 };
 

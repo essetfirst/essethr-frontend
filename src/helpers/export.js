@@ -28,8 +28,6 @@ export const makeExcel = async (data, filename) => {
   XLSX.utils.book_append_sheet(wb, ws);
   const wopts = { bookType: "xlsx", bookSST: false, type: "array" };
   const wbout = await XLSX.write(wb, wopts);
-  filename = "employees list";
-
   downloadFile(wbout, `${filename}_${moment().format("YYYY-MM-DD")}.xlsx`, {
     type: "application/octet-stream",
   });

@@ -108,6 +108,7 @@ class ErrorBoundary extends React.Component {
                 >
                   <AutorenewIcon />
                   {"    "}
+                  Reload
                 </Fab>
               </Box>
             </Grid>

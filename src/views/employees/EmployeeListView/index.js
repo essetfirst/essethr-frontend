@@ -211,7 +211,7 @@ const EmployeeListView = () => {
   const handleExportClick = async () => {
     const columns = [
       {
-        label: "Employee ID",
+        label: "EmployeeID",
         field: "employeeId",
       },
       {
@@ -219,7 +219,7 @@ const EmployeeListView = () => {
         field: "firstName",
       },
       {
-        label: "Sur Name",
+        label: "Last Name",
         field: "surName",
       },
       {
@@ -283,7 +283,7 @@ const EmployeeListView = () => {
       };
     });
 
-    await makeExcel(getTableDataForExport(rows, columns));
+    await makeExcel(getTableDataForExport(rows, columns), "Employees");
     notify({
       success: true,
       message: "Exporting data to excel successful!",
@@ -460,9 +460,20 @@ const EmployeeListView = () => {
         />
       ) : (
         <ResultsGrid
-          employees={(state.employees || []).filter((d) =>
-            String(d.firstName).includes(filters)
-          )}
+          employees={(state.employees || []).filter((d) => {
+            return (
+              String(
+                d.firstName
+                  .toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+              ).includes(filters) ||
+              String(d.surName.toLowerCase()).includes(filters) ||
+              String(d.position).includes(filters) ||
+              String(d.department).includes(filters) ||
+              String(d.gender).includes(filters)
+            );
+          })}
           departmentsMap={departmentsMap}
           positionsMap={positionsMap}
           onEditClicked={handleEditClick}

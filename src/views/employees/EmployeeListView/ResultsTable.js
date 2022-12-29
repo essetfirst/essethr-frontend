@@ -11,6 +11,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import PhoneIcon from "@material-ui/icons/Phone";
 import PrintIcon from "@material-ui/icons/Print";
 import LoadingComponent from "../../../components/LoadingComponent";
+
 const ResultsTable = ({
   org,
   onSortParamsChange,
@@ -143,7 +144,7 @@ const ResultsTable = ({
                 },
               },
             ]}
-            data={employees}
+            data={employees || []}
             rowActions={[
               {
                 icon: <VisibilityIcon fontSize="small" />,
@@ -163,7 +164,6 @@ const ResultsTable = ({
               },
             ]}
             selectionEnabled={true}
-            requestState={requestState === "loading" ? "loading" : "success"}
             selectionActions={[
               {
                 label: "Print IDs",
@@ -198,18 +198,14 @@ const ResultsTable = ({
                 department,
                 position,
               }) => {
-                const employee = {
-                  id: employeeId || _id,
-                  org: org.name,
-                  name: `${firstName} ${surName}`,
-                  department: department
-                    ? departmentsMap[department].name
-                    : "Department",
-                  jobTitle: position
-                    ? positionsMap[position].title
-                    : "Job Title",
+                return {
+                  _id,
+                  employeeId,
+                  firstName,
+                  surName,
+                  department: (departmentsMap[department] || {}).name,
+                  position: (positionsMap[position] || {}).title,
                 };
-                return employee;
               }
             )}
         />

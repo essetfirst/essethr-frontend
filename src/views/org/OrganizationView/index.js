@@ -70,8 +70,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
     width: "100%",
     borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.25)",
-    backgroundColor: "#fbfbfb",
   },
   divider: {
     margin: theme.spacing(2, 0),

@@ -93,11 +93,12 @@ const EmployeeProfileView = () => {
     content: () => employeePrintableCardRef.current,
   });
 
-  const fetchEmployee = React.useCallback(async () => {
+  const fetchEmployee = React.useCallback(() => {
     dispatch({ type: types.FETCH_EMPLOYEE_REQUEST });
-    await API.employees
+    API.employees
       .getDetails(params.id)
       .then(({ success, employee, error }) => {
+        console.log("Gettttttt in ", employee);
         success
           ? dispatch({
               type: types.FETCH_EMPLOYEE_SUCCESS,
@@ -155,10 +156,11 @@ const EmployeeProfileView = () => {
         <Container maxWidth="md">
           <Box mb={4} display="flex" alignItems="center">
             <Typography
+              style={{ verticalAlign: "middle" }}
+              variant="h5"
               color="textPrimary"
               component={Link}
-              href={"/app/employees"}
-              style={{ verticalAlign: "middle" }}
+              href="/app/employees"
             >
               <span style={{ verticalAlign: "middle" }}>
                 <BackIcon fontSize="small" />
@@ -170,7 +172,7 @@ const EmployeeProfileView = () => {
                   fontWeight: 500,
                   lineHeight: 1.57,
                   margin: 0,
-                  fontSize: "0.95rem",
+                  fontSize: "1rem",
                 }}
               >
                 Employees
@@ -184,9 +186,9 @@ const EmployeeProfileView = () => {
                   <CustomAvatar
                     size="2"
                     src={
-                      state.employee && state.employee.gender === "Male"
-                        ? require("../../../assets/images/male_no_profile.png")
-                        : require("../../../assets/images/female_no_profile.png")
+                      state.employee && state.employee.image
+                        ? state.employee.image
+                        : require("../../../assets/images/male_no_profile.jpg")
                     }
                     alt={`${name}`}
                     className={classes.avatar}

@@ -14,6 +14,7 @@ const AttendanceView = () => {
           <TimerIcon fontSize="large" />
         </span>
       }
+      backPath="/app/dashboard"
     >
       <AttendancePanel />
     </PageView>

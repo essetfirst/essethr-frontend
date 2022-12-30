@@ -352,6 +352,7 @@ const EmployeeListView = () => {
           <GroupRoundedIcon fontSize="large" />
         </span>
       }
+      backPath="/app/dashboard"
       actions={[
         {
           type: "button",

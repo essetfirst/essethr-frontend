@@ -133,7 +133,12 @@ const PayrollListView = () => {
   return (
     <PageView
       title="Payroll"
-      icon={<CreditCardIcon />}
+      icon={
+        <span style={{ verticalAlign: "middle" }}>
+          <CreditCardIcon fontSize="large" />
+        </span>
+      }
+      backPath="/app/dashboard"
       actions={[
         {
           type: "button",

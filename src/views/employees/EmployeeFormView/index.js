@@ -163,7 +163,6 @@ const EmployeeFormView = ({ employeeId }) => {
       });
   };
   const handleSubmitForm = (values) => {
-    console.log(values);
     if (isCreateForm) {
       handleCreateEmployee(values);
     } else {
@@ -178,15 +177,11 @@ const EmployeeFormView = ({ employeeId }) => {
       <Box display="flex" flexDirection="column" height="100%">
         <Container maxWidth={false}>
           <Box display="flex" justifyContent="left">
-            <Typography
-              align="left"
-              color="textPrimary"
-              variant="h4"
-              gutterBottom
-              className={classes.title}
-            >
-              {title}
-            </Typography>
+            <Box display="flex" justifyContent="left">
+              <Typography className={classes.title} variant="h2">
+                {title}
+              </Typography>
+            </Box>
           </Box>
 
           <Formik
@@ -206,10 +201,9 @@ const EmployeeFormView = ({ employeeId }) => {
                 email: "",
                 address: "",
                 address2: "",
-
                 department: "",
                 position: "",
-                contractType: "Permanent",
+                contractType: "",
                 startDate: new Date().toISOString().slice(0, 10),
                 endDate: new Date().toISOString().slice(0, 10),
                 hireDate: new Date().toISOString().slice(0, 10),
@@ -243,25 +237,19 @@ const EmployeeFormView = ({ employeeId }) => {
                   "Choose contract type"
                 )
                 .required("Contract type is required"),
-              startDate: Yup.date(),
+              startDate: Yup.date().required("Start date is required"),
               endDate: Yup.date(),
               hireDate: Yup.date().required("Hire date is required"),
             })}
             onSubmit={(values, { resetForm }) => {
-              setStatus(isCreateForm ? "Create" : "Saving changes...");
-              console.log(values);
-              if (
-                handleSubmitForm({
-                  ...values,
-                  status:
-                    values.endDate &&
-                    values.endDate >= new Date().toDateString()
-                      ? "Inactive"
-                      : "Active",
-                  org: currentOrg,
-                })
-              )
-                console.log({ ...values });
+              handleSubmitForm({
+                ...values,
+                status:
+                  values.endDate &&
+                  values.endDate < new Date().toISOString().slice(0, 10)
+                    ? "Inactive"
+                    : "Active",
+              });
               resetForm();
             }}
           >
@@ -289,7 +277,21 @@ const EmployeeFormView = ({ employeeId }) => {
                           onChange: handleChange,
                           onBlur: handleBlur,
                           required: true,
-                          GridProps: { sm: 12 },
+                          GridProps: { sm: 12, md: 6, lg: 4 },
+                        },
+                        {
+                          label: "Contract Type",
+                          name: "contractType",
+                          onChange: handleChange,
+                          onBlur: handleBlur,
+                          select: true,
+                          required: true,
+                          selectOptions: [
+                            { value: "Permanent", label: "Permanent" },
+                            { value: "Temporary", label: "Temporary" },
+                            { value: "Internship", label: "Internship" },
+                          ],
+                          GridProps: { sm: 12, md: 6, lg: 6 },
                         },
                         {
                           label: "First name",
@@ -405,6 +407,14 @@ const EmployeeFormView = ({ employeeId }) => {
                           name: "startDate",
                           required: true,
                           type: "date",
+                          onChange: handleChange,
+                          onBlur: handleBlur,
+                          GridProps: { sm: 12, md: 6, lg: 6 },
+                        },
+                        {
+                          // label: "image (Optional)",
+                          name: "image",
+                          type: "file",
                           onChange: handleChange,
                           onBlur: handleBlur,
                           GridProps: { sm: 12, md: 6, lg: 6 },

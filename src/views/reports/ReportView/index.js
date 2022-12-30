@@ -52,7 +52,15 @@ const StandardReportsPanel = () => {
 
 const ReportView = () => {
   return (
-    <PageView title="Reports" icon={<BarChart />}>
+    <PageView
+      title="Reports"
+      icon={
+        <span verticalAlign="middle">
+          <BarChart fontSize="large" />
+        </span>
+      }
+      backPath="/app/dashboard"
+    >
       <TabbedComponent
         tabs={[
           { label: "Standard Reports", panel: <StandardReportsPanel /> },

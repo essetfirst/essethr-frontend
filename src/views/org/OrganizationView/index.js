@@ -15,6 +15,7 @@ import {
   Grid,
   Typography,
   makeStyles,
+  Avatar,
 } from "@material-ui/core";
 
 import {
@@ -65,7 +66,12 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Poppins",
   },
   card: {
-    marginTop: theme.spacing(3),
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(3),
+    width: "100%",
+    borderRadius: "8px",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.25)",
+    backgroundColor: "#fbfbfb",
   },
   divider: {
     margin: theme.spacing(2, 0),
@@ -83,12 +89,11 @@ const useStyles = makeStyles((theme) => ({
 const OrganizationView = ({ id }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-
   const params = useParams();
-
   const { notificationSnackbar } = useNotificationSnackbar();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
+
   const {
     currentOrg,
     org,
@@ -111,360 +116,77 @@ const OrganizationView = ({ id }) => {
   } = useOrg();
 
   const [state, dispatch] = React.useReducer(reducer, getInitialState(org));
-
+  const [sortParamss, setSortParamss] = React.useState("firstName");
+  const [orderDir, setOrdirDir] = React.useState("asc");
+  const [tabLabel, setTabLabel] = React.useState("Departments");
+  const [deleteDialog, setDeleteDialog] = React.useState({
+    open: false,
+    id: null,
+  });
   const orgId = id || params.id || currentOrg;
-  const fetchOrg = React.useCallback(
-    (orgId) => {
-      dispatch({ type: types.REQUESTING });
-      API.orgs
-        .getById(orgId)
-        .then(({ success, org, error }) => {
-          success
-            ? dispatch({ type: types.REQUEST_SUCCESS, payload: org })
-            : dispatch({ type: types.REQUEST_ERROR, error });
-        })
-        .catch((e) => {
-          console.error(e.message);
-          dispatch({
-            type: types.REQUEST_ERROR,
-            error: "Something went wrong.",
-          });
+
+  const fetchOrg = React.useCallback((orgId) => {
+    dispatch({ type: types.REQUESTING });
+    API.orgs
+      .getById(orgId)
+      .then(({ success, org, error }) => {
+        success
+          ? dispatch({ type: types.REQUEST_SUCCESS, payload: org })
+          : dispatch({ type: types.REQUEST_ERROR, error });
+      })
+      .catch((e) => {
+        console.error(e.message);
+        dispatch({
+          type: types.REQUEST_ERROR,
+          error: "Something went wrong.",
         });
-    },
-    [currentOrg, params.id]
-  );
+      });
+  }, []);
 
   React.useEffect(() => {
     if (org) {
       dispatch({ type: types.REQUEST_SUCCESS, payload: org });
     }
+
     // if (orgId) {
     //   fetchOrg(orgId);
     // }
-  }, [org, orgId, fetchOrg]);
+  }, [orgId, org, fetchOrg]);
 
   const handleEditOrgClick = () => {
     navigate("/app/orgs/edit", orgId);
   };
 
-  const departmentsMap = arrayToMap(
-    state.org ? state.org.departments : [],
-    "_id"
-  );
-  const positionsMap = arrayToMap(state.org ? state.org.positions : [], "_id");
-  const leaveTypesMap = arrayToMap(
-    state.org ? state.org.leaveTypes : [],
-    "_id"
-  );
-  const holidaysMap = arrayToMap(state.org ? state.org.holidays : [], "_id");
+  const { departmentsMap, positionsMap, leaveTypesMap, holidaysMap } =
+    mapper(state);
 
-  const handleCreateDepartment = (departmentInfo) => {
-    API.orgs.departments
-      .create(currentOrg, departmentInfo)
-      .then(({ success, department, error }) => {
-        if (success) {
-          addDepartment(
-            {
-              _id: department._id,
-              ...departmentInfo,
-              org: currentOrg,
-            },
-            currentOrg
-          );
-          notify({
-            message: "Department created successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: error,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
+  const {
+    handleDeleteDepartment,
+    handleDeletePosition,
+    handleDeleteLeaveType,
+    handleDeleteHoliday,
+    handleCreateDepartment,
+    handleUpdateDepartment,
+    handleCreatePosition,
+    handleUpdatePosition,
+    handleAddLeaveType,
+    handleUpdateLeaveType,
+    handleAddHoliday,
+    handleUpdateHoliday,
+  } = orgsCrud();
 
-  const handleUpdateDepartment = (departmentInfo) => {
-    console.log(departmentInfo);
-    API.orgs.departments
-      .editById(currentOrg, departmentInfo._id, departmentInfo)
-      .then(({ success, error }) => {
-        if (success) {
-          updateDepartment(departmentInfo);
-          notify({
-            message: "Department updated successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: error,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
+  const {
+    handleSortRequest,
+    handleSortRequestPosition,
+    handleSortRequestLeaveType,
+    handleSortRequestHoliday,
+  } = sortingOrgs();
 
-  const handleDeleteDepartment = (departmentId) => {
-    API.orgs.departments
-      .deleteById(currentOrg, departmentId)
-      .then(({ success, error, message }) => {
-        if (success) {
-          deleteDepartment(departmentId);
-          notify({
-            message: message,
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: error,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        notify({
-          message: "Something went wrong.",
-          type: "error",
-          success: false,
-        });
-      });
-  };
-
-  const handleCreatePosition = (positionInfo) => {
-    API.orgs.positions
-      .create(currentOrg, positionInfo)
-      .then(({ success, position, error }) => {
-        if (success) {
-          addPosition(position);
-          notify({
-            message: "Position created successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: error,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-  const handleUpdatePosition = (positionInfo) => {
-    API.orgs.positions
-      .editById(currentOrg, positionInfo._id, positionInfo)
-      .then(({ success, error }) => {
-        if (success) {
-          updatePosition(positionInfo);
-          notify({
-            message: "Position updated successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: error,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleDeletePosition = (positionId) => {
-    console.log(positionId);
-    API.orgs.positions
-      .deleteById(currentOrg, positionId)
-      .then(({ success, error }) => {
-        if (success) {
-          deletePosition(positionId);
-          notify({
-            message: "Position deleted successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: error,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleAddLeaveType = (leaveTypeInfo) => {
-    API.orgs.leaveTypes
-      .add(currentOrg, leaveTypeInfo)
-      .then(({ success, leaveType, error }) => {
-        if (success) {
-          addLeaveType(leaveType);
-          notify({
-            message: "Success record Leave type",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: "Error record Leave type",
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleUpdateLeaveType = (leaveInfo) => {
-    API.orgs.leaveTypes
-      .editById(currentOrg, leaveInfo._id, leaveInfo)
-      .then(({ success, error }) => {
-        if (success) {
-          updateLeaveType(leaveInfo);
-          notify({
-            message: "Leave type updated successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: "Leave type updated error",
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleDeleteLeaveType = (leaveTypeId) => {
-    API.orgs.leaveTypes
-      .deleteById(currentOrg, leaveTypeId)
-      .then(({ success, error }) => {
-        if (success) {
-          deleteLeaveType(leaveTypeId);
-          notify({
-            message: "Leave type deleted successfully.",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: "Leave type deleted error",
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleAddHoliday = (holidayInfo) => {
-    API.orgs.holidays
-      .add(currentOrg, holidayInfo)
-      .then(({ success, holiday, error }) => {
-        if (success) {
-          addHoliday(holiday);
-          notify({
-            message: "Success record Holiday",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: "Error record Holiday",
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleUpdateHoliday = (holidayInfo) => {
-    console.log(holidayInfo);
-    API.orgs.holidays
-      .editById(currentOrg, holidayInfo._id, holidayInfo)
-      .then(({ success, error }) => {
-        if (success) {
-          updateHoliday(holidayInfo);
-          notify({
-            message: "Success update Holiday",
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: "Error update Holiday",
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleDeleteHoliday = (holidayId) => {
-    console.log(holidayId);
-    API.orgs.holidays
-      .deleteById(currentOrg, holidayId)
-      .then(({ success, message, error }) => {
-        if (success) {
-          deleteHoliday(holidayId);
-          notify({
-            message: message,
-            type: "success",
-            success: true,
-          });
-        } else {
-          notify({
-            message: message,
-            type: "error",
-            success: false,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        notify({
-          message: "Error delete Holiday",
-          type: "error",
-          success: false,
-        });
-      });
-  };
+  const {
+    handleDeleteDialogClose,
+    handleDeleteDialogConfirm,
+    handleDeleteDialogOpen,
+  } = deleteDialogs();
 
   const getSortedList = React.useCallback(
     (departments = [], sortBy, sortOrder) => {
@@ -472,184 +194,13 @@ const OrganizationView = ({ id }) => {
     },
     []
   );
-
-  const [sortParamss, setSortParamss] = React.useState("firstName");
-  const [orderDir, setOrdirDir] = React.useState("asc");
-
-  const onSortParamsChange = (sortParams, orderDir) => {
-    setSortParamss(sortParams);
-    setOrdirDir(orderDir);
-
-    dispatch({
-      type: types.SORT_REQUEST,
-      payload: {
-        sortParams,
-        orderDir,
-      },
-    });
-
-    const sortedList = getSortedList(
-      state.org.departments,
-      sortParams,
-      orderDir
-    );
-
-    dispatch({
-      type: types.REQUEST_SUCCESS,
-      payload: {
-        ...state.org,
-        departments: sortedList,
-      },
-    });
-  };
-
-  const handleSortRequest = (sortParams) => {
-    const isAsc = sortParamss === sortParams && orderDir === "asc";
-    onSortParamsChange(sortParams, isAsc ? "desc" : "asc");
-  };
-
-  const onSortParamsChangePosition = (sortParams, orderDir) => {
-    setSortParamss(sortParams);
-    setOrdirDir(orderDir);
-    dispatch({
-      type: types.SORT_REQUEST,
-      payload: {
-        sortParams,
-        orderDir,
-      },
-    });
-
-    const sortedList = getSortedList(state.org.positions, sortParams, orderDir);
-
-    dispatch({
-      type: types.REQUEST_SUCCESS,
-      payload: {
-        ...state.org,
-        positions: sortedList,
-      },
-    });
-  };
-
-  const handleSortRequestPosition = (sortParams) => {
-    const isAsc = sortParamss === sortParams && orderDir === "asc";
-    onSortParamsChangePosition(sortParams, isAsc ? "desc" : "asc");
-  };
-
-  const onSortParamsChangeLeaveType = (sortParams, orderDir) => {
-    setSortParamss(sortParams);
-    setOrdirDir(orderDir);
-    dispatch({
-      type: types.SORT_REQUEST,
-      payload: {
-        sortParams,
-        orderDir,
-      },
-    });
-
-    const sortedList = getSortedList(
-      state.org.leaveTypes,
-      sortParams,
-      orderDir
-    );
-
-    dispatch({
-      type: types.REQUEST_SUCCESS,
-      payload: {
-        ...state.org,
-        leaveTypes: sortedList,
-      },
-    });
-  };
-
-  const handleSortRequestLeaveType = (sortParams) => {
-    const isAsc = sortParamss === sortParams && orderDir === "asc";
-    onSortParamsChangeLeaveType(sortParams, isAsc ? "desc" : "asc");
-  };
-
-  const onSortParamsChangeHoliday = (sortParams, orderDir) => {
-    setSortParamss(sortParams);
-    setOrdirDir(orderDir);
-    dispatch({
-      type: types.SORT_REQUEST,
-      payload: {
-        sortParams,
-        orderDir,
-      },
-    });
-
-    const sortedList = getSortedList(state.org.holidays, sortParams, orderDir);
-
-    dispatch({
-      type: types.REQUEST_SUCCESS,
-      payload: {
-        ...state.org,
-        holidays: sortedList,
-      },
-    });
-  };
-
-  const handleSortRequestHoliday = (sortParams) => {
-    const isAsc = sortParamss === sortParams && orderDir === "asc";
-    onSortParamsChangeHoliday(sortParams, isAsc ? "desc" : "asc");
-  };
-
-  const [deleteDialog, setDeleteDialog] = React.useState({
-    open: false,
-    id: null,
-  });
-
-  //state for tab label  for delete confirmation dialog
-  const [tabLabel, setTabLabel] = React.useState("Departments");
-
-  const handleDeleteDialogOpen = (id) => {
-    const tabLabel = document.querySelector(".Mui-selected").innerText;
-    console.log(tabLabel);
-    setTabLabel(tabLabel);
-    setDeleteDialog({
-      open: true,
-      id,
-    });
-
-    // console.log(id);
-  };
-
-  const handleDeleteDialogClose = () => {
-    setDeleteDialog({
-      open: false,
-      id,
-    });
-  };
-
-  //switch case for delete dialog confirm using tab label
-  const handleDeleteDialogConfirm = () => {
-    switch (tabLabel) {
-      case "DEPARTMENTS":
-        handleDeleteDepartment(deleteDialog.id);
-        break;
-      case "POSITIONS":
-        handleDeletePosition(deleteDialog.id);
-        break;
-      case "LEAVE TYPES":
-        handleDeleteLeaveType(deleteDialog.id);
-        break;
-      case "HOLIDAYS":
-        handleDeleteHoliday(deleteDialog.id);
-        break;
-      default:
-        break;
-    }
-    setDeleteDialog({
-      open: false,
-    });
-  };
-
   return (
     <PageView
       className={classes.root}
       title={`${state.org.name}`}
       icon={
-        <span style={{ marginLeft: "23px" }}>
-          <VerifiedUserRoundedIcon fontSize="medium" />
+        <span style={{ verticalAlign: "middle", marginLeft: "16px" }}>
+          <VerifiedUserRoundedIcon fontSize="large" />
         </span>
       }
     >
@@ -666,15 +217,7 @@ const OrganizationView = ({ id }) => {
               onDelete={handleDeleteDialogConfirm}
             />
 
-            <Card
-              style={{
-                padding: "10px",
-                margin: "0px",
-                borderRadius: "7px",
-                width: "100rem",
-                marginBottom: "10px",
-              }}
-            >
+            <Card className={classes.card} style={{ marginBottom: "20px" }}>
               <CardContent>
                 <Box display="flex" alignItems="center" mr={1}>
                   <Grid item sm={8}>
@@ -819,6 +362,510 @@ const OrganizationView = ({ id }) => {
       </Container>
     </PageView>
   );
+
+  function deleteDialogs() {
+    const handleDeleteDialogOpen = (id) => {
+      const tabLabel = document.querySelector(".Mui-selected").innerText;
+      console.log(tabLabel);
+      setTabLabel(tabLabel);
+      setDeleteDialog({
+        open: true,
+        id,
+      });
+    };
+
+    const handleDeleteDialogClose = () => {
+      setDeleteDialog({
+        open: false,
+        id,
+      });
+    };
+
+    //switch case for delete dialog confirm using tab label
+    const handleDeleteDialogConfirm = () => {
+      switch (tabLabel) {
+        case "DEPARTMENTS":
+          handleDeleteDepartment(deleteDialog.id);
+          break;
+        case "POSITIONS":
+          handleDeletePosition(deleteDialog.id);
+          break;
+        case "LEAVE TYPES":
+          handleDeleteLeaveType(deleteDialog.id);
+          break;
+        case "HOLIDAYS":
+          handleDeleteHoliday(deleteDialog.id);
+          break;
+        default:
+          break;
+      }
+      setDeleteDialog({
+        open: false,
+      });
+    };
+    return {
+      handleDeleteDialogClose,
+      handleDeleteDialogConfirm,
+      handleDeleteDialogOpen,
+    };
+  }
+
+  function orgsCrud() {
+    const handleCreateDepartment = (departmentInfo) => {
+      API.orgs.departments
+        .create(currentOrg, departmentInfo)
+        .then(({ success, department, error }) => {
+          if (success) {
+            addDepartment(
+              {
+                _id: department._id,
+                ...departmentInfo,
+                org: currentOrg,
+              },
+              currentOrg
+            );
+            notify({
+              message: "Department created successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: error,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleUpdateDepartment = (departmentInfo) => {
+      console.log(departmentInfo);
+      API.orgs.departments
+        .editById(currentOrg, departmentInfo._id, departmentInfo)
+        .then(({ success, error }) => {
+          if (success) {
+            updateDepartment(departmentInfo);
+            notify({
+              message: "Department updated successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: error,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleDeleteDepartment = (departmentId) => {
+      API.orgs.departments
+        .deleteById(currentOrg, departmentId)
+        .then(({ success, error, message }) => {
+          if (success) {
+            deleteDepartment(departmentId);
+            notify({
+              message: message,
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: error,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          notify({
+            message: "Something went wrong.",
+            type: "error",
+            success: false,
+          });
+        });
+    };
+
+    const handleCreatePosition = (positionInfo) => {
+      API.orgs.positions
+        .create(currentOrg, positionInfo)
+        .then(({ success, position, error }) => {
+          if (success) {
+            addPosition(position);
+            notify({
+              message: "Position created successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: error,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+    const handleUpdatePosition = (positionInfo) => {
+      API.orgs.positions
+        .editById(currentOrg, positionInfo._id, positionInfo)
+        .then(({ success, error }) => {
+          if (success) {
+            updatePosition(positionInfo);
+            notify({
+              message: "Position updated successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: error,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleDeletePosition = (positionId) => {
+      console.log(positionId);
+      API.orgs.positions
+        .deleteById(currentOrg, positionId)
+        .then(({ success, error }) => {
+          if (success) {
+            deletePosition(positionId);
+            notify({
+              message: "Position deleted successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: error,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleAddLeaveType = (leaveTypeInfo) => {
+      API.orgs.leaveTypes
+        .add(currentOrg, leaveTypeInfo)
+        .then(({ success, leaveType, error }) => {
+          if (success) {
+            addLeaveType(leaveType);
+            notify({
+              message: "Success record Leave type",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: "Error record Leave type",
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleUpdateLeaveType = (leaveInfo) => {
+      API.orgs.leaveTypes
+        .editById(currentOrg, leaveInfo._id, leaveInfo)
+        .then(({ success, error }) => {
+          if (success) {
+            updateLeaveType(leaveInfo);
+            notify({
+              message: "Leave type updated successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: "Leave type updated error",
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleDeleteLeaveType = (leaveTypeId) => {
+      API.orgs.leaveTypes
+        .deleteById(currentOrg, leaveTypeId)
+        .then(({ success, error }) => {
+          if (success) {
+            deleteLeaveType(leaveTypeId);
+            notify({
+              message: "Leave type deleted successfully.",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: "Leave type deleted error",
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleAddHoliday = (holidayInfo) => {
+      API.orgs.holidays
+        .add(currentOrg, holidayInfo)
+        .then(({ success, holiday, error }) => {
+          if (success) {
+            addHoliday(holiday);
+            notify({
+              message: "Success record Holiday",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: "Error record Holiday",
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleUpdateHoliday = (holidayInfo) => {
+      console.log(holidayInfo);
+      API.orgs.holidays
+        .editById(currentOrg, holidayInfo._id, holidayInfo)
+        .then(({ success, error }) => {
+          if (success) {
+            updateHoliday(holidayInfo);
+            notify({
+              message: "Success update Holiday",
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: "Error update Holiday",
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const handleDeleteHoliday = (holidayId) => {
+      console.log(holidayId);
+      API.orgs.holidays
+        .deleteById(currentOrg, holidayId)
+        .then(({ success, message, error }) => {
+          if (success) {
+            deleteHoliday(holidayId);
+            notify({
+              message: message,
+              type: "success",
+              success: true,
+            });
+          } else {
+            notify({
+              message: message,
+              type: "error",
+              success: false,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          notify({
+            message: "Error delete Holiday",
+            type: "error",
+            success: false,
+          });
+        });
+    };
+    return {
+      handleDeleteDepartment,
+      handleDeletePosition,
+      handleDeleteLeaveType,
+      handleDeleteHoliday,
+      handleCreateDepartment,
+      handleUpdateDepartment,
+      handleCreatePosition,
+      handleUpdatePosition,
+      handleAddLeaveType,
+      handleUpdateLeaveType,
+      handleAddHoliday,
+      handleUpdateHoliday,
+    };
+  }
+
+  function sortingOrgs() {
+    const onSortParamsChange = (sortParams, orderDir) => {
+      setSortParamss(sortParams);
+      setOrdirDir(orderDir);
+
+      dispatch({
+        type: types.SORT_REQUEST,
+        payload: {
+          sortParams,
+          orderDir,
+        },
+      });
+
+      const sortedList = getSortedList(
+        state.org.departments,
+        sortParams,
+        orderDir
+      );
+
+      dispatch({
+        type: types.REQUEST_SUCCESS,
+        payload: {
+          ...state.org,
+          departments: sortedList,
+        },
+      });
+    };
+
+    const handleSortRequest = (sortParams) => {
+      const isAsc = sortParamss === sortParams && orderDir === "asc";
+      onSortParamsChange(sortParams, isAsc ? "desc" : "asc");
+    };
+
+    const onSortParamsChangePosition = (sortParams, orderDir) => {
+      setSortParamss(sortParams);
+      setOrdirDir(orderDir);
+      dispatch({
+        type: types.SORT_REQUEST,
+        payload: {
+          sortParams,
+          orderDir,
+        },
+      });
+
+      const sortedList = getSortedList(
+        state.org.positions,
+        sortParams,
+        orderDir
+      );
+
+      dispatch({
+        type: types.REQUEST_SUCCESS,
+        payload: {
+          ...state.org,
+          positions: sortedList,
+        },
+      });
+    };
+
+    const handleSortRequestPosition = (sortParams) => {
+      const isAsc = sortParamss === sortParams && orderDir === "asc";
+      onSortParamsChangePosition(sortParams, isAsc ? "desc" : "asc");
+    };
+
+    const onSortParamsChangeLeaveType = (sortParams, orderDir) => {
+      setSortParamss(sortParams);
+      setOrdirDir(orderDir);
+      dispatch({
+        type: types.SORT_REQUEST,
+        payload: {
+          sortParams,
+          orderDir,
+        },
+      });
+
+      const sortedList = getSortedList(
+        state.org.leaveTypes,
+        sortParams,
+        orderDir
+      );
+
+      dispatch({
+        type: types.REQUEST_SUCCESS,
+        payload: {
+          ...state.org,
+          leaveTypes: sortedList,
+        },
+      });
+    };
+
+    const handleSortRequestLeaveType = (sortParams) => {
+      const isAsc = sortParamss === sortParams && orderDir === "asc";
+      onSortParamsChangeLeaveType(sortParams, isAsc ? "desc" : "asc");
+    };
+
+    const onSortParamsChangeHoliday = (sortParams, orderDir) => {
+      setSortParamss(sortParams);
+      setOrdirDir(orderDir);
+      dispatch({
+        type: types.SORT_REQUEST,
+        payload: {
+          sortParams,
+          orderDir,
+        },
+      });
+
+      const sortedList = getSortedList(
+        state.org.holidays,
+        sortParams,
+        orderDir
+      );
+
+      dispatch({
+        type: types.REQUEST_SUCCESS,
+        payload: {
+          ...state.org,
+          holidays: sortedList,
+        },
+      });
+    };
+
+    const handleSortRequestHoliday = (sortParams) => {
+      const isAsc = sortParamss === sortParams && orderDir === "asc";
+      onSortParamsChangeHoliday(sortParams, isAsc ? "desc" : "asc");
+    };
+    return {
+      handleSortRequest,
+      handleSortRequestPosition,
+      handleSortRequestLeaveType,
+      handleSortRequestHoliday,
+    };
+  }
 };
 
 OrganizationView.propTypes = {
@@ -826,3 +873,16 @@ OrganizationView.propTypes = {
 };
 
 export default OrganizationView;
+function mapper(state) {
+  const departmentsMap = arrayToMap(
+    state.org ? state.org.departments : [],
+    "_id"
+  );
+  const positionsMap = arrayToMap(state.org ? state.org.positions : [], "_id");
+  const leaveTypesMap = arrayToMap(
+    state.org ? state.org.leaveTypes : [],
+    "_id"
+  );
+  const holidaysMap = arrayToMap(state.org ? state.org.holidays : [], "_id");
+  return { departmentsMap, positionsMap, leaveTypesMap, holidaysMap };
+}

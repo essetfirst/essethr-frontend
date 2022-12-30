@@ -66,6 +66,7 @@ const LeaveManagementView = () => {
           <LeaveIcon fontSize="large" />
         </span>
       }
+      backPath="/app/dashboard"
     >
       <TabbedComponent
         tabs={[

@@ -348,11 +348,16 @@ const LeavesPanel = ({
       <List
         employeesMap={employeesMap}
         leaveTypeMap={leaveTypeMap}
-        leaves={(state.fetchLeaves.leaves || []).filter((d) => {
-          return String(
-            (employeesMap[d.employeeId] || {}).firstName.toLowerCase()
-          ).includes(filters);
-        })}
+        leaves={
+          state.fetchLeaves.leaves || []
+          //   .filter((d) => {
+          //   return (
+          //     String(
+          //       (employeesMap[d.employeeId] || {}).firstName.toLowerCase()
+          //     ).includes(filters) || {}
+          //   );
+          // })
+        }
         requesting={state.fetchLeaves.isLoading}
         error={state.fetchLeaves.error}
         onRetry={() => {

@@ -20,6 +20,7 @@ import {
   DashboardOutlined as DashboardIcon,
   ApartmentOutlined as OrganizationIcon,
 } from "@material-ui/icons";
+import ContactlessIcon from "@material-ui/icons/Contactless";
 import GroupIcon from "@material-ui/icons/Group";
 import TimerIcon from "@material-ui/icons/Timer";
 import AssessmentIcon from "@material-ui/icons/Assessment";
@@ -169,7 +170,6 @@ const NavBar = ({
   onMinimize,
   minimized,
   onLogout,
-  ...rest
 }) => {
   const classes = useStyles();
   const location = useLocation();
@@ -301,43 +301,43 @@ const NavBar = ({
       <Divider />
       <Hidden mdDown>
         <Box
-          height="100%"
           display="flex"
           flexDirection="column"
-          justifyContent="center"
           alignItems="center"
-          p={1}
-          ml={1}
-          mr={1}
+          justifyContent="center"
+          mt={1}
+          mb={3}
         >
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            startIcon={<ContactlessIcon size="large" />}
+            onClick={() => {
+              window.open(
+                "https://essethr-fron-dev-kch2mcb4lukj4.herokuapp.com/home",
+                "_blank"
+              );
+            }}
+            style={{
+              backgroundColor: "#648dae",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#f50057",
+              },
+            }}
+          >
+            Contact Us
+          </Button>
+          <Box mt={1} />
           <Typography
-            align="center"
             color="textSecondary"
             variant="body2"
             className={classes.name}
           >
-            Powered by{" "}
-            <Typography align="center" component="span">
-              FutureTech LLC
-            </Typography>
+            Powered by
+            <strong> Esset HR</strong>
           </Typography>
-
-          <Box
-            display="flex"
-            justifyContent="center"
-            mt={1}
-            className={classes.name}
-          >
-            <Button
-              color="primary"
-              href="https://futuretech.et"
-              variant="contained"
-              size="small"
-              className={classes.contactUsButton}
-            >
-              Contact us
-            </Button>
-          </Box>
         </Box>
       </Hidden>
     </Box>

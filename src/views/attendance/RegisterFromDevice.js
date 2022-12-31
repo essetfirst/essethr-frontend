@@ -3,8 +3,6 @@ import React from "react";
 import { useSnackbar } from "notistack";
 import UIfx from "uifx";
 
-import { makeStyles } from "@material-ui/core";
-
 import API from "../../api";
 
 import useOrg from "../../providers/org";

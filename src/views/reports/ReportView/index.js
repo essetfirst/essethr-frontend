@@ -14,14 +14,8 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 const StandardReportsPanel = () => {
   return (
     <>
-      <Grid
-        container
-        spacing={2}
-        direction="row"
-        justify="center"
-        alignItems="flex-start"
-      >
-        <Grid item sm={12} md={12} lg={10}>
+      <Grid container spacing={2} direction="row" alignItems="flex-start">
+        <Grid item sm={12} md={12} lg={12}>
           <CardList
             cards={[
               {

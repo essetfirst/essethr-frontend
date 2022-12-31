@@ -6,8 +6,6 @@ import EmployeeSelect from "./EmployeeSelect";
 import API from "../../../api";
 import { useNavigate } from "react-router-dom";
 import PageView from "../../../components/PageView";
-import ImportDataFile from "./ImportDataFile";
-import { readExcelFile } from "../../../helpers/import";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import {
   Backdrop,
@@ -16,12 +14,8 @@ import {
   ButtonGroup,
   Card,
   CardContent,
-  Checkbox,
   CircularProgress,
-  Collapse,
   Divider,
-  FormControl,
-  FormControlLabel,
   Grid,
   makeStyles,
   MenuItem,

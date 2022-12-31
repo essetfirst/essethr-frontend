@@ -22,10 +22,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     padding: theme.spacing(3),
-    border: "2px solid #ccc",
     borderRadius: 5,
     boxSizing: "border-box",
-    border: "3px solid #ececec",
   },
   fileDragOver: {
     background: darken(theme.palette.primary.light, 0.2),
@@ -134,7 +132,6 @@ const ImportDataFile = ({ acceptedFileTypes, onReadSelectedFile }) => {
         <label>
           <input
             id="importFiles"
-            type="file"
             name="salesDataFile"
             type="file"
             onChange={handleFileSelection}
@@ -152,7 +149,7 @@ const ImportDataFile = ({ acceptedFileTypes, onReadSelectedFile }) => {
           >
             {state.isImporting ? (
               <>
-                <CircularProgress /> 'Importing file'
+                <CircularProgress /> Importing...
               </>
             ) : (
               "Choose file"

@@ -3,8 +3,6 @@ import React from "react";
 import moment from "moment";
 
 import {
-  // Avatar,
-  // Badge,
   Box,
   Button,
   Card,
@@ -13,20 +11,8 @@ import {
   colors,
   Divider,
   Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction,
-  // List,
-  // ListItem,
-  // ListItemText,
-  // Tooltip,
   Typography,
 } from "@material-ui/core";
-
-// import { AvatarGroup } from "@material-ui/lab";
-
 import {
   ArrowDropDown as ArrowDropDownIcon,
   AvTimer as PresentIcon,
@@ -35,81 +21,28 @@ import {
 } from "@material-ui/icons";
 
 import useAttendance from "../../providers/attendance";
-
 import BarGraphComponent from "../../components/BarGraphComponent";
-import PieChartComponent from "../../components/PieChartComponent";
-// import CardWithTitle from "../../components/CardWithTitle";
-// import CustomAvatar from "../../components/CustomAvatar";
+// import PieChartComponent from "../../components/PieChartComponent";
 
 import Chart from "react-apexcharts";
 
-const DailyAttendanceSummaryByRemarChart = ({ attendanceByRemark = [] }) => {
-  return (
-    <PieChartComponent
-      pies={attendanceByRemark.map(({ value, ...rest }) => ({
-        datum: value,
-        ...rest,
-      }))}
-      height={200}
-      displayLegend={false}
-    />
-  );
-};
-
-const DailyAttendanceSummaryByRemarkList = ({ attendanceByRemark = [] }) => {
-  return (
-    <Box mt={2}>
-      <List>
-        {attendanceByRemark.map(({ color, icon: Icon, title, value }) => (
-          // <Box
-          //   display="flex"
-          //   alignItems="center"
-          //   key={title}
-          //   p={1}
-          // >
-          // <ListItem>
-          <ListItem key={title} divider>
-            <ListItemIcon style={{ color }}>
-              <Icon size={18} />
-            </ListItemIcon>
-            {/* <ListItemText primary={`${title} (${value})`} color={color} /> */}
-            <Typography variant="body2">{title}</Typography>
-            <Box flex={1} />
-            <Typography variant="h5">{value}</Typography>
-
-            {/* </ListItem> */}
-            {/* <Typography color="textPrimary" variant="h6">
-              <span style={{ color }}>
-                <Icon color={color} />
-              </span>{" "}
-              {title}
-            </Typography>{" "}
-            <Typography style={{ color }} variant="h6">
-              {Math.round((value / totalEmployees) * 100)}%
-            </Typography> */}
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-};
+// const DailyAttendanceSummaryByRemarChart = ({ attendanceByRemark = [] }) => {
+//   return (
+//     <PieChartComponent
+//       pies={attendanceByRemark.map(({ value, ...rest }) => ({
+//         datum: value,
+//         ...rest,
+//       }))}
+//       height={200}
+//       displayLegend={false}
+//     />
+//   );
+// };
 
 const DailyAttendanceSummaryByRemark = ({
-  date,
   remarks,
   dailyAttendanceByRemark = {},
 }) => {
-  console.log(
-    "[DailyAttendanceSummaryByRemark]: Line 104 -> dailyAttendanceByRemark: ",
-    dailyAttendanceByRemark
-  );
-
-  const remarkSeries = remarks.map(({ label, ...rest }) => ({
-    title: label,
-    value: dailyAttendanceByRemark[String(label).toLowerCase()],
-    ...rest,
-  }));
-
   return (
     <Card>
       <CardHeader
@@ -127,74 +60,145 @@ const DailyAttendanceSummaryByRemark = ({
       <Divider />
       <CardContent>
         <Grid container>
-          <Grid item xs={8}>
+          <Grid item xs={12}>
             <div className="mixed-chart">
               <Chart
-                height={300}
+                height={400}
                 options={{
+                  animations: {
+                    enabled: true,
+                    easing: "easeinout",
+                    speed: 800,
+                    animateGradually: {
+                      enabled: true,
+                      delay: 150,
+                    },
+                    dynamicAnimation: {
+                      enabled: true,
+                      speed: 350,
+                    },
+                  },
+
                   chart: {
-                    background: "transparent",
-                    stacked: false,
+                    id: "basic-bar",
+
+                    stacked: true,
                     toolbar: {
-                      show: false,
+                      show: true,
+
+                      tools: {
+                        download: true,
+                        selection: true,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        reset: true,
+                      },
+                    },
+
+                    zoom: {
+                      enabled: true,
+                      type: "x",
+                      autoScaleYaxis: true,
+
+                      zoomedArea: {
+                        fill: {
+                          color: "#90CAF9",
+                          opacity: 0.4,
+
+                          gradient: {
+                            enabled: true,
+                            shade: "light",
+                            type: "vertical",
+                            shadeIntensity: 0.5,
+                            gradientToColors: undefined,
+                            inverseColors: true,
+                            opacityFrom: 1,
+                            opacityTo: 1,
+                            stops: [0, 50, 100],
+
+                            colorStops: [],
+                          },
+                        },
+                        stroke: {
+                          color: "#0D47A1",
+                          width: 1,
+                          dashArray: 0,
+                        },
+                      },
                     },
                   },
-                  // colors: remarkSeries.map(({ color }) => color) || [
-                  //   "#688eff",
-                  //   "#4CAF50",
-                  //   "#FF9800",
-                  // ],
-                  colors: ["#688eff", "#4CAF50", "#FF9800"],
-                  fill: { opacity: 1 },
-                  // labels: remarkSeries.map(({ title }) => title) || [
-                  //   "On route",
-                  //   "Available",
-                  //   "Out of service",
-                  // ],
-                  labels: ["On route", "Available", "Out of service"],
+                  xaxis: {
+                    categories: ["Present", "Late", "Absent"],
+                  },
                   plotOptions: {
-                    radialBar: {
-                      track: { background: "#F9FAFC" },
+                    bar: {
+                      horizontal: false,
+                      columnWidth: "55%",
+                      endingShape: "rounded",
                     },
                   },
-                  theme: { mode: "light" },
+
+                  fill: {
+                    colors: [
+                      colors.teal[500],
+                      colors.orange[500],
+                      colors.red[500],
+                    ],
+                  },
+                  dataLabels: {
+                    enabled: true,
+                  },
+
+                  stroke: {
+                    show: true,
+                    width: 10,
+                    colors: ["transparent"],
+                  },
+                  yaxis: {
+                    title: {
+                      text: "Attendance",
+                    },
+                  },
+                  tooltip: {
+                    y: {
+                      formatter: function (val) {
+                        return val;
+                      },
+                    },
+                  },
+                  legend: {
+                    displayLegend: true,
+                    labels: {
+                      colors: colors.grey[600],
+                      useSeriesColors: false,
+
+                      formatter: function (val) {
+                        return val;
+                      },
+                    },
+                  },
                 }}
-                // series={remarkSeries.map(({ value }) => value) || [38, 50, 12]}
-                series={[38, 50, 12]}
-                type="radialBar"
+                series={[
+                  {
+                    name: "series-1",
+                    data: [50, 20, 75],
+                  },
+                ]}
+                type="area"
                 width="100%"
               />
             </div>
 
-            <DailyAttendanceSummaryByRemarChart
+            {/* <DailyAttendanceSummaryByRemarChart
               attendanceByRemark={remarkSeries}
-            />
+            /> */}
           </Grid>
-          <Grid item xs={4}>
-            <Box p={1}>
-              <Typography variant="body2">Total</Typography>
-              <Typography variant="h5">100</Typography>
-              <Divider />
-              {/* <List>
-                <ListItem divider disableGutters>
-                  <Box
-                    style={{
-                      border: "3px solid rgb(104, 142, 255)",
-                      borderRadius: "50%",
-                      height: "16px",
-                      marginRight: "8px",
-                      width: "16px",
-                    }}
-                  />
-                  <Typography variant="body2">On route</Typography>
-                  <Box flex={1} />
-                  <Typography variant="h5">36</Typography>
-                </ListItem>
-              </List> */}
-              <DailyAttendanceSummaryByRemarkList
-                attendanceByRemark={remarkSeries}
-              />
-            </Box>
+          <Grid item xs={12}>
+            {/* <DailyAttendanceSummaryByRemarkList
+              attendanceByRemark={remarkSeries}
+            /> */}
           </Grid>
         </Grid>
       </CardContent>
@@ -202,48 +206,51 @@ const DailyAttendanceSummaryByRemark = ({
   );
 };
 
-const WeeklyAttendanceSummaryByRemarkChart = ({ weeklyAttendanceByRemark }) => {
+const WeeklyAttendanceSummaryByRemarkChart = () => {
   return (
     <BarGraphComponent
       steps={5}
-      bars={weeklyAttendanceByRemark}
-      height={200}
-      labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
-      displayLegend={false}
+      height={400}
+      labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+      displayLegend={true}
+      bars={[
+        {
+          label: "Present",
+          color: colors.teal[500],
+          data: [10, 20, 30, 40, 50, 60, 70],
+        },
+        {
+          label: "Late",
+          color: colors.orange[500],
+          data: [30, 40, 50, 60, 70, 80, 90],
+        },
+        {
+          label: "Absent",
+          color: colors.red[500],
+          data: [90, 80, 70, 60, 50, 40, 30],
+        },
+      ]}
+
+      // bars={weeklyAttendanceByRemark.map(({ label, color, data }) => ({
+      //   label,
+      //   color,
+      //   data,
+      // }))}
     />
   );
 };
-
-// const WeeklyAttendanceSummaryByRemarkFooter = () => {
-//   return (
-//     <Typography variant="body2" color="textSecondary" align="center">
-//       {(function (offset) {
-//         const daysOfWeek = getWeekDates(currentDate, offset);
-
-//         return `${new Date(daysOfWeek[0]).toDateString()} - ${new Date(
-//           daysOfWeek[daysOfWeek.length - 2]
-//         ).toDateString()}`;
-//       })(0)}
-//     </Typography>
-//   );
-// };
 
 const WeeklyAttendanceSummaryByRemark = ({
   remarks,
   weeklyAttendanceByRemark,
 }) => {
-  console.log(
-    "[WeeklyAttendanceSummaryByRemark]: Line 172 -> weeklAttendanceByRemark: ",
-    weeklyAttendanceByRemark
-  );
-
   const remarkSeries = remarks.map(({ label, color }) => ({
     label,
     color,
     data: weeklyAttendanceByRemark[String(label).toLowerCase()],
   }));
   return (
-    <Card>
+    <Card style={{ height: "100%" }}>
       <CardHeader
         title={
           <Typography color="textSecondary" gutterBottom variant="h6">
@@ -251,69 +258,36 @@ const WeeklyAttendanceSummaryByRemark = ({
           </Typography>
         }
         action={
+          //week list when clicked should show the daily attendance for that week
           <Button endIcon={<ArrowDropDownIcon />} size="small" variant="text">
-            Last 7 days
+            Week || {moment().format("MMM YYYY")}
           </Button>
         }
       />
 
       <Divider />
 
-      <CardContent>
+      <CardContent style={{ height: "100%" }} className="p-0">
         <WeeklyAttendanceSummaryByRemarkChart
           weeklyAttendanceByRemark={remarkSeries}
         />
-        {/* <Box mt={1} />
-        <WeeklyAttendanceSummaryByRemarkFooter /> */}
       </CardContent>
     </Card>
   );
 };
 
-// const EmployeeAttendanceSummaryByRemark = () => {
-//   return (
-//     <CardWithTitle title="Attendance Records">
-//       <Grid container spacing={2}>
-//         <Grid item xs={12} sm={12} md={6}>
-//           <Box>
-//             <Typography variant="h6">Attendance </Typography>
-//             <Divider />
-//             <AvatarGroup>
-//               {[
-//                 { name: "Abraham Gebrekidan", late: 3, absent: 0 },
-//                 { name: "Endalk Hussien", late: 4 },
-//               ].map(({ name, late, avatar }) => (
-//                 <Tooltip title={`${name} is late ${late} times`}>
-//                   <Badge label={late} variant="standard">
-//                     <CustomAvatar alt={name} src={avatar}>
-//                       {String(name)
-//                         .split(" ")
-//                         .map((n) => n[0])
-//                         .join("")}
-//                     </CustomAvatar>
-//                   </Badge>
-//                 </Tooltip>
-//               ))}
-//             </AvatarGroup>
-//           </Box>
-//         </Grid>
-//       </Grid>
-//     </CardWithTitle>
-//   );
-// };
-
 const AttendanceSummary = ({ totalEmployees = 0 }) => {
-  const [currentDate, setCurrentDate] = React.useState(new Date().setDate(27));
+  const [currentDate] = React.useState(new Date().setDate(27));
   const remarks = [
     {
       label: "Present",
       icon: PresentIcon,
-      color: colors.teal[500],
+      color: colors.green[500],
     },
     {
       label: "Late",
       icon: AbsentIcon,
-      color: colors.yellow[600],
+      color: colors.orange[500],
     },
     {
       label: "Absent",
@@ -321,18 +295,12 @@ const AttendanceSummary = ({ totalEmployees = 0 }) => {
       color: colors.red[500],
     },
   ];
-  //   const graphButtonOptions = [
-  //     { label: "Last 7 days", value: 1 },
-  //     { label: "Current month", value: 2 },
-  //     { label: "Previous month", value: 3 },
-  //     { label: "Current year", value: 4 },
-  //   ];
 
   const { state, fetchAttendance } = useAttendance();
 
   React.useEffect(() => {
     (async () => await fetchAttendance(null, null, currentDate))();
-  }, [currentDate]);
+  }, [currentDate, fetchAttendance]);
 
   const getDailyAttendance = (attendanceByDate, date) =>
     attendanceByDate && attendanceByDate !== undefined
@@ -351,7 +319,6 @@ const AttendanceSummary = ({ totalEmployees = 0 }) => {
           : prev,
       {}
     );
-    console.log("Map count: ", count);
     return count;
   };
 
@@ -400,10 +367,6 @@ const AttendanceSummary = ({ totalEmployees = 0 }) => {
             )}
           />
         </Grid>
-
-        {/* <Grid item xs={12} sm={12}>
-          <EmployeeAttendanceSummaryByRemark />
-        </Grid> */}
       </Grid>
     </Box>
   );

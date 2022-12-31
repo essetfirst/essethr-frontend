@@ -11,22 +11,12 @@ import {
   List,
   ListItem,
   ListItemText,
-  makeStyles,
   TextField,
-  Typography,
 } from "@material-ui/core";
 import PhoneIcon from "@material-ui/icons/Phone";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import EmailIcon from "@material-ui/icons/Email";
 import EditRoundedIcon from "@material-ui/icons/EditRounded";
-
-const useStyles = makeStyles((theme) => ({
-  root: {},
-  icon: {
-    fontSize: "12px",
-    margin: theme.spacing(1),
-  },
-}));
 
 const PropertyList = ({ propertiesMap }) => {
   return (
@@ -43,39 +33,24 @@ const PropertyList = ({ propertiesMap }) => {
         <ListItem
           key={property}
           style={{
-            display: "flex",
-            // flexDirection: "row",
-            justifyContent: "start",
-            webkitBoxPack: "start",
-            alignItems: "center",
-            webkitBoxAlign: "center",
+            padding: "4px",
+            margin: "3px",
             position: "relative",
-            textDecoration: "none",
-            width: "100%",
-            boxSizing: "border-box",
-            textAlign: "left",
-            borderBottom: "1px solid rgb(230, 232, 240)",
-            backgroundClip: "padding-box",
-            padding: "12px 24px",
+            display: "block",
+            width: "98%",
           }}
         >
           <ListItemText
             primary={
-              <Box style={{ flex: "1 1 0%", marginTop: "0px" }}>
-                <Typography variant="subtitle2">{property}</Typography>
-                <Typography variant="body2">
-                  {propertiesMap[property]}
-                </Typography>
-              </Box>
+              <TextField
+                fullWidth
+                label={property}
+                value={propertiesMap[property]}
+                variant="outlined"
+                margin="dense"
+                size="small"
+              />
             }
-            style={{
-              flex: "1 1 auto",
-              minWidth: "0px",
-              display: "flex",
-              flexDirection: "column",
-              marginTop: "0px",
-              marginBottom: "0px",
-            }}
           />
         </ListItem>
       ))}
@@ -84,8 +59,9 @@ const PropertyList = ({ propertiesMap }) => {
 };
 
 const GeneralDetails = ({ details }) => {
-  const classes = useStyles();
-  const handleEditClick = () => {};
+  const handleEditClick = () => {
+    console.log("Edit button clicked");
+  };
 
   return (
     <Box>
@@ -192,7 +168,7 @@ const GeneralDetails = ({ details }) => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment>
-                          <PhoneIcon />
+                          <PhoneIcon style={{ marginRight: "10px" }} />
                         </InputAdornment>
                       ),
                     }}
@@ -209,7 +185,7 @@ const GeneralDetails = ({ details }) => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment>
-                          <PhoneIcon />
+                          <PhoneIcon style={{ marginRight: "10px" }} />
                         </InputAdornment>
                       ),
                     }}
@@ -226,7 +202,7 @@ const GeneralDetails = ({ details }) => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment>
-                          <EmailIcon />
+                          <EmailIcon style={{ marginRight: "10px" }} />
                         </InputAdornment>
                       ),
                     }}
@@ -243,7 +219,7 @@ const GeneralDetails = ({ details }) => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment>
-                          <LocationOnIcon />
+                          <LocationOnIcon style={{ marginRight: "10px" }} />
                         </InputAdornment>
                       ),
                     }}
@@ -260,7 +236,7 @@ const GeneralDetails = ({ details }) => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment>
-                          <LocationOnIcon />
+                          <LocationOnIcon style={{ marginRight: "10px" }} />
                         </InputAdornment>
                       ),
                     }}
@@ -270,7 +246,6 @@ const GeneralDetails = ({ details }) => {
             </CardContent>
           </Card>
         </Grid>
-
         {/* Contract details section */}
         <Grid item xs={12} sm={12} md={12}>
           <Card>

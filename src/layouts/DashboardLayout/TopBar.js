@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTheme } from "../../providers/theme";
@@ -26,10 +26,19 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.20)",
+    zIndex: theme.zIndex.drawer + 100,
+
+    [theme.breakpoints.up("lg")]: {
+      width: "100%",
+    },
+  },
 
   text: {
     fontFamily: "Poppins",
+    fontWeight: 800,
+    fontSize: "1.1rem",
   },
   avatar: {
     borderRadius: 50,
@@ -40,9 +49,9 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
   const { darkMode, toggleDarkMode } = useTheme();
   const { auth, logout } = useAuth();
-  const { currentOrg, setCurrentOrg, setOrg, org } = useOrg();
-  const [orgs, setOrgs] = React.useState([]);
-  const [orgName, setOrgName] = React.useState("");
+  const { setCurrentOrg } = useOrg();
+  const [, setOrgs] = React.useState([]);
+  const [, setOrgName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
 
@@ -71,7 +80,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
       .catch((e) => {
         console.warn(e.message);
       });
-  }, [auth]);
+  }, [auth, setCurrentOrg]);
 
   React.useEffect(() => {
     fetchOrganizations();
@@ -124,7 +133,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             )}
           </IconButton>
         </Box>
-        <Box alignItems="center" display="flex" ml={2}>
+        <Box>
           <IconButton
             onClick={handleClick}
             color="inherit"
@@ -132,14 +141,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             style={{ fontSize: "0.5rem" }}
           >
             <PersonIcon style={{ color: "#fff" }} />
-            <Typography
-              component="span"
-              variant="h6"
-              style={{ color: "#fff" }}
-              className={classes.text}
-            >
-              {org.name}
-            </Typography>
           </IconButton>
           <Box alignItems="center" display="flex" ml={1}>
             <Menu

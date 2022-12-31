@@ -2,13 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useSnackbar } from "notistack";
-import { Box, makeStyles, Typography } from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 import PageView from "../../../components/PageView";
 import API from "../../../api";
 import useOrg from "../../../providers/org";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import arrayToMap from "../../../utils/arrayToMap";
-import filter from "../../../helpers/filter";
 import sort from "../../../helpers/sort";
 import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 import FileImportDialog from "../../../components/common/FileImportDialog";
@@ -26,7 +25,7 @@ import {
   Printer as PrintIcon,
 } from "react-feather";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {},
   image: {
     marginTop: 50,
@@ -105,7 +104,7 @@ const EmployeeListView = () => {
 
   const [viewType, setViewType] = React.useState("list");
 
-  const handleViewChange = (e, value) => {
+  const handleViewChange = (_e, value) => {
     setViewType(value);
   };
 

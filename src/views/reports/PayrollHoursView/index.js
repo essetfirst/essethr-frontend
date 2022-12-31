@@ -1,23 +1,13 @@
 import React from "react";
 
-import {
-  Box,
-  Chip,
-  // CircularProgress,
-  // LinearProgress,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Box, Chip, TextField, Typography } from "@material-ui/core";
 
 import {
   Payment as PayrollHoursIcon,
   CheckCircleOutlineOutlined as CheckIcon,
-  // Error as ErrorIcon,
 } from "@material-ui/icons";
 
 import { Download as ExportIcon } from "react-feather";
-
-import Chart from "react-apexcharts";
 
 import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 
@@ -27,18 +17,12 @@ import {
 } from "../../../constants";
 
 import API from "../../../api";
-
-// import arrayToMap from "../../../utils/arrayToMap";
-
 import PageView from "../../../components/PageView";
 import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
-import CircularProgressWithLabel from "../../../components/CircularProgressWithLabel";
 
 import Searchbar from "../../../components/common/Searchbar";
 import Table from "../../../components/TableComponent";
-
-// import PAYROLL_DATE_HOURS from "./data";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
   return (
@@ -76,67 +60,6 @@ const PayrollHoursFilterbar = ({ filters, onFilterChange }) => {
       searchbarElements={
         <FilterFields filters={filters} onFilterFieldChange={onFilterChange} />
       }
-    />
-  );
-};
-
-const RadialChartWithLabel = ({ height = 50, data }) => {
-  const labels = data.map((d) => d.label),
-    colors = data.map((d) => d.color) || ["#4CAF50"],
-    values = data.map((d) => d.value);
-
-  return (
-    <Chart
-      height={50}
-      options={{
-        chart: {
-          background: "transparent",
-          stacked: false,
-          toolbar: {
-            show: false,
-          },
-        },
-        fill: { opacity: 1 },
-        labels,
-        plotOptions: {
-          radialBar: {
-            dataLabels: {
-              name: {
-                show: true,
-                color: "#65748B",
-                fontSize: "12px",
-                fontWeight: 400,
-                offsetY: 20,
-              },
-              value: {
-                color: "#121828",
-                fontSize: "18px",
-                fontWeight: 600,
-                offsetY: -20,
-              },
-            },
-            hollow: {
-              size: "60%",
-            },
-            track: { background: "#F9FAFC" },
-          },
-        },
-        states: {
-          active: {
-            filter: { type: "none", value: 0 },
-          },
-          hover: {
-            filter: { type: "none", value: 0 },
-          },
-        },
-        theme: {
-          mode: "light",
-        },
-        colors,
-      }}
-      series={values}
-      type="radialBar"
-      width="100%"
     />
   );
 };
@@ -252,6 +175,7 @@ const initialState = {
 };
 const reducer = (state, action) => {
   const { type, payload, error } = action;
+  // eslint-disable-next-line default-case
   switch (type) {
     case types.FETCH_PAYROLL_HOURS_REQUEST:
       return { ...state, isLoading: true, error: null };
@@ -350,7 +274,6 @@ const PayrollHoursView = () => {
       const { success, payrollHours, error } =
         await API.payroll.getPayrollHours({ query: { fromDate, toDate } });
       if (success) {
-        // console.log("Payroll hours: ", payrollHours);
         dispatch({
           type: types.FETCH_PAYROLL_HOURS_SUCCESS,
           payload: payrollHours,
@@ -365,9 +288,8 @@ const PayrollHoursView = () => {
   }, []);
 
   React.useEffect(() => {
-    // console.log("State: ", state);
     fetchPayrollHours(filters.from, filters.to);
-  }, [filters.from, filters.to]);
+  }, [fetchPayrollHours, filters.from, filters.to]);
 
   return (
     <PageView
@@ -375,7 +297,7 @@ const PayrollHoursView = () => {
       title={"Payroll hours"}
       icon={
         <span style={{ verticalAlign: "middle" }}>
-          <PayrollHoursIcon fontSize="medium" />
+          <PayrollHoursIcon fontSize="large" />
         </span>
       }
       actions={[
@@ -386,7 +308,8 @@ const PayrollHoursView = () => {
           handler: handleExportClick,
           otherProps: {
             color: "primary",
-            variant: "text",
+            variant: "contained",
+            size: "small",
           },
         },
       ]}

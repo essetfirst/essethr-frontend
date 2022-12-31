@@ -15,7 +15,6 @@ import {
   Grid,
   Typography,
   makeStyles,
-  Avatar,
 } from "@material-ui/core";
 
 import {
@@ -24,13 +23,12 @@ import {
   PhoneOutlined as PhoneIcon,
 } from "@material-ui/icons";
 
-import { Edit as EditIcon, ArrowDown as ArrowDownIcon } from "react-feather";
+import { Edit as EditIcon } from "react-feather";
 import PageView from "../../../components/PageView";
 import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 import TabbedComponent from "../../../components/TabbedComponent";
 import API from "../../../api";
-import useAuth from "../../../providers/auth";
 import useOrg from "../../../providers/org";
 import arrayToMap from "../../../utils/arrayToMap";
 
@@ -70,18 +68,12 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
     width: "100%",
     borderRadius: "8px",
+
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
   },
   divider: {
     margin: theme.spacing(2, 0),
   },
-  editButton:
-    theme.direction === "rtl"
-      ? {
-          float: "left",
-        }
-      : {
-          float: "right",
-        },
 }));
 
 const OrganizationView = ({ id }) => {
@@ -215,10 +207,10 @@ const OrganizationView = ({ id }) => {
               onDelete={handleDeleteDialogConfirm}
             />
 
-            <Card className={classes.card} style={{ marginBottom: "20px" }}>
+            <Card className={classes.card}>
               <CardContent>
                 <Box display="flex" alignItems="center" mr={1}>
-                  <Grid item sm={8}>
+                  <Grid item sm={12}>
                     <Box mt={1} />
                     {[
                       {
@@ -270,7 +262,7 @@ const OrganizationView = ({ id }) => {
                         variant="outlined"
                         color="primary"
                         onClick={handleEditOrgClick}
-                        endIcon={<EditIcon size={15} />}
+                        endIcon={<EditIcon size={25} />}
                       >
                         Edit
                       </Button>
@@ -281,85 +273,89 @@ const OrganizationView = ({ id }) => {
             </Card>
             <Grid item sm={12}>
               <Divider />
-              {currentOrg === orgId && (
-                <TabbedComponent
-                  key={3}
-                  tabsProps={{
-                    textColor: "primary",
-                    indicatorColor: "primary",
-                  }}
-                  tabs={[
-                    {
-                      label: "Departments",
-                      panel: (
-                        <DepartmentList
-                          departments={state.org.departments}
-                          onSortParamsChange={handleSortRequest}
-                          departmentsMap={departmentsMap}
-                          onCreateDepartment={handleCreateDepartment}
-                          onUpdateDepartment={handleUpdateDepartment}
-                          onDeleteDepartment={handleDeleteDialogOpen}
-                        />
-                      ),
-                    },
-                    {
-                      label: "Positions",
-                      panel: (
-                        <PositionList
-                          positions={state.org.positions}
-                          positionsMap={positionsMap}
-                          departmentsMap={departmentsMap}
-                          onSortParamsChange={handleSortRequestPosition}
-                          onCreatePosition={handleCreatePosition}
-                          onUpdatePosition={handleUpdatePosition}
-                          onDeletePosition={handleDeleteDialogOpen}
-                        />
-                      ),
-                    },
-                    {
-                      label: "Attendance Policy",
-                      panel: (
-                        <AttendancePolicy
-                          orgId={state.org._id}
-                          attendancePolicy={state.org.attendancePolicy}
-                        />
-                      ),
-                    },
-                    {
-                      label: "Leave Types",
-                      panel: (
-                        <LeaveTypeList
-                          leaveTypes={state.org.leaveTypes}
-                          leaveTypesMap={leaveTypesMap}
-                          onAddLeaveType={handleAddLeaveType}
-                          onSortParamsChange={handleSortRequestLeaveType}
-                          onUpdateLeaveType={handleUpdateLeaveType}
-                          onDeleteLeaveType={handleDeleteDialogOpen}
-                        />
-                      ),
-                    },
-                    {
-                      label: "Holidays",
-                      panel: (
-                        <HolidayList
-                          holidays={state.org.holidays}
-                          holidaysMap={holidaysMap}
-                          onAddHoliday={handleAddHoliday}
-                          onSortParamsChange={handleSortRequestHoliday}
-                          onUpdateHoliday={handleUpdateHoliday}
-                          onDeleteHoliday={handleDeleteDialogOpen}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              )}
+              {currentOrg === orgId && tabFunc()}
             </Grid>
           </Grid>
         )}
       </Container>
     </PageView>
   );
+
+  function tabFunc() {
+    return (
+      <TabbedComponent
+        key={3}
+        tabsProps={{
+          textColor: "primary",
+          indicatorColor: "primary",
+        }}
+        tabs={[
+          {
+            label: "Departments",
+            panel: (
+              <DepartmentList
+                departments={state.org.departments}
+                onSortParamsChange={handleSortRequest}
+                departmentsMap={departmentsMap}
+                onCreateDepartment={handleCreateDepartment}
+                onUpdateDepartment={handleUpdateDepartment}
+                onDeleteDepartment={handleDeleteDialogOpen}
+              />
+            ),
+          },
+          {
+            label: "Positions",
+            panel: (
+              <PositionList
+                positions={state.org.positions}
+                positionsMap={positionsMap}
+                departmentsMap={departmentsMap}
+                onSortParamsChange={handleSortRequestPosition}
+                onCreatePosition={handleCreatePosition}
+                onUpdatePosition={handleUpdatePosition}
+                onDeletePosition={handleDeleteDialogOpen}
+              />
+            ),
+          },
+          {
+            label: "Attendance Policy",
+            panel: (
+              <AttendancePolicy
+                orgId={state.org._id}
+                attendancePolicy={state.org.attendancePolicy}
+              />
+            ),
+          },
+          {
+            label: "Leave Types",
+            panel: (
+              <LeaveTypeList
+                leaveTypes={state.org.leaveTypes}
+                leaveTypesMap={leaveTypesMap}
+                onAddLeaveType={handleAddLeaveType}
+                onSortParamsChange={handleSortRequestLeaveType}
+                onUpdateLeaveType={handleUpdateLeaveType}
+                onDeleteLeaveType={handleDeleteDialogOpen}
+              />
+            ),
+          },
+          {
+            label: "Holidays",
+            panel: (
+              <HolidayList
+                holidays={state.org.holidays}
+                holidaysMap={holidaysMap}
+                onAddHoliday={handleAddHoliday}
+                onSortParamsChange={handleSortRequestHoliday}
+                onUpdateHoliday={handleUpdateHoliday}
+                onDeleteHoliday={handleDeleteDialogOpen}
+              />
+            ),
+          },
+        ]}
+      />
+    );
+  }
 
   function deleteDialogs() {
     const handleDeleteDialogOpen = (id) => {
@@ -569,7 +565,7 @@ const OrganizationView = ({ id }) => {
     const handleAddLeaveType = (leaveTypeInfo) => {
       API.orgs.leaveTypes
         .add(currentOrg, leaveTypeInfo)
-        .then(({ success, leaveType, error }) => {
+        .then(({ success, leaveType }) => {
           if (success) {
             addLeaveType(leaveType);
             notify({
@@ -593,7 +589,7 @@ const OrganizationView = ({ id }) => {
     const handleUpdateLeaveType = (leaveInfo) => {
       API.orgs.leaveTypes
         .editById(currentOrg, leaveInfo._id, leaveInfo)
-        .then(({ success, error }) => {
+        .then(({ success }) => {
           if (success) {
             updateLeaveType(leaveInfo);
             notify({
@@ -617,7 +613,7 @@ const OrganizationView = ({ id }) => {
     const handleDeleteLeaveType = (leaveTypeId) => {
       API.orgs.leaveTypes
         .deleteById(currentOrg, leaveTypeId)
-        .then(({ success, error }) => {
+        .then(({ success }) => {
           if (success) {
             deleteLeaveType(leaveTypeId);
             notify({
@@ -641,7 +637,7 @@ const OrganizationView = ({ id }) => {
     const handleAddHoliday = (holidayInfo) => {
       API.orgs.holidays
         .add(currentOrg, holidayInfo)
-        .then(({ success, holiday, error }) => {
+        .then(({ success, holiday }) => {
           if (success) {
             addHoliday(holiday);
             notify({
@@ -666,7 +662,7 @@ const OrganizationView = ({ id }) => {
       console.log(holidayInfo);
       API.orgs.holidays
         .editById(currentOrg, holidayInfo._id, holidayInfo)
-        .then(({ success, error }) => {
+        .then(({ success }) => {
           if (success) {
             updateHoliday(holidayInfo);
             notify({
@@ -691,7 +687,7 @@ const OrganizationView = ({ id }) => {
       console.log(holidayId);
       API.orgs.holidays
         .deleteById(currentOrg, holidayId)
-        .then(({ success, message, error }) => {
+        .then(({ success, message }) => {
           if (success) {
             deleteHoliday(holidayId);
             notify({

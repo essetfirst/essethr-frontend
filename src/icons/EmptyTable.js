@@ -6,6 +6,7 @@ const EmptyTable = () => {
     <img
       src={EmptyTableIcon}
       style={{ width: 32, height: 32, color: "#fff" }}
+      alt="empty table"
     />
   );
 };

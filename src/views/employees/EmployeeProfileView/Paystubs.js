@@ -16,8 +16,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import { Download as ExportIcon, Printer as PrintIcon } from "react-feather";
+import { Download as ExportIcon } from "react-feather";
 
 import TableComponent from "../../../components/TableComponent";
 

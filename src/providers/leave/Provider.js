@@ -3,7 +3,6 @@ import React from "react";
 import { combineReducers } from "..";
 import API from "../../api";
 import categorizeError from "../../helpers/categorize-error";
-import useOrg from "../org";
 import Context from "./Context";
 
 const types = {
@@ -162,8 +161,6 @@ const reducer = combineReducers({
 });
 
 const Provider = ({ children }) => {
-  const { currentOrg } = useOrg();
-
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const fetchLeaves = React.useCallback(() => {
@@ -187,32 +184,29 @@ const Provider = ({ children }) => {
           error: categorizeError(e),
         });
       });
-  }, [currentOrg]);
+  }, []);
 
-  const fetchLeaveAllowances = React.useCallback(
-    (fromDate, toDate) => {
-      dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_REQUEST });
-      API.leaves.allowances
-        .getAll({ query: { from: fromDate, to: toDate } })
-        .then(({ success, allowances, error }) => {
-          if (success) {
-            dispatch({
-              type: types.FETCH_LEAVE_ALLOWANCES_SUCCESS,
-              payload: allowances,
-            });
-          } else {
-            dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_FAILURE, error });
-          }
-        })
-        .catch((e) => {
+  const fetchLeaveAllowances = React.useCallback((fromDate, toDate) => {
+    dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_REQUEST });
+    API.leaves.allowances
+      .getAll({ query: { from: fromDate, to: toDate } })
+      .then(({ success, allowances, error }) => {
+        if (success) {
           dispatch({
-            type: types.FETCH_LEAVE_ALLOWANCES_FAILURE,
-            error: categorizeError(e),
+            type: types.FETCH_LEAVE_ALLOWANCES_SUCCESS,
+            payload: allowances,
           });
+        } else {
+          dispatch({ type: types.FETCH_LEAVE_ALLOWANCES_FAILURE, error });
+        }
+      })
+      .catch((e) => {
+        dispatch({
+          type: types.FETCH_LEAVE_ALLOWANCES_FAILURE,
+          error: categorizeError(e),
         });
-    },
-    [currentOrg]
-  );
+      });
+  }, []);
 
   const addLeave = (notify) => (leaveInfo) => {
     dispatch({ type: types.REGISTER_LEAVE_REQUEST });

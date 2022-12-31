@@ -1,7 +1,5 @@
 import React from "react";
-
 import { useNavigate, useParams } from "react-router-dom";
-
 import {
   makeStyles,
   Box,
@@ -9,19 +7,17 @@ import {
   Menu,
   MenuItem,
   Chip,
-  Link,
   Grid,
   Button,
   Container,
+  IconButton,
 } from "@material-ui/core";
 import {
   ArrowBack as BackIcon,
   Edit as EditIcon,
   KeyboardArrowDown as ActionsIcon,
 } from "@material-ui/icons";
-
 import { useReactToPrint } from "react-to-print";
-
 import PageView from "../../../components/PageView";
 import TabbedComponent from "../../../components/TabbedComponent";
 import CustomAvatar from "../../../components/CustomAvatar";
@@ -36,6 +32,9 @@ import Leaves from "./Leaves";
 import Attendance from "./Attendance";
 import EmployeePrintableIDCard from "./EmployeeCard";
 import LoadingComponent from "../../../components/LoadingComponent";
+import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStation";
+import PrintIcon from "@material-ui/icons/Print";
+import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
 
 import FemaleNoprofileImage from "../../../assets/images/female_no_profile.jpg";
 import MaleNoprofileImage from "../../../assets/images/male_no_profile.jpg";
@@ -98,7 +97,6 @@ const EmployeeProfileView = () => {
     API.employees
       .getDetails(params.id)
       .then(({ success, employee, error }) => {
-        console.log("Gettttttt in ", employee);
         success
           ? dispatch({
               type: types.FETCH_EMPLOYEE_SUCCESS,
@@ -155,29 +153,19 @@ const EmployeeProfileView = () => {
       ) : (
         <Container maxWidth="md">
           <Box mb={4} display="flex" alignItems="center">
-            <Typography
-              style={{ verticalAlign: "middle" }}
-              variant="h5"
-              color="textPrimary"
-              component={Link}
-              href="/app/employees"
-            >
-              <span style={{ verticalAlign: "middle" }}>
-                <BackIcon fontSize="small" />
-              </span>{" "}
-              <Typography
-                variant="subtitle2"
-                component="span"
-                style={{
-                  fontWeight: 500,
-                  lineHeight: 1.57,
-                  margin: 0,
-                  fontSize: "1rem",
-                }}
-              >
-                Employees
-              </Typography>
-            </Typography>
+            <Box flexGrow={1}>
+              <Box display="flex" alignItems="center">
+                <IconButton
+                  onClick={() => navigate(-1)}
+                  style={{ marginRight: 1 }}
+                >
+                  <BackIcon />
+                </IconButton>
+                <Typography style={{ fontWeight: 600, fontSize: 14 }}>
+                  Employees
+                </Typography>
+              </Box>
+            </Box>
           </Box>
           <Box mb={1}>
             <Grid container spacing={4}>
@@ -186,9 +174,9 @@ const EmployeeProfileView = () => {
                   <CustomAvatar
                     size="2"
                     src={
-                      state.employee && state.employee.image
-                        ? state.employee.image
-                        : require("../../../assets/images/male_no_profile.jpg")
+                      state.employee && state.employee.gender === "Male"
+                        ? require("../../../assets/images/male_no_profile.png")
+                        : require("../../../assets/images/female_no_profile.png")
                     }
                     alt={`${name}`}
                     className={classes.avatar}
@@ -256,13 +244,23 @@ const EmployeeProfileView = () => {
             open={Boolean(profileMenuAnchorEl)}
             onClose={handleProfileMenuClose}
           >
-            <MenuItem onClick={handleEditProfileClick}>Edit Profile</MenuItem>
+            <MenuItem onClick={handleEditProfileClick}>
+              <EditIcon style={{ marginRight: "8px" }} />
+              Edit Profile
+            </MenuItem>
             <MenuItem onClick={handleTransferBranchClick}>
+              <TransferWithinAStationIcon style={{ marginRight: "8px" }} />
               Transfer Branch
             </MenuItem>
-            <MenuItem onClick={handlePrint}>Print ID Card</MenuItem>
-            <MenuItem onClick={handleTerminateClick}>Terminate</MenuItem>
-            <MenuItem onClick={handleTerminateClick}>Delete</MenuItem>
+            <MenuItem onClick={handlePrint}>
+              <PrintIcon style={{ marginRight: "8px" }} />
+              Print
+            </MenuItem>
+
+            <MenuItem onClick={handleTerminateClick}>
+              <IndeterminateCheckBoxIcon style={{ marginRight: "8px" }} />
+              Terminate
+            </MenuItem>
           </Menu>
           {state.employee && (
             <EmployeeBranchTransferDialog
@@ -277,7 +275,6 @@ const EmployeeProfileView = () => {
             />
           )}
           {/* </Card> */}
-
           <TabbedComponent
             tabsProps={{ textColor: "primary", indicatorColor: "primary" }}
             tabs={[
@@ -327,8 +324,9 @@ const EmployeeProfileView = () => {
             org: org.name,
             name: `${state.employee ? `${name}` : "Employee "}`,
             image:
-              (state.employee && state.employee.image) ||
-              "https://picsum.photos",
+              (state.employee && state.employee.gender === "Male"
+                ? MaleNoprofileImage
+                : FemaleNoprofileImage) || MaleNoprofileImage,
             department: state.employee
               ? state.employee.departmentDetails.name
               : "Department",

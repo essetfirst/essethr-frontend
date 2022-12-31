@@ -28,7 +28,6 @@ import AttendanceView from "./views/attendance";
 import LeaveManagementView from "./views/leaves/LeaveManagementView";
 import LeavesView from "./views/leaves/LeavesView";
 import LeaveListView from "./views/leaves/LeaveListView";
-// import GeneratePayrunView from "./views/payroll/GeneratePayrunView";
 import PayrollGenerateView from "./views/payroll/PayrollGenerateView";
 import PayrollDetailsView from "./views/payroll/PayrollDetailsView";
 import PayrollListView from "./views/payroll/PayrollListView";
@@ -40,9 +39,6 @@ import EmployeeTurnoverReport from "./views/reports/ReportView/EmployeeTurnover"
 import AgeProfile from "./views/reports/ReportView/AgeProfile";
 import GenderProfile from "./views/reports/ReportView/GenderProfile";
 import JobHistoryReport from "./views/reports/ReportView/JobHistory";
-import LeaveBalancesReport from "./views/reports/ReportView/LeaveBalances";
-// import PayrollHoursReport from "./views/reports/ReportView/PayrollHours";
-import PayrollHistoryReport from "./views/reports/ReportView/PayrollHistory";
 import PayrollHoursView from "./views/reports/PayrollHoursView";
 import SettingsView from "./views/settings/SettingsView";
 import UserListView from "./views/users/UserListView";
@@ -52,14 +48,6 @@ import LeaveBalancesReportView from "./views/reports/LeaveBalancesReportView";
 const RoutesComponent = () => {
   const { auth } = useAuth();
   const { org } = useOrg();
-
-  // const [isAuth, setIsAuth] = React.useState(Boolean(auth.isAuth));
-
-  // React.useEffect(() => {
-  //   console.log("-> Line 94: We are setting isAuth...");
-  //   setIsAuth(Boolean(auth.isAuth));
-  // }, [auth.token]);
-
   const isAuth = auth.isAuth;
 
   const homePath = "/app/dashboard";

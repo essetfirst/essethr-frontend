@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { useSnackbar } from "notistack";
 
-import moment from "moment";
 import TimerOffIcon from "@material-ui/icons/TimerOff";
-import { Button, ButtonGroup, Box, Divider } from "@material-ui/core";
+import { Button, ButtonGroup, Box } from "@material-ui/core";
 import AlarmAddIcon from "@material-ui/icons/AlarmAdd";
 import {
   UploadCloud as ImportIcon,
@@ -65,6 +64,7 @@ const AttendancePanel = () => {
     setFilters({ ...filters, [name]: value });
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const comparisonFns = {
     searchTerm: ({ employeeName }, searchTermFilterValue) =>
       searchTermFilterValue
@@ -77,15 +77,18 @@ const AttendancePanel = () => {
         ? remark === remarkFilterValue
         : true,
   };
-  const getFilteredAttendanceList = React.useCallback((attendance, filters) => {
-    return filter(
-      attendance || [],
-      Object.keys(filters).map((key) => ({
-        value: filters[key],
-        cmpFn: comparisonFns[key],
-      }))
-    );
-  }, []);
+  const getFilteredAttendanceList = React.useCallback(
+    (attendance, filters) => {
+      return filter(
+        attendance || [],
+        Object.keys(filters).map((key) => ({
+          value: filters[key],
+          cmpFn: comparisonFns[key],
+        }))
+      );
+    },
+    [comparisonFns]
+  );
 
   const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
   const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
@@ -96,7 +99,7 @@ const AttendancePanel = () => {
     (attendance, sortBy, sortOrder) => {
       return sort(attendance || [], sortBy, sortOrder);
     },
-    [sort]
+    []
   );
 
   const [registerAction, setRegisterAction] = React.useState("checkin");
@@ -170,16 +173,8 @@ const AttendancePanel = () => {
   };
 
   React.useEffect(() => {
-    console.log(
-      "[AttendancePanel]: Line 268 -> We are in useEffect, attendanceDate has changed: "
-    );
-
     fetchAttendance(null, null, attendanceDate);
-    localStorage.setItem(
-      "attendanceByDate",
-      JSON.stringify(state.attendanceByDate)
-    );
-  }, [attendanceDate]);
+  }, [attendanceDate, fetchAttendance]);
 
   return (
     <div>

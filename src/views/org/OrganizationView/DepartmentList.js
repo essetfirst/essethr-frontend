@@ -15,7 +15,6 @@ import {
 } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {
-  AddOutlined as AddIcon,
   DeleteOutlined as DeleteIcon,
   EditOutlined as EditIcon,
   SearchOutlined as SearchIcon,

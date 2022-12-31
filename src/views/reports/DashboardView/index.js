@@ -1,21 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router";
-
 import moment from "moment";
-
 import { Grid, makeStyles } from "@material-ui/core";
-
-import {
-  // Report as AddReportIcon,
-  DashboardOutlined as DashboardIcon,
-} from "@material-ui/icons";
+import { DashboardOutlined as DashboardIcon } from "@material-ui/icons";
 
 import {} from "react-feather";
-
 import useOrg from "../../../providers/org";
-
-import arrayToMap from "../../../utils/arrayToMap";
-
 import PageView from "../../../components/PageView";
 
 import TotalEmployees from "./TotalEmployees";
@@ -23,28 +12,17 @@ import TotalAttendance from "./TotalAttendance";
 import TotalLeaves from "./TotalLeaves";
 import TotalPayroll from "./TotalPayroll";
 
-// import DailyAttendanceSummary from "./DailyAttendanceSummary";
 import AttendanceSummary from "../../attendance/AttendanceSummary";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {},
 }));
-
-// My lovely little niece in #Tigray (active war zone right now):
-// "I wanna be the first female to develop an AI that can screen for #sexism #racism #tyranny #injustice and I would call it #ArtificialGod"
-// Me:
-// Sure! Nothing is impossible dear! If lead by ethical people like @timnitGebru
 
 const DashboardView = () => {
   const classes = useStyles();
   const { org } = useOrg();
   const { employees, departments, positions } = org;
-  React.useEffect(() => {
-    console.log("org", org);
-    console.log("employees", employees);
-    console.log("departments", departments);
-    console.log("positions", positions);
-  }, []);
+  React.useEffect(() => {}, [departments, employees, org, positions]);
   return (
     <PageView
       className={classes.root}
@@ -79,11 +57,38 @@ const DashboardView = () => {
           <TotalPayroll />
         </Grid>
 
-        <Grid item xs={12} sm={12}>
-          <AttendanceSummary
-            attendanceByDate={{}}
-            totalEmployees={(employees || []).length}
-          />
+        <Grid
+          container
+          spacing={2}
+          direction="row"
+          alignItems="flex-start"
+          style={{
+            width: "100%",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          <Grid item sm={12} md={12} lg={12}>
+            <AttendanceSummary
+              attendanceByDate={
+                employees
+                  ? employees.reduce((acc, e) => {
+                      if (e.attendance) {
+                        e.attendance.forEach((a) => {
+                          if (acc[a.date]) {
+                            acc[a.date] += 1;
+                          } else {
+                            acc[a.date] = 1;
+                          }
+                        });
+                      }
+                      return acc;
+                    }, {})
+                  : {}
+              }
+              totalEmployees={(employees || []).length}
+            />
+          </Grid>
         </Grid>
       </Grid>
     </PageView>

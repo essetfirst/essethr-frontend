@@ -90,47 +90,6 @@ const LeavesPanel = ({
     setRequestDialogOpen(false);
   };
 
-  const initialFiltersValue = {
-    searchTerm: "",
-    department: "ALL",
-    leaveType: "ALL",
-
-    fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 0),
-    toDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, -1),
-
-    status: "ALL",
-  };
-
-  const comparisonFns = {
-    searchTerm: ({ employeeId }, searchTermFilterValue) => {
-      if (employeesMap === undefined || !employeesMap) return true;
-
-      const { firstName, lastName } = employeesMap[employeeId] || {};
-      const name = `${firstName} ${lastName}`;
-      return searchTermFilterValue
-        ? name.includes(searchTermFilterValue)
-        : true;
-    },
-    department: ({ employeeId }, departmentFilterValue) =>
-      departmentFilterValue && departmentFilterValue !== "ALL"
-        ? employeesMap &&
-          employeesMap[employeeId] &&
-          employeesMap[employeeId].department === departmentFilterValue
-        : true,
-    leaveType: ({ leaveType }, leaveTypeFilterValue) =>
-      leaveTypeFilterValue && leaveTypeFilterValue !== "ALL"
-        ? leaveType === leaveTypeFilterValue
-        : true,
-    fromDate: ({ from }, fromFilterValue) =>
-      fromFilterValue ? from >= fromFilterValue : true,
-    toDate: ({ to }, toFilterValue) =>
-      toFilterValue ? to <= toFilterValue : true,
-    status: ({ status }, statusFilterValue) =>
-      statusFilterValue && statusFilterValue !== "ALL"
-        ? status === statusFilterValue
-        : true,
-  };
-
   const [filters, setFilters] = React.useState("");
   const handleFilterChange = () => (e) => {
     const { value } = e.target;
@@ -251,12 +210,6 @@ const LeavesPanel = ({
     console.log("sortDirection", sortDirection);
     setOrder(sortDirection);
     setOrderBy(sortParam);
-
-    const sortedList = getSortedList(
-      state.fetchLeaves.leaves,
-      sortParam,
-      sortDirection
-    );
   };
 
   const handleRequestSort = (event, property) => {

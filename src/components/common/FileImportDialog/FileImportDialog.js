@@ -12,7 +12,6 @@ import {
   DialogTitle,
   Divider,
   makeStyles,
-  Typography,
 } from "@material-ui/core";
 
 import { readExcelFile } from "../../../helpers/import";
@@ -74,7 +73,15 @@ const FileImportDialog = ({
       ...(isDragAccept ? classes.acceptStyle : {}),
       ...(isDragReject ? classes.rejectStyle : {}),
     }),
-    [isDragActive, isDragReject, isDragAccept]
+    [
+      classes.dragStyle,
+      classes.activeStyle,
+      classes.acceptStyle,
+      classes.rejectStyle,
+      isDragActive,
+      isDragAccept,
+      isDragReject,
+    ]
   );
 
   const handleFileSelect = (e) => {

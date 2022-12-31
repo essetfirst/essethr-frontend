@@ -24,8 +24,6 @@ const Provider = ({ persistKey = "org", children }) => {
   //   }
   // }, [persistKey]);
 
-  const saveOrg = React.useCallback();
-
   const fetchOrg = React.useCallback((currentOrg) => {
     dispatch({ type: types.REQUESTING });
     API.orgs

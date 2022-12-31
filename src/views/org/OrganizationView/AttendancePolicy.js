@@ -5,7 +5,6 @@ import { Edit as EditIcon } from "react-feather";
 import API from "../../../api";
 import useOrg from "../../../providers/org";
 import moment from "moment";
-import { DatePicker, TimePicker, DateTimePicker } from "@material-ui/pickers";
 import {
   Box,
   Button,
@@ -14,7 +13,6 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  IconButton,
   Divider,
   FormControlLabel,
   Grid,
@@ -22,7 +20,6 @@ import {
   TextField,
   Checkbox,
 } from "@material-ui/core";
-import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 
 const DAYS_OF_WEEK = [
   "monday",
@@ -103,7 +100,8 @@ const AttendancePolicy = ({
   const { notificationSnackbar } = useNotificationSnackbar();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
-  const [selectedDate, handleDateChange] = React.useState(new Date());
+  // eslint-disable-next-line no-empty-pattern
+  const [] = React.useState(new Date());
 
   const [editMode, setEditMode] = React.useState(false);
 

@@ -14,31 +14,6 @@ import { Alert } from "@material-ui/lab";
 import { Download as DownloadIcon, File as FileIcon } from "react-feather";
 import ExcelFileIcon from "../../../icons/ExcelFileIcon";
 
-// const useStyles = makeStyles((theme) => ({
-//   dragStyle: {
-//     display: "flex",
-//     flexDirection: "column",
-//     alignItems: "center",
-//     padding: "20px",
-//     borderWidth: 2,
-//     borderRadius: 2,
-//     borderColor: "#eeeeee",
-//     borderStyle: "dashed",
-//     backgroundColor: "#fafafa",
-//     color: "#bdbdbd",
-//     transition: "border .3s ease-in-out",
-//   },
-//   activeStyle: {
-//     borderColor: "#2196f3",
-//   },
-//   acceptStyle: {
-//     borderColor: "#00e676",
-//   },
-//   rejectStyle: {
-//     borderColor: "#ff1744",
-//   },
-// }));
-
 const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: "450px",
@@ -51,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ccc",
     borderRadius: 5,
     boxSizing: "border-box",
-    border: "3px solid #ececec",
   },
   fileDragOver: {
     background: darken(theme.palette.primary.light, 0.2),

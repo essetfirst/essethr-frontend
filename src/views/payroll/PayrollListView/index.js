@@ -1,9 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useSnackbar } from "notistack";
-
-import { makeStyles, Chip, Typography, Link } from "@material-ui/core";
+import { makeStyles, Chip, Typography } from "@material-ui/core";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import {
   Check as ApproveIcon,
@@ -12,9 +10,6 @@ import {
 } from "react-feather";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import API from "../../../api";
-
-import useNotificationSnackbar from "../../../providers/notification-snackbar";
-import usePayroll from "../../../providers/payroll";
 
 import PageView from "../../../components/PageView";
 
@@ -59,25 +54,20 @@ const PayrollListView = () => {
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const { notificationSnackbar } = useNotificationSnackbar();
-  const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
-
-  const handleUpdatePayroll = async () => {};
   const handleDeletePayroll = async () => {};
 
   const fetchPayroll = React.useCallback(() => {
     dispatch({ type: types.REQUESTING });
     API.payroll
       .getAll({})
-      .then(({ success, payroll, error }) => {
+      .then(({ success, payrolls, error }) => {
         success
-          ? dispatch({ type: types.REQUEST_SUCCESS, payload: payroll })
+          ? dispatch({ type: types.REQUEST_SUCCESS, payload: payrolls })
           : dispatch({
               type: types.REQUEST_ERROR,
               error: "Payroll does not exists.",
             });
-        console.log(payroll);
+        console.log(payrolls);
 
         error && console.error(error);
       })
@@ -88,7 +78,6 @@ const PayrollListView = () => {
   }, []);
 
   React.useEffect(() => {
-    console.log("Stateeeeeeeeeee", state);
     fetchPayroll();
   }, [fetchPayroll]);
 
@@ -120,14 +109,14 @@ const PayrollListView = () => {
 
   const handleRowClick = ({ _id }) => navigate("/app/payroll/" + _id);
 
-  const handleApprovePayrolls = () => {
-    selectedPayrolls.forEach((_id) =>
-      handleUpdatePayroll(_id, { _id, status: "approved" })
-    );
-  };
   const handleDeletePayrolls = () => {
     console.log(selectedPayrolls);
     selectedPayrolls.forEach((_id) => handleDeletePayroll(_id));
+  };
+  const handleApprovePayrolls = () => {
+    selectedPayrolls.forEach((_id) =>
+      handleDeletePayroll(_id, { _id, status: "approved" })
+    );
   };
 
   return (

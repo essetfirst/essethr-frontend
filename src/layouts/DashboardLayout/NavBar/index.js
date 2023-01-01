@@ -29,8 +29,8 @@ import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import NavItem from "./NavItem";
 import RecentActorsIcon from "@material-ui/icons/RecentActors";
 import useAuth from "../../../providers/auth";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import MenuOpenIcon from "@material-ui/icons/MenuOpen";
+import MenuIcon from "@material-ui/icons/Menu";
 
 const navItems = [
   {
@@ -106,8 +106,8 @@ const useStyles = makeStyles(() => ({
     borderRadius: 50,
   },
   name: {
-    fontSize: "1rem",
     fontFamily: "Poppins",
+    fontWeight: 200,
   },
   minimize: {
     width: "100%",
@@ -136,16 +136,6 @@ const useStyles = makeStyles(() => ({
     scrollbarHeight: "none",
     scrollBehavior: "smooth",
     scrollbarColor: "transparent transparent",
-    "&::-webkit-scrollbar": {
-      display: "none",
-    },
-
-    "& .MuiSvgIcon-root": {
-      fontSize: "1.8rem",
-      display: "flex",
-      justifyContent: "flex-start",
-      alignItems: "center",
-    },
   },
   menuIcon: {
     cursor: "pointer",
@@ -153,14 +143,6 @@ const useStyles = makeStyles(() => ({
     left: 220,
     top: 10,
     zIndex: 100,
-
-    "& .MuiSvgIcon-root": {
-      fontSize: "2rem",
-      display: "flex",
-      justifyContent: "flex-start",
-      alignItems: "center",
-      color: "grey",
-    },
   },
 }));
 
@@ -179,13 +161,13 @@ const NavBar = ({
 
   const handleMinimize = () => {
     setMinimize(!minimize);
-    onMinimize();
   };
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   useEffect(() => {
@@ -199,149 +181,17 @@ const NavBar = ({
       onClick={handleMinimize}
       style={{
         cursor: "pointer",
-        "& .MuiSvgIcon-root": {
-          fontSize: "0.5rem",
-        },
-
-        "& .MuiTypography-root": {
-          fontSize: "1rem",
-          fontFamily: "Poppins",
-        },
-
-        transition: "width 2.5s",
+        position: "absolute",
+        left: 220,
+        top: 10,
+        zIndex: 100,
       }}
       className={classes.menuIcon}
     >
-      {minimize ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+      <MenuOpenIcon />
     </Box>
   );
-  const content = (
-    <Box height="100%" display="flex" flexDirection="column">
-      {auth.isAuth && (
-        <>
-          {minContent}
-          <Box
-            display="inline-block"
-            alignItems="center"
-            justifyContent="center"
-            p={1}
-            mr={1}
-            ml={1}
-            component={RouterLink}
-            to="/app/account"
-          >
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              mt={1}
-            >
-              <Avatar
-                variant="rounded"
-                className={classes.avatar}
-                src={require("../../../assets/images/hope.jpg")}
-              />
-            </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              mt={1}
-            >
-              <Typography
-                className={classes.name}
-                color="textSecondary"
-                variant="body2"
-              >
-                {auth.user.name}
-              </Typography>
-              <Typography
-                color="textSecondary"
-                variant="body2"
-                className={classes.name}
-              >
-                {auth.user.role}
-              </Typography>
-              <Box mt={1} />
-            </Box>
-          </Box>
-          <Box p={1} mr={1} ml={1} mb={1}></Box>
-        </>
-      )}
-      <Divider />
-      <Box height="100%" p={1}>
-        <List>
-          {navItems.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
-        </List>
-      </Box>
-      <Divider />
-      {auth && auth.user && auth.user.role === "ADMIN" && (
-        <Box height="100%" p={1} pb={1}>
-          <List>
-            {adminNavItems.map((item) => (
-              <NavItem
-                href={item.href}
-                key={item.title}
-                title={item.title}
-                icon={item.icon}
-              />
-            ))}
-          </List>
-        </Box>
-      )}
-      <Divider />
-      <Hidden mdDown>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          mt={1}
-          mb={3}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<ContactlessIcon size="large" />}
-            onClick={() => {
-              window.open(
-                "https://essethr-fron-dev-kch2mcb4lukj4.herokuapp.com/home",
-                "_blank"
-              );
-            }}
-            style={{
-              backgroundColor: "#648dae",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#f50057",
-              },
-            }}
-          >
-            Contact Us
-          </Button>
-          <Box mt={1} />
-          <Typography
-            color="textSecondary"
-            variant="body2"
-            className={classes.name}
-          >
-            Powered by
-            <strong> Esset HR</strong>
-          </Typography>
-        </Box>
-      </Hidden>
-    </Box>
-  );
+  const content = itemsNav();
 
   return (
     <>
@@ -374,8 +224,16 @@ const NavBar = ({
           classes={{
             paper: classes.minimizedDrawer,
             paperAnchorBottom: classes.minimizedDrawer,
-
             paperAnchorDockedBottom: classes.minimizedDrawer,
+
+            paperAnchorTop: classes.minimizedDrawer,
+            paperAnchorDockedTop: classes.minimizedDrawer,
+
+            paperAnchorLeft: classes.minimizedDrawer,
+            paperAnchorDockedLeft: classes.minimizedDrawer,
+
+            paperAnchorRight: classes.minimizedDrawer,
+            paperAnchorDockedRight: classes.minimizedDrawer,
           }}
           open={minimize}
           variant="persistent"
@@ -391,7 +249,7 @@ const NavBar = ({
                   alignItems: "center",
                 }}
               >
-                {minimize ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                <MenuIcon style={{ fontSize: "21px" }} />
               </Box>
               <Box
                 display="flex"
@@ -436,6 +294,136 @@ const NavBar = ({
       </Hidden>
     </>
   );
+
+  function itemsNav() {
+    return (
+      <Box height="100%" display="flex" flexDirection="column">
+        {auth.isAuth && (
+          <>
+            {minContent}
+            <Box
+              display="inline-block"
+              alignItems="center"
+              justifyContent="center"
+              p={1}
+              mr={1}
+              ml={1}
+              component={RouterLink}
+              to="/app/account"
+            >
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                mt={1}
+              >
+                <Avatar
+                  variant="rounded"
+                  className={classes.avatar}
+                  src={require("../../../assets/images/hope.jpg")}
+                />
+              </Box>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                mt={1}
+              >
+                <Typography
+                  color="textSecondary"
+                  variant="h5"
+                  className={classes.name}
+                >
+                  {auth.user.name}
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  variant="body2"
+                  className={classes.name}
+                >
+                  {auth.user.role}
+                </Typography>
+                <Box mt={1} />
+              </Box>
+            </Box>
+            <Box p={1} mr={1} ml={1} mb={1}></Box>
+          </>
+        )}
+        <Divider />
+        <Box height="100%" p={1}>
+          <List>
+            {navItems.map((item) => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))}
+          </List>
+        </Box>
+        <Divider />
+        {auth && auth.user && auth.user.role === "ADMIN" && (
+          <Box height="100%" p={1} pb={1}>
+            <List>
+              {adminNavItems.map((item) => (
+                <NavItem
+                  href={item.href}
+                  key={item.title}
+                  title={item.title}
+                  icon={item.icon}
+                />
+              ))}
+            </List>
+          </Box>
+        )}
+        <Divider />
+        <Hidden mdDown>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            mt={1}
+            mb={2}
+          >
+            <Typography
+              color="textSecondary"
+              variant="body2"
+              className={classes.name}
+            >
+              Powered by
+              <strong> Esset HR</strong>
+            </Typography>
+            <Box mt={1} />
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<ContactlessIcon size="large" />}
+              onClick={() => {
+                window.open(
+                  "https://essethr-fron-dev-kch2mcb4lukj4.herokuapp.com/home",
+                  "_blank"
+                );
+              }}
+              style={{
+                backgroundColor: "#648dae",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#f50057",
+                },
+              }}
+            >
+              Contact Us
+            </Button>
+          </Box>
+        </Hidden>
+      </Box>
+    );
+  }
 };
 
 NavBar.propTypes = {

@@ -20,7 +20,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
-    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.15)",
+    boxShadow: "10px 0px 10px 0px rgba(0,0,0,0.25)",
     borderRadius: 10,
   },
   avatar: {
@@ -66,10 +66,10 @@ const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
             <Typography
               color="textPrimary"
               variant="h3"
-              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 30 }}
+              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span style={{ color: colors.blueGrey[500] }}>
-                {employeeOnLeaveCount}
+              <span style={{ color: colors.blueGrey[300] }}>
+                {employeeOnLeaveCount || 65}
               </span>
             </Typography>
           </Grid>

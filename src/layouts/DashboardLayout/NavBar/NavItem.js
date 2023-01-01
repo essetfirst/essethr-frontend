@@ -11,7 +11,6 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -73,7 +72,7 @@ const NavItem = ({ className, href, icon: Icon, title, ...rest }) => {
         component={RouterLink}
         to={href}
       >
-        {Icon && <Icon className={classes.icon} size="20" />}
+        {Icon && <Icon className={classes.icon} />}
         <Typography variant="body2" component="span" className={classes.title}>
           {title}
         </Typography>

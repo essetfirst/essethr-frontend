@@ -65,14 +65,17 @@ const Provider = ({ children, persistKey = "auth" }) => {
       .then(({ success, user, token, message, error }) => {
         if (success) {
           localStorage.setItem(persistKey, JSON.stringify({ user, token }));
-          dispatch({ type: "LOGIN_SUCCESS", payload: { user, token } });
+          dispatch({
+            type: "LOGIN_SUCCESS",
+            payload: { user, token },
+          });
         } else {
           dispatch({ type: "LOGIN_ERROR", error: message || error });
         }
       })
       .catch((e) => {
-        console.error(e);
-        dispatch({ type: "LOGIN_ERROR", error: "Something went wrong." });
+        console.error(e.response.data.message);
+        dispatch({ type: "LOGIN_ERROR", error: e.response.data.message });
       })
       .finally(() => cb && cb());
   };
@@ -82,7 +85,7 @@ const Provider = ({ children, persistKey = "auth" }) => {
       .logout()
       .then(({ success }) => {
         if (success) {
-          localStorage.setItem(persistKey, null);
+          localStorage.clear();
           dispatch({ type: "LOGOUT_SUCCESS" });
         } else {
         }

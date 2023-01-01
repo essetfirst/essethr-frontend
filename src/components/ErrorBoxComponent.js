@@ -53,7 +53,6 @@ ErrorBoxComponent.propTypes = {
 
 ErrorBoxComponent.defaultProps = {
   onRetry: () => {
-    console.log("Retry");
     window.location.reload();
   },
 };

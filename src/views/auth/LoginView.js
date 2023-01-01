@@ -18,6 +18,9 @@ import {
   IconButton,
 } from "@material-ui/core";
 
+import Collapse from "@material-ui/core/Collapse";
+import CloseIcon from "@material-ui/icons/Close";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -26,7 +29,12 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(3),
   },
   iconButton: {
-    padding: 5,
+    padding: theme.spacing(1),
+    backgroundColor: "transparent",
+
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
   },
 }));
 
@@ -43,6 +51,7 @@ const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const { auth, login } = useAuth();
+  const [open, setOpen] = React.useState(true);
 
   return (
     <Page className={classes.root} title="Login">
@@ -67,18 +76,18 @@ const LoginView = () => {
             })}
             onSubmit={(values) => {
               login(values, () => {
-                navigate("/");
+                navigate("/app/dashboard", { replace: true });
               });
             }}
           >
             {({
               errors,
+              touched,
+              values,
               handleBlur,
               handleChange,
               handleSubmit,
-              touched,
               setFieldValue,
-              values,
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box mb={3}>
@@ -87,22 +96,33 @@ const LoginView = () => {
                   </Typography>
                   <Typography
                     color="textSecondary"
-                    gutterBottom
                     variant="body1"
+                    gutterBottom
                   >
                     Sign in on the internal platform.
                   </Typography>
 
                   {!auth.loading && auth.error && (
                     <Box mt={3}>
-                      <Alert
-                        variant={"outlined"}
-                        color="error"
-                        severity="error"
-                        onClose={() => {}}
-                      >
-                        {auth.error}
-                      </Alert>
+                      <Collapse in={open}>
+                        <Alert
+                          severity="error"
+                          action={
+                            <IconButton
+                              aria-label="close"
+                              color="inherit"
+                              size="small"
+                              onClick={() => {
+                                setOpen(!open);
+                              }}
+                            >
+                              <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                          }
+                        >
+                          <strong>Error </strong>Incorrect email or password
+                        </Alert>
+                      </Collapse>
                     </Box>
                   )}
                 </Box>
@@ -110,7 +130,7 @@ const LoginView = () => {
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
                   helperText={touched.email && errors.email}
-                  label="Email or Phone Number"
+                  label="Email "
                   margin="normal"
                   name="email"
                   onBlur={handleBlur}
@@ -150,14 +170,18 @@ const LoginView = () => {
                 />
                 <Box my={2} display="flex" justifyContent="center">
                   <Button
-                    color={auth.isAuth ? "secondary" : "primary"}
+                    color="primary"
                     disabled={auth.loading}
                     fullWidth
-                    size="md"
+                    size="large"
                     type="submit"
                     variant="contained"
                   >
-                    {!auth.loading ? "LOGIN" : <CircularProgress />}
+                    {auth.loading ? (
+                      <CircularProgress size={24} color="primary" />
+                    ) : (
+                      "Login"
+                    )}
                   </Button>
                 </Box>
                 <Box display="flex" justifyContent="center">

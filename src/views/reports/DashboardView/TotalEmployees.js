@@ -11,7 +11,7 @@ import {
   Typography,
   colors,
   makeStyles,
-  Divider,
+  // Divider,
 } from "@material-ui/core";
 
 import {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
 
-    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.15)",
+    boxShadow: "10px 0px 10px 0px rgba(0,0,0,0.25)",
     borderRadius: 10,
   },
   avatar: {
@@ -75,11 +75,11 @@ const TotalEmployees = ({
             <Typography
               color="textPrimary"
               variant="h3"
-              style={{ fontWeight: 600, fontFamily: "Poppins", fontSize: 30 }}
+              style={{ fontWeight: 600, fontFamily: "Poppins", fontSize: 35 }}
             >
               <span style={{ color: "#00BFA6" }}>
                 {" "}
-                {currentMonthEmployeesCount}
+                {currentMonthEmployeesCount || 0}{" "}
               </span>
             </Typography>
           </Grid>

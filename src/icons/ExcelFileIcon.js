@@ -6,6 +6,7 @@ const ExcelFileIcon = () => {
     <img
       src={ExcelIconImage}
       style={{ width: 32, height: 32, color: "#fff" }}
+      alt="Excel Icon"
     />
   );
 };

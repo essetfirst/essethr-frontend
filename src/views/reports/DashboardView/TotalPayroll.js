@@ -12,12 +12,11 @@ import {
   Box,
 } from "@material-ui/core";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import MoneyIcon from "@material-ui/icons/Money";
-
+import EuroSymbolIcon from "@material-ui/icons/EuroSymbol";
 const useStyles = makeStyles(() => ({
   root: {
     height: "100%",
-    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.15)",
+    boxShadow: "10px 0px 10px 0px rgba(0,0,0,0.25)",
     borderRadius: 10,
   },
   avatar: {
@@ -63,9 +62,9 @@ const TotalPayroll = ({ totalPayroll = 0, className, ...rest }) => {
             <Typography
               color="textPrimary"
               variant="h3"
-              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 30 }}
+              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span style={{ color: "#5c6bc0" }}>{totalPayroll}</span>
+              <span style={{ color: "#5c6bc0" }}>{totalPayroll || 2500}</span>
             </Typography>
           </Grid>
           <Grid item>
@@ -76,7 +75,7 @@ const TotalPayroll = ({ totalPayroll = 0, className, ...rest }) => {
         </Grid>
         <Box mt={2} />
         <Box mt={2} display="flex" alignItems="center">
-          <MoneyIcon className={classes.differenceIcon} />
+          <EuroSymbolIcon className={classes.differenceIcon} />
           <Typography className={classes.differenceValue}>100%</Typography>
           <Typography color="textSecondary" variant="caption">
             Cash

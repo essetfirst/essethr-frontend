@@ -2,7 +2,7 @@ import { postRequest } from "./request";
 
 const authPath = "/auth";
 
-//For Employee Register and Login
+//For Supervisor Login And Register
 function signup(payload) {
   return postRequest(`${authPath}/signup`, payload);
 }
@@ -30,6 +30,7 @@ function logout() {
   return postRequest(`${usersPath}/logout`);
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   signup,
   signin,

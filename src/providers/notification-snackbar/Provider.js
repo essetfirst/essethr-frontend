@@ -3,13 +3,12 @@ import React from "react";
 import { Box, IconButton, makeStyles } from "@material-ui/core";
 
 import {
-  CheckCircleOutlineOutlined as CheckIcon,
   CloseOutlined as CloseIcon,
   ErrorOutlineOutlined as WarningIcon,
   WarningOutlined as ErrorIcon,
   RefreshTwoTone as RetryIcon,
 } from "@material-ui/icons";
-
+import DoneAllIcon from "@material-ui/icons/DoneAll";
 import Context from "./Context";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +36,7 @@ const Provider = ({ children }) => {
               style={{ marginRight: "5px" }}
             >
               {success ? (
-                <CheckIcon fontSize="small" color="inherit" />
+                <DoneAllIcon fontSize="small" color="inherit" />
               ) : severe ? (
                 <ErrorIcon fontSize="small" color="inherit" />
               ) : (
@@ -70,7 +69,7 @@ const Provider = ({ children }) => {
       );
 
       enqueueSnackbar(content, {
-        variant: severe ? "error" : success ? "success" : "warning",
+        variant: success ? "success" : severe ? "error" : "warning",
         action,
       });
     };

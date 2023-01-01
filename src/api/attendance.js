@@ -9,7 +9,6 @@ import {
 const path = "/attendance";
 
 function getAttendance(query = {}) {
-  console.log("Queryyyyyyyyyyyyyyyyyy", query);
   return getRequest(
     `${path}?${typeof query === "string" ? query : queryObjectToString(query)}`
   );
@@ -20,12 +19,10 @@ function swipe(data) {
 }
 
 function checkin(employeeId, time) {
-  console.log(employeeId, time);
   return postRequest(`${path}/checkin`, { employeeId, time });
 }
 
 function checkout(employeeId, time) {
-  console.log(employeeId, time);
   return postRequest(`${path}/checkout`, { employeeId, time });
 }
 

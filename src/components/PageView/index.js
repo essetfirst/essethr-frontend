@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
@@ -84,7 +84,6 @@ const PageView = ({
   React.useEffect(() => {
     document.scrollingElement.scrollTo({
       top: 0,
-      left: 0,
       behavior: "smooth",
     });
   }, []);
@@ -101,7 +100,7 @@ const PageView = ({
         <Box display="flex" flexDirection="column" height="100%">
           <Container>
             <Typography
-              variant="h2"
+              variant="h3"
               color="textSecondary"
               gutterBottom
               className={classes.root}
@@ -112,12 +111,11 @@ const PageView = ({
                   onClick={handleBackClick}
                   size="small"
                 >
-                  <ArrowBackIosIcon />
+                  <ArrowBackIosIcon style={{ fontSize: "1.4rem" }} />
                 </IconButton>
               )}{" "}
               <span style={{ verticalAlign: "middle" }}> {icon}</span> {title}
             </Typography>
-            {/* <Divider /> */}
             <Box mb={1} />
             <Box display="flex" justifyContent="space-between">
               <ButtonGroup> {leftActions}</ButtonGroup>

@@ -13,6 +13,7 @@ import clsx from "clsx";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonIcon from "@material-ui/icons/Person";
+
 import {
   makeStyles,
   AppBar,
@@ -26,14 +27,7 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.20)",
-    zIndex: theme.zIndex.drawer + 100,
-
-    [theme.breakpoints.up("lg")]: {
-      width: "100%",
-    },
-  },
+  root: {},
 
   text: {
     fontFamily: "Poppins",
@@ -50,8 +44,8 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const { darkMode, toggleDarkMode } = useTheme();
   const { auth, logout } = useAuth();
   const { setCurrentOrg } = useOrg();
-  const [, setOrgs] = React.useState([]);
-  const [, setOrgName] = React.useState("");
+  const [setOrgs] = React.useState([]);
+  const [setOrgName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
 
@@ -80,17 +74,12 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
       .catch((e) => {
         console.warn(e.message);
       });
-  }, [auth, setCurrentOrg]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth]);
 
   React.useEffect(() => {
     fetchOrganizations();
   }, [fetchOrganizations]);
-
-  const handleLogout = () => {
-    logout(() => {
-      localStorage.clear();
-    });
-  };
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -126,11 +115,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
               toggleDarkMode();
             }}
           >
-            {darkMode ? (
-              <Brightness7Icon style={{ color: "#fff" }} />
-            ) : (
-              <Brightness4Icon style={{ color: "#fff" }} />
-            )}
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
         </Box>
         <Box>
@@ -138,7 +123,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             onClick={handleClick}
             color="inherit"
             title="menu"
-            style={{ fontSize: "0.5rem" }}
+            style={{ fontSize: "0.8rem" }}
           >
             <PersonIcon style={{ color: "#fff" }} />
           </IconButton>
@@ -163,11 +148,11 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
                   </Typography>
                 </IconButton>
               </MenuItem>
-              <MenuItem onClick={handleLogout}>
+              <MenuItem onClick={logout}>
                 <IconButton color="inherit" title="logout">
                   <ExitToAppIcon style={{ marginRight: "5px" }} />
                   <Typography color="inherit" variant="body2">
-                    Log out
+                    LogOut
                   </Typography>
                 </IconButton>
               </MenuItem>

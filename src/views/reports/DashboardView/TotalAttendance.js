@@ -4,7 +4,7 @@ import {
   Avatar,
   Card,
   CardContent,
-  colors,
+  // colors,
   Grid,
   makeStyles,
   Typography,
@@ -13,15 +13,15 @@ import {
 
 import {
   AccessTime as AttendanceIcon,
-  TimeToLeave as LeaveIcon,
-  ArrowUpward as ArrowUpwardIcon,
+  // TimeToLeave as LeaveIcon,
+  // ArrowUpward as ArrowUpwardIcon,
   ArrowDownward as ArrowDownwardIcon,
 } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
-    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.15)",
+    boxShadow: "10px 0px 10px 0px rgba(0,0,0,0.25)",
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   avatar: {
-    backgroundColor: colors.brown[500],
+    backgroundColor: "#ff9902",
     height: 56,
     width: 56,
 
@@ -46,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   differenceIcon: {
-    color: colors.brown[400],
+    color: "#ff9902",
     fontFamily: "Poppins",
   },
   differenceValue: {
-    color: colors.brown[400],
+    color: "#ff9902",
     marginRight: theme.spacing(1),
     fontFamily: "Poppins",
   },
@@ -74,10 +74,13 @@ const TotalAttendance = ({ totalAttendance = 0 }) => {
             <Typography
               color="textPrimary"
               variant="h3"
-              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 30 }}
+              style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
               {/* make totalAttendance number count up when page load */}
-              <span style={{ color: "#795548" }}> {totalAttendance}</span>
+              <span style={{ color: "#ff9902" }}>
+                {" "}
+                {totalAttendance || 25}{" "}
+              </span>
             </Typography>
           </Grid>
           <Grid item>

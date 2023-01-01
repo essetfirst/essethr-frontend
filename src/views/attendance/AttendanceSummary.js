@@ -14,7 +14,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import {
-  ArrowDropDown as ArrowDropDownIcon,
   AvTimer as PresentIcon,
   Timelapse as LateIcon,
   TimerOff as AbsentIcon,
@@ -52,8 +51,8 @@ const DailyAttendanceSummaryByRemark = ({
           </Typography>
         }
         action={
-          <Button endIcon={<ArrowDropDownIcon />} size="small" variant="text">
-            Today || {moment().format("MMM YYYY, h:mm a")}
+          <Button size="small" variant="text">
+            {moment().format("DD MMM YYYY")}
           </Button>
         }
       />
@@ -258,9 +257,8 @@ const WeeklyAttendanceSummaryByRemark = ({
           </Typography>
         }
         action={
-          //week list when clicked should show the daily attendance for that week
-          <Button endIcon={<ArrowDropDownIcon />} size="small" variant="text">
-            Week || {moment().format("MMM YYYY")}
+          <Button size="small" variant="text">
+            Last 7 days
           </Button>
         }
       />
@@ -342,7 +340,6 @@ const AttendanceSummary = ({ totalEmployees = 0 }) => {
           prev[remark][weekDay] = 1;
           prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
         }
-        console.log("[AttendanceSummary]: Line 307 -> prev: ", prev);
         return prev;
       }, {});
   };

@@ -33,17 +33,14 @@ const makeRequest = async (url, method, params, data) => {
     const res = await axios(getURLPath(url), options);
     console.log(
       "%c Response: 👉",
-      "background: #222; color: #bada55",
+      "background: #009688; color: white",
       res.data
     );
     return res.data;
-  } catch (err) {
-    console.error(
-      "%c Error: 👉",
-      "background: #222; color:  #ff3333",
-      err.response
-    );
-    throw err;
+  } catch (error) {
+    console.error("%c Error: 👉", "background: #f44336; color: white", error);
+
+    return error;
   }
 };
 

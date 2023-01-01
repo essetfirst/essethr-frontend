@@ -88,7 +88,6 @@ const TableComponent = ({
   /***************************** SORTING HANDLERS ***********************************/
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "desc";
-    console.log(isAsc, orderBy, property);
     const newOrderDir = isAsc ? "desc" : "asc";
     const newOrderBy = property;
     setOrder(newOrderDir);

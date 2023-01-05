@@ -155,11 +155,17 @@ const PositionList = ({
           },
         ]}
         data={(positions || []).filter((p) => {
-          const { title, description } = p;
-          return (
-            title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            description.toLowerCase().includes(searchTerm.toLowerCase())
-          );
+          try {
+            const { title, description, department } = p;
+            const search = searchTerm.toLowerCase();
+            return (
+              title.includes(search) ||
+              description.includes(search) ||
+              (departmentsMap[department] || {}).name.includes(search)
+            );
+          } catch (error) {
+            // console.error(error);
+          }
         })}
         selectionEnabled
         onSortParamsChange={onSortParamsChange}

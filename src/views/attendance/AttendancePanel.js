@@ -10,18 +10,16 @@ import {
   UploadCloud as ImportIcon,
   Download as ExportIcon,
 } from "react-feather";
-
+import moment from "moment";
 import useOrg from "../../providers/org";
 import useNotificationSnackbar from "../../providers/notification-snackbar";
 import useAttendance from "../../providers/attendance";
 
 import arrayToMap from "../../utils/arrayToMap";
 import filter from "../../helpers/filter";
-// import getWeekDates from "../../helpers/get-week-dates";
 import sort from "../../helpers/sort";
 import { getTableDataForExport, makeExcel } from "../../helpers/export";
 
-// import AttendanceSummary from "./AttendanceSummary";
 import FilterBar from "./FilterBar";
 import AttendanceTable from "./AttendanceTable";
 import EditAttendanceDialog from "./EditAttendanceDialog";
@@ -92,9 +90,10 @@ const AttendancePanel = () => {
 
   const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
   const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
+
   const handleSortParamsChange = (newSortParams) =>
     setSortParams({ ...newSortParams });
-  // const handleSortParamsReset = () => setSortParams(initialSortParamsValue);
+
   const getSortedAttendanceList = React.useCallback(
     (attendance, sortBy, sortOrder) => {
       return sort(attendance || [], sortBy, sortOrder);
@@ -104,6 +103,7 @@ const AttendancePanel = () => {
 
   const [registerAction, setRegisterAction] = React.useState("checkin");
   const [registerDialogOpen, setRegisterDialogOpen] = React.useState(false);
+
   const handleRegisterDialogClose = () => {
     setRegisterDialogOpen(false);
     handleRefreshClick();
@@ -120,20 +120,55 @@ const AttendancePanel = () => {
   const handleImportClick = () => {};
 
   const handleExportClick = async () => {
-    console.log("Im about Export data", state);
-    const columns = [
-      { label: "Date", field: "date" },
-      { label: "EmployeeId", field: "employeeId" },
-      { label: "Employee", field: "employeeName" },
-      { label: "Checkin", field: "checkin" },
-      { label: "Checkout", field: "checkout" },
-      { label: "Worked Hours", field: "workedHours" },
-      { label: "Remark", field: "remark" },
-      { label: "Status", field: "status" },
-    ];
+    if (
+      Object.keys(state.attendanceByDate).length > 0 &&
+      state.attendanceByDate[attendanceDate] &&
+      state.attendanceByDate[attendanceDate].length > 0
+    ) {
+      const filename = "Attendance";
 
-    console.log(state);
-    await makeExcel(getTableDataForExport(state.attendanceByDate, columns));
+      const rows = state.attendanceByDate[attendanceDate].map(
+        ({ _id, date, employeeId, checkin, checkout, remark, status }) => ({
+          _id,
+          date: moment(date).format("DD/MM/YYYY"),
+          employeeId,
+          employeeName: employeesMap[employeeId]
+            ? employeesMap[employeeId].firstName +
+              " " +
+              employeesMap[employeeId].surName
+            : "N/A",
+          checkin: checkin ? moment(checkin).format("hh:mm A") : "N/A",
+          checkout: checkout ? moment(checkout).format("hh:mm A") : "N/A",
+          workedHours:
+            checkin && checkout
+              ? (() => {
+                  const diff = moment(checkout).diff(moment(checkin));
+                  const duration = moment.duration(diff);
+                  return (
+                    // eslint-disable-next-line no-useless-concat
+                    duration.hours() + "hr" + " " + duration.minutes() + "min"
+                  );
+                })(moment(checkout).diff(moment(checkin)))
+              : "N/A",
+
+          remark,
+          status,
+        })
+      );
+
+      const columns = [
+        { label: "Date", field: "date" },
+        { label: "EmployeeId", field: "employeeId" },
+        { label: "Employee Name", field: "employeeName" },
+        { label: "Checkin", field: "checkin" },
+        { label: "Checkout", field: "checkout" },
+        { label: "Worked Hours", field: "workedHours" },
+        { label: "Remark", field: "remark" },
+        { label: "Status", field: "status" },
+      ];
+
+      makeExcel(getTableDataForExport(rows, columns), filename);
+    }
   };
 
   const handleRefreshClick = () => {
@@ -186,7 +221,7 @@ const AttendancePanel = () => {
             size="small"
             onClick={handleClockinClick}
             aria-label="clock in"
-            startIcon={<AlarmAddIcon />}
+            startIcon={<AlarmAddIcon size="small" />}
           >
             Clock in
           </Button>
@@ -196,7 +231,7 @@ const AttendancePanel = () => {
             size="small"
             onClick={handleClockoutClick}
             aria-label="clock out"
-            endIcon={<TimerOffIcon />}
+            endIcon={<TimerOffIcon size="small" />}
           >
             Clock out
           </Button>
@@ -209,6 +244,12 @@ const AttendancePanel = () => {
             startIcon={<ImportIcon />}
             onClick={handleImportClick}
             aria-label="import attendance"
+            title="Import attendance from excel"
+            disabled={
+              !state.attendanceByDate ||
+              !state.attendanceByDate[attendanceDate] ||
+              state.attendanceByDate[attendanceDate].length === 0
+            }
           >
             Import
           </Button>
@@ -221,6 +262,11 @@ const AttendancePanel = () => {
             onClick={handleExportClick}
             aria-label="download attendance"
             title="Export attendance to excel"
+            disabled={
+              !state.attendanceByDate ||
+              !state.attendanceByDate[attendanceDate] ||
+              state.attendanceByDate[attendanceDate].length === 0
+            }
           >
             Export
           </Button>
@@ -237,19 +283,8 @@ const AttendancePanel = () => {
         action={registerAction}
         open={registerDialogOpen}
         onClose={handleRegisterDialogClose}
+        notify={notify}
       />
-
-      {/* <Grid container spacing={2}>
-        <Grid item xs={12} sm={12} md={12}>
-          <AttendanceSummary
-            totalEmployees={Object.keys(employeesMap).length}
-            attendanceByDate={state.attendanceByDate}
-            currentDate={attendanceDate}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}></Grid>
-      </Grid> */}
-
       <Box mb={2} />
       <FilterBar
         attendanceDate={attendanceDate}
@@ -270,11 +305,11 @@ const AttendancePanel = () => {
           sortParams.sortBy,
           sortParams.sortOrder
         )}
-        // attendance={state.attendanceByDate[getDateString(attendanceDate)] || []}
         onSortParamsChange={handleSortParamsChange}
         onEditClicked={handleEditClick}
         onApproveClicked={handleApproveClick}
         onViewEmployeeClicked={handleViewEmployeeClick}
+        notify={notify}
       />
 
       {selectedAttendance && (

@@ -2,7 +2,7 @@ import React from "react";
 
 import moment from "moment";
 
-import { Box, Chip } from "@material-ui/core";
+import { Box, Chip, Typography } from "@material-ui/core";
 
 import TableComponent from "../../../components/TableComponent";
 
@@ -31,8 +31,22 @@ const Attendance = ({ attendanceByDate }) => {
           {
             label: "Worked Hours",
             field: "workedHours",
-            renderCell: ({ workedHours }) =>
-              `${parseFloat(workedHours).toFixed(2)} hrs`,
+            renderCell: ({ checkin, checkout }) => {
+              const checkinTime = moment(checkin);
+              const checkoutTime = moment(checkout);
+              const duration = moment.duration(checkoutTime.diff(checkinTime));
+              const hours = parseInt(duration.asHours());
+              const minutes = parseInt(duration.asMinutes()) % 60;
+              return (
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  component="span"
+                >
+                  {hours}h {minutes}m
+                </Typography>
+              );
+            },
           },
           {
             label: "Remark",

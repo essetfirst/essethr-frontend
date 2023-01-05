@@ -2,10 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Chip, Link, Typography } from "@material-ui/core";
-import {
-  Edit as EditIcon,
-  CheckCircleOutlineRounded as CheckIcon,
-} from "@material-ui/icons";
+import { CheckCircleOutlineRounded as CheckIcon } from "@material-ui/icons";
 
 import TableComponent from "../../components/TableComponent";
 import moment from "moment";
@@ -18,6 +15,7 @@ const AttendanceTable = ({
   onEditClicked,
   onApproveClicked,
   onViewEmployeeClicked,
+  notify,
 }) => {
   return (
     <TableComponent
@@ -28,18 +26,17 @@ const AttendanceTable = ({
           field: "employeeId",
           sortable: true,
           renderCell: ({ employeeName, employeeId }) => {
-            console.log(
-              "[AttendanceTable]: Line 54 -> employeeName: ",
-              employeeName
-            );
             const { _id, firstName, surName } = employeesMap[employeeId] || {};
             const name = employeeName || `${firstName} ${surName}`;
             return (
               <Typography
                 variant="h6"
+                color="textSecondary"
                 component={Link}
                 onClick={() => onViewEmployeeClicked(_id)}
-                style={{ cursor: "pointer" }}
+                style={{
+                  cursor: "pointer",
+                }}
               >
                 {name}
               </Typography>
@@ -62,34 +59,43 @@ const AttendanceTable = ({
         {
           label: "WORKED HRS",
           field: "workedHours",
-          align: "center",
           sortable: true,
-          renderCell: ({ checkout, workedHours }) => {
-            let hrs = workedHours > 0 ? parseInt(workedHours) : workedHours;
-            let mins = (parseFloat(workedHours).toFixed(2) - hrs) * 60;
-            return workedHours ? (
-              <>
-                <Typography variant="h4" component="span" mr={1}>
-                  {String(`${parseInt(hrs)}`)}
+          renderCell: ({ checkin, checkout }) => {
+            if (!checkout)
+              return (
+                <Typography variant="h6">
+                  <i>in progress</i>
                 </Typography>
-                <Typography variant="body2" component="span" mr={1}>
-                  {hrs > 1 ? "hrs" : "hr"}
-                </Typography>
-                <Typography variant="h5" component="span" mr={1}>
-                  {String(` ${parseInt(mins)}`)}
-                </Typography>
-                <Typography variant="body2" component="span" mr={1}>
-                  {hrs > 1 ? "mins" : "min"}
-                </Typography>
-              </>
-            ) : checkout ? (
-              0
-            ) : (
-              "N/A"
+              );
+            const checkinDate = new Date(checkin);
+            const checkoutDate = checkout ? new Date(checkout) : new Date();
+            const workedHours = checkoutDate - checkinDate;
+            const hours = Math.floor(workedHours / 1000 / 60 / 60);
+            const minutes = Math.floor(
+              (workedHours / 1000 / 60 / 60 - hours) * 60
+            );
+            return (
+              <Typography variant="h6" component="span">
+                <span
+                  style={{
+                    fontSize: "1rem",
+                  }}
+                >
+                  {hours}
+                </span>{" "}
+                hrs{" "}
+                <span
+                  style={{
+                    fontSize: "1rem",
+                  }}
+                >
+                  {minutes}
+                </span>{" "}
+                mins
+              </Typography>
             );
           },
         },
-
         {
           label: "REMARK",
           field: "remark",
@@ -131,19 +137,28 @@ const AttendanceTable = ({
         },
       ]}
       rowActions={[
-        {
-          label: "Edit",
-          handler: (row) => onEditClicked(row),
-          icon: <EditIcon size="small" />,
+        // {
+        //   label: "Edit",
+        //   handler: (row) => onEditClicked(row),
+        //   icon: <EditIcon size="small" />,
 
-          variant: "outlined",
-          size: "small",
-        },
+        //   variant: "outlined",
+        //   size: "small",
+        // },
         {
           label: "Approve",
-          handler: ({ _id }) => onApproveClicked([_id])(),
+          handler: ({ _id, status }) => {
+            if (status === "approved") {
+              return notify({
+                message: "Attendance already approved",
+                variant: "warning",
+              });
+            }
+            onApproveClicked(_id);
+          },
           icon: <CheckIcon size="small" />,
-          disabled: ({ status }) => status === "approved",
+          variant: "outlined",
+          size: "small",
         },
       ]}
       selectionEnabled

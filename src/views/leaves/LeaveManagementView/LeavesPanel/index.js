@@ -10,7 +10,7 @@ import LeaveFormDialog from "./LeaveFormDialog";
 import Filterbar from "./Filterbar";
 import List from "./List";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
-import sort from "../../../../helpers/sort";
+// import sort from "../../../../helpers/sort";
 import DeleteDialog from "./DeleteDialog";
 
 function periodIncludesToday(from, to) {
@@ -184,6 +184,7 @@ const LeavesPanel = ({
       new Date(filters.fromDate || weekDays[0]).toISOString().slice(0, 10),
       new Date(filters.toDate || weekDays[1]).toISOString().slice(0, 10)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.fromDate, filters.toDate]);
 
   const employeesOnLeave = (state.fetchLeaves.leaves || []).filter((l) => {
@@ -198,9 +199,9 @@ const LeavesPanel = ({
     fetchLeaves();
   }, [fetchLeaves]);
 
-  const getSortedList = React.useCallback((list = [], sortBy, sortOrder) => {
-    return sort(list, sortBy, sortOrder);
-  }, []);
+  // const getSortedList = React.useCallback((list = [], sortBy, sortOrder) => {
+  //   return sort(list, sortBy, sortOrder);
+  // }, []);
 
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("employeeId");

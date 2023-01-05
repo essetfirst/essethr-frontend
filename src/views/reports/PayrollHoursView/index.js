@@ -1,20 +1,11 @@
 import React from "react";
-
-import { Box, Chip, TextField, Typography } from "@material-ui/core";
-
+import { Box, Chip, TextField } from "@material-ui/core";
 import {
   Payment as PayrollHoursIcon,
   CheckCircleOutlineOutlined as CheckIcon,
 } from "@material-ui/icons";
-
 import { Download as ExportIcon } from "react-feather";
-
 import { getTableDataForExport, makeExcel } from "../../../helpers/export";
-
-import {
-  CURRENT_MONTH_END_DATE,
-  CURRENT_MONTH_START_DATE,
-} from "../../../constants";
 
 import API from "../../../api";
 import PageView from "../../../components/PageView";
@@ -22,7 +13,8 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 
 import Searchbar from "../../../components/common/Searchbar";
-import Table from "../../../components/TableComponent";
+import moment from "moment";
+import TableComponent from "../../../components/TableComponent";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
   return (
@@ -32,7 +24,6 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
         variant="outlined"
         size="small"
         type="date"
-        label="From"
         name="from"
         onChange={onFilterFieldChange}
         value={filters.from}
@@ -42,7 +33,6 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
         fullWidth
         variant="outlined"
         size="small"
-        label="To"
         type="date"
         name="to"
         onChange={onFilterFieldChange}
@@ -68,99 +58,44 @@ const PayrollHoursTable = ({ data }) => {
   const columns = [
     {
       label: "Employee",
-      field: "employee",
-      renderCell: ({ employeeName }) => (
-        <Typography variant="h6">{employeeName}</Typography>
-      ),
+      field: "employeeName",
     },
     {
-      label: "Period",
-      align: "center",
-
-      renderCell: ({ fromDate, toDate }) => (
-        <>
-          <Typography variant="h6" component="span">{`${fromDate}`}</Typography>
-          <Typography variant="body2" component="span">
-            {" "}
-            to{" "}
-          </Typography>
-          <Typography variant="h6" component="span">{`${toDate}`}</Typography>
-        </>
-      ),
+      label: "Start Date",
+      field: "startDate",
+      renderCell: (fromDate) => moment(fromDate).format("DD/MM/YYYY"),
+    },
+    {
+      label: "End Date",
+      field: "endDate",
+      renderCell: (toDate) => moment(toDate).format("DD/MM/YYYY"),
     },
     {
       label: "Regular",
       field: "regular",
-      align: "center",
-      renderCell: ({ regular }) => (
-        <>
-          <Typography variant="h6">{`${
-            regular > 0 ? regular + " hrs" : regular
-          }`}</Typography>
-          {/* <RadialChartWithLabel
-            height={50}
-            data={[
-              {
-                label: "Regular Hours",
-                color: regular > 20 ? "#347cfd" : "#18ac23",
-                value: regular,
-              },
-            ]}
-          /> */}
-        </>
-      ),
     },
     {
       label: "Overtime",
       field: "overtime",
-      align: "center",
-      renderCell: ({ overtime }) => (
-        <>
-          <Typography variant="h6">{`${
-            overtime > 0 ? overtime + " hrs" : overtime
-          }`}</Typography>
-        </>
-      ),
     },
     {
       label: "Paid Leave",
       field: "leave",
-      align: "center",
-      renderCell: ({ leave }) => (
-        <>
-          <Typography variant="h6">{`${
-            leave > 0 ? leave + " hrs" : leave
-          }`}</Typography>
-
-          {/* {leave <= 0 ? (
-            <Typography variant="h6">{leave + " hrs"}</Typography>
-          ) : (
-            <CircularProgressWithLabel
-              variant="determinate"
-              disableShrink
-              value={leave}
-              caption={" hrs"}
-              thickness={4}
-            />
-          )} */}
-
-          {/* <LinearProgress variant="determinate" thickness={2} value={leave} /> */}
-        </>
-      ),
     },
     {
-      label: "Approved?",
+      label: "Status",
       field: "status",
-      align: "center",
-      renderCell: ({ status }) =>
-        status === "approved" ? (
-          <CheckIcon color={"primary"} />
-        ) : (
-          <Chip size="small" label={String(status).toLocaleLowerCase()} />
-        ),
+      renderCell: ({ status }) => (
+        <Chip
+          icon={<CheckIcon />}
+          label={status}
+          color={status === "approved" ? "primary" : "secondary"}
+        />
+      ),
     },
   ];
-  return <Table size="small" columns={columns} data={data} />;
+
+  return <TableComponent columns={columns} data={data || []} />;
 };
 
 const types = {
@@ -195,14 +130,9 @@ const PayrollHoursView = () => {
 
   const handleExportClick = async () => {
     if (state.payrollHours.length > 0) {
-      const filename = `Payroll hours report (${new Date(
-        filters.from
-      ).toLocaleDateString()} to ${new Date(filters.to).toLocaleDateString()})`;
-
       const rows = state.payrollHours.map(
         ({
           employee,
-          employeeId,
           fromDate,
           toDate,
           regular,
@@ -210,7 +140,6 @@ const PayrollHoursView = () => {
           leave,
           ...rest
         }) => ({
-          employeeId: employee.employeeId,
           startDate: new Date(fromDate).toLocaleDateString(),
           endDate: new Date(toDate).toLocaleDateString(),
           regular: `${regular} hrs`,
@@ -219,11 +148,10 @@ const PayrollHoursView = () => {
           ...rest,
         })
       );
+
+      const filename = `Payroll Hours ${moment().format("DD-MM-YYYY")}`;
+
       const columns = [
-        {
-          label: "Id",
-          field: "employeeId",
-        },
         {
           label: "Employee",
           field: "employeeName",
@@ -257,17 +185,12 @@ const PayrollHoursView = () => {
     }
   };
 
-  const [filters, setFilters] = React.useState({
-    searchTerm: "",
-    department: "",
-    from: CURRENT_MONTH_START_DATE,
-    to: CURRENT_MONTH_END_DATE,
-  });
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
-  };
+  const [filters, setFilters] = React.useState("");
 
+  const handleFilterChange = () => (e) => {
+    const { value } = e.target;
+    setFilters(value);
+  };
   const fetchPayrollHours = React.useCallback(async (fromDate, toDate) => {
     try {
       dispatch({ type: types.FETCH_PAYROLL_HOURS_REQUEST });
@@ -308,7 +231,7 @@ const PayrollHoursView = () => {
           handler: handleExportClick,
           otherProps: {
             color: "primary",
-            variant: "contained",
+            variant: "outlined",
             size: "small",
           },
         },
@@ -328,7 +251,24 @@ const PayrollHoursView = () => {
           onRetry={() => fetchPayrollHours(filters.from, filters.to)}
         />
       ) : (
-        state.payrollHours && <PayrollHoursTable data={state.payrollHours} />
+        state.payrollHours && (
+          <PayrollHoursTable
+            // eslint-disable-next-line array-callback-return
+            data={(state.payrollHours || []).filter((payrollHour) => {
+              try {
+                const { employeeName } = payrollHour;
+
+                const isEmployeeNameMatched = employeeName
+                  .toLowerCase()
+                  .includes(filters.toLowerCase());
+
+                return isEmployeeNameMatched;
+              } catch (error) {
+                console.error(error);
+              }
+            })}
+          />
+        )
       )}
     </PageView>
   );

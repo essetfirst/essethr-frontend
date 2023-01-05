@@ -138,9 +138,9 @@ const OrganizationView = ({ id }) => {
       dispatch({ type: types.REQUEST_SUCCESS, payload: org });
     }
 
-    // if (orgId) {
-    //   fetchOrg(orgId);
-    // }
+    if (orgId) {
+      fetchOrg(orgId);
+    }
   }, [orgId, org, fetchOrg]);
 
   const handleEditOrgClick = () => {

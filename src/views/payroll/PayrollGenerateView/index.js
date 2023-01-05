@@ -23,11 +23,8 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import {
-  Repeat as RetryIcon,
-  CheckCircle as SuccessIcon,
-} from "@material-ui/icons";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import { Repeat as RetryIcon } from "@material-ui/icons";
 
 const startOfMonth = new Date(
   new Date().getFullYear(),
@@ -157,6 +154,7 @@ const PayrollGenerateView = () => {
         <Card className={classes.processStateCard}>
           <CardContent>
             {state.requesting ? (
+              //state is requesting show backgrond blur and show loading icon
               <Box
                 minWidth={800}
                 display="flex"
@@ -164,15 +162,19 @@ const PayrollGenerateView = () => {
                 alignItems="center"
                 justifyContent="center"
                 height="100%"
-                p={2}
               >
-                <Typography variant="h2" gutterBottom>
-                  Generating employee payslips...
+                <CircularProgress size={84} />
+                <Typography
+                  variant="h4"
+                  style={{
+                    marginTop: "16px",
+                    fontFamily: "Poppins",
+                    fontWeight: "bold",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  Generating payroll...
                 </Typography>
-                <Box mt={1} />
-                <Box display="flex" justifyContent="center">
-                  <CircularProgress color="primary" />
-                </Box>
               </Box>
             ) : state.error ? (
               <Box
@@ -198,28 +200,38 @@ const PayrollGenerateView = () => {
                 </Button>
               </Box>
             ) : (
+              //when state is success show success message and buttons to navigate to payroll details view or cancel
               <Box
-                minWidth={800}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
                 height="100%"
-                p={2}
               >
-                <Typography variant="h3" display="flex" alignItems="center">
-                  <SuccessIcon color="primary" fontSize="small" /> Payroll
-                  Generated Successfully
-                </Typography>
-                <Box mt={2} />
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleViewClick}
-                  aria-label="view payroll"
+                <Typography
+                  variant="h4"
+                  style={{
+                    fontFamily: "Poppins",
+                    fontWeight: "bold",
+                    fontSize: "1.5rem",
+                  }}
+                  gutterBottom
                 >
-                  <VisibilityIcon />
-                  <Typography variant="h6">view</Typography>
+                  Payroll generated successfully
+                </Typography>
+                <Button
+                  onClick={handleViewClick}
+                  aria-label="view"
+                  endIcon={
+                    <ArrowForwardIosIcon
+                      style={{
+                        fontSize: "1.2rem",
+                      }}
+                    />
+                  }
+                  gutterBottom
+                >
+                  View
                 </Button>
               </Box>
             )}

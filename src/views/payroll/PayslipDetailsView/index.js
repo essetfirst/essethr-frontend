@@ -14,16 +14,19 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import PageView from "../../../components/PageView";
+import MaleAvatar from "../../../assets/images/male_no_profile.png";
+import FemaleAvatar from "../../../assets/images/female_no_profile.png";
 
+import PageView from "../../../components/PageView";
+import moment from "moment";
 import TableComponent from "../../../components/TableComponent";
 
 const PayslipDetailsEmployeeBrief = ({ employee }) => {
-  const { image, name, jobTitle, phone } = employee;
+  const { name, jobTitle, phone, gender } = employee;
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Avatar
-        src={image || "https://picsum.photos"}
+        src={gender === "Male" ? MaleAvatar : FemaleAvatar}
         sizes={10}
         variant="square"
         style={{
@@ -56,7 +59,13 @@ const PayslipDetailsEmployeeBrief = ({ employee }) => {
 const PayslipDetailsSummary = ({ summary }) => {
   const { payrollTitle, fromDate, toDate, payDate } = summary;
   return (
-    <Box>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      mt={5}
+      mb={5}
+    >
       <Typography
         variant="h2"
         color="textSecondary"
@@ -65,7 +74,7 @@ const PayslipDetailsSummary = ({ summary }) => {
       >
         {payrollTitle}
       </Typography>
-      <Box mt={2} />
+      <Box mt={1} />
       <Typography
         variant="h5"
         color="textSecondary"
@@ -75,11 +84,12 @@ const PayslipDetailsSummary = ({ summary }) => {
         {`Payroll Period`.toUpperCase()}
       </Typography>
       <Typography variant="h5" align="center">
-        {new Date(fromDate).toDateString().slice(4)} -{" "}
-        {new Date(toDate).toDateString().slice(4)}
+        {`${moment(fromDate).format("DD MMM YYYY")} - ${moment(toDate).format(
+          "DD MMM YYYY"
+        )}`}
       </Typography>
 
-      <Box mt={1} />
+      <Box mt={3} />
       <Typography
         variant="h5"
         color="textSecondary"
@@ -98,17 +108,15 @@ const PayslipDetailsSummary = ({ summary }) => {
 const PayslipDetailsEarningsList = ({ earnings }) => {
   return (
     <Box mt={4}>
-      <Typography variant="h5" align="center" gutterBottom>
+      <Typography variant="h4" align="center" gutterBottom>
         {"EARNINGS"}
       </Typography>
       <TableComponent
         columns={[
           { field: "desc", label: "Description" },
-          { field: "hours", label: "Hours", align: "right" },
-          { field: "rate", label: "Hourly Rate", align: "right" },
-          { field: "amount", label: "Amount (ETB)", align: "right" },
-          // { field: "", label: "" },
-          // { field: "", label: "" },
+          { field: "hours", label: "Hours" },
+          { field: "rate", label: "Hourly Rate" },
+          { field: "amount", label: "Amount (ETB)" },
         ]}
         data={earnings || []}
       />
@@ -117,7 +125,7 @@ const PayslipDetailsEarningsList = ({ earnings }) => {
 };
 const PayslipDetailsDeductionsList = ({ deductions }) => {
   return (
-    <Box mt={4}>
+    <Box mt={2}>
       <Typography variant="h5" align="center" gutterBottom>
         {"DEDUCTIONS"}
       </Typography>
@@ -125,9 +133,8 @@ const PayslipDetailsDeductionsList = ({ deductions }) => {
       <TableComponent
         columns={[
           { field: "desc", label: "Description" },
-          { field: "", label: "", align: "right" },
-          { field: "rate", label: "Rate", align: "right" },
-          { field: "amount", label: "Amount (ETB)", align: "right" },
+          { field: "rate", label: "Rate" },
+          { field: "amount", label: "Amount (ETB)" },
         ]}
         data={deductions || []}
       />
@@ -135,7 +142,7 @@ const PayslipDetailsDeductionsList = ({ deductions }) => {
   );
 };
 
-const PayslipDetailsView = ({ payslip, ...rest }) => {
+const PayslipDetailsView = ({ payslip }) => {
   const location = useLocation();
 
   const {
@@ -164,15 +171,13 @@ const PayslipDetailsView = ({ payslip, ...rest }) => {
     <PageView
       backPath={`/app/payroll/${payrollId ? payrollId : ""}`}
       title="Employee Payslip"
-      actions={
-        [
-          // {
-          //   label: "Create templated slip",
-          //   position: "left",
-          //   otherProps: { variant: "contained", color: "primary", size: "small" },
-          // },
-        ]
-      }
+      // actions={[
+      //   {
+      //     label: "Create templated payslip",
+      //     position: "left",
+      //     otherProps: { variant: "contained", color: "primary", size: "small" },
+      //   },
+      // ]}
     >
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
@@ -180,7 +185,18 @@ const PayslipDetailsView = ({ payslip, ...rest }) => {
             <CardContent>
               <Grid container spacing={2}>
                 <Grid item sm={12} md={12}>
-                  <Typography variant="h2" align="center" gutterBottom>
+                  <Typography
+                    align="center"
+                    style={{
+                      textTransform: "uppercase",
+                      fontFamily: "Poppins",
+                      fontWeight: 500,
+                      fontSize: "2rem",
+                      lineHeight: "2.5rem",
+                      letterSpacing: "0.1em",
+                      marginBottom: "16px",
+                    }}
+                  >
                     {String(organization).toUpperCase()}
                   </Typography>
                 </Grid>
@@ -218,7 +234,8 @@ const PayslipDetailsView = ({ payslip, ...rest }) => {
                     {"Gross Salary".toUpperCase()}
                   </Typography>
                   <Typography variant="h2" color="primary" align="center">
-                    <strong>{parseInt(earningsTotal)}</strong>
+                    {/* moeny number format  */}
+                    <strong>{parseInt(earningsTotal)} ETB</strong>
                   </Typography>
                 </Grid>
 
@@ -232,7 +249,7 @@ const PayslipDetailsView = ({ payslip, ...rest }) => {
                     {"Deducted".toUpperCase()}
                   </Typography>
                   <Typography variant="h2" color="error" align="center">
-                    <strong>-{parseInt(deductionsTotal)}</strong>
+                    <strong>-{parseInt(deductionsTotal)} ETB</strong>
                   </Typography>
                 </Grid>
                 <Grid item sm={4} md={4}>
@@ -245,17 +262,17 @@ const PayslipDetailsView = ({ payslip, ...rest }) => {
                     {"Net Salary".toUpperCase()}
                   </Typography>
                   <Typography variant="h2" align="center">
-                    = {parseInt(netPayment)}
+                    <strong>{parseInt(netPayment)} ETB</strong>
                   </Typography>
                 </Grid>
               </Grid>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={12}>
           <PayslipDetailsEarningsList earnings={earnings} />
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={12} style={{ height: "100%" }}>
           <PayslipDetailsDeductionsList deductions={deductions} />
         </Grid>
       </Grid>

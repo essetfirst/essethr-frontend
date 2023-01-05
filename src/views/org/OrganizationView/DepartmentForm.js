@@ -20,13 +20,20 @@ const DepartmentForm = ({
   onCancel,
   onSubmit,
 }) => {
-  console.log(departmentId);
   const formTitle =
     title ||
     (departmentId ? "Edit department details" : "Create new department");
   return (
     <Box p={2}>
-      <Typography variant="h3" align="center" gutterBottom>
+      <Typography
+        variant="h3"
+        component="h2"
+        gutterBottom
+        align="center"
+        style={{
+          fontFamily: "Poppins",
+        }}
+      >
         {formTitle}
       </Typography>
       <Divider />
@@ -46,7 +53,6 @@ const DepartmentForm = ({
           parent: Yup.string(),
         })}
         onSubmit={(values) => {
-          console.log(values);
           onSubmit(values);
         }}
       >

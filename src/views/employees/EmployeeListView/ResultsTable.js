@@ -134,7 +134,7 @@ const ResultsTable = ({
                           ? "default"
                           : eStatus === "terminated"
                           ? "error"
-                          : eStatus === "Active"
+                          : eStatus === "active"
                           ? "primary"
                           : "secondary"
                       }

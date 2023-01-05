@@ -172,6 +172,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   React.useEffect(() => {
     // console.log("Allowances state: ", state);
     onFetchAllowances();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const employees = Object.values(employeesMap).map(

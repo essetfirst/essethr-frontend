@@ -61,14 +61,12 @@ const EmployeeBranchTransferDialog = ({ open, onClose, employee }) => {
       .getAll({ query: { createdBy: auth && auth.user && auth.user.email } })
       .then(({ success, orgs, error }) => {
         if (success) {
-          console.log(
-            "[EmployeeBranchTransferDialog]: Line 65 -> orgs:  ",
-            orgs
-          );
           if (Array.isArray(orgs) && orgs.length > 0) {
             setOrgs(orgs);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             orgsMap = (orgs || [])
               .map((org) => {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 positionsMap = {
                   ...(org.positions || []).reduce(
                     (o, p) => ({ ...o, [p._id]: { org: org._id, ...p } }),
@@ -79,10 +77,6 @@ const EmployeeBranchTransferDialog = ({ open, onClose, employee }) => {
               })
               .reduce((prev, n) => Object.assign({}, prev, n), {});
           }
-          console.log(
-            "[EmployeeBranchTransferDialog]: Line 85 -> positionsMap:  ",
-            positionsMap
-          );
         } else {
           console.warn(error);
         }

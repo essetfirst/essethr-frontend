@@ -1,8 +1,9 @@
 import { postRequest } from "./request";
 
+//For Admin Login And register
+
 const authPath = "/auth";
 
-//For Supervisor Login And Register
 function signup(payload) {
   return postRequest(`${authPath}/signup`, payload);
 }
@@ -15,9 +16,10 @@ function signout() {
   return postRequest(`${authPath}/signout`);
 }
 
-const usersPath = "/users";
+//For Supervisor Login And Register
 
-//For Admin Login And register
+const usersPath = "users";
+
 function register(payload) {
   return postRequest(`${usersPath}/register`, payload);
 }

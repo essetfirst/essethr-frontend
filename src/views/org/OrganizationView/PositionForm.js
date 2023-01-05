@@ -23,12 +23,19 @@ const PositionForm = ({
   onCancel,
   onSubmit,
 }) => {
-  console.log(positionId);
   const formTitle =
     title || (positionId ? "Edit position details" : "Create new position");
   return (
     <Box p={2}>
-      <Typography variant="h3" align="center" gutterBottom>
+      <Typography
+        variant="h3"
+        component="h2"
+        gutterBottom
+        align="center"
+        style={{
+          fontFamily: "Poppins",
+        }}
+      >
         {formTitle}
       </Typography>
       <Divider />

@@ -166,9 +166,16 @@ const LeaveTypeList = ({
               ),
           },
         ]}
-        data={(leaveTypes || []).filter((lt) =>
-          String(lt.name).includes(searchTerm)
-        )}
+        data={(leaveTypes || []).filter((lt) => {
+          try {
+            return (
+              lt.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              lt.duration.toString().includes(searchTerm)
+            );
+          } catch (error) {
+            // console.log(error);
+          }
+        })}
         selectionEnabled
         onSortParamsChange={onSortParamsChange}
         rowActions={[

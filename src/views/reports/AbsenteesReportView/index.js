@@ -10,11 +10,6 @@ import { Download as ExportIcon } from "react-feather";
 
 import useAttendance from "../../../providers/attendance";
 
-import {
-  CURRENT_MONTH_END_DATE,
-  CURRENT_MONTH_START_DATE,
-} from "../../../constants";
-
 import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 
 import PageView from "../../../components/PageView";
@@ -22,7 +17,8 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 
 import Searchbar from "../../../components/common/Searchbar";
-import Table from "../../../components/TableComponent";
+import TableComponent from "../../../components/TableComponent";
+import moment from "moment";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
   return (
@@ -67,25 +63,25 @@ const AbsenteesReportFilterbar = ({ filters, onFilterChange }) => {
 const AbsenteesReportTable = ({ data }) => {
   const columns = [
     {
-      label: "ID",
+      label: "Employee ID",
       field: "employeeId",
       renderCell: ({ employeeId }) => (
         <Typography variant="h6">{employeeId}</Typography>
       ),
     },
-    {
-      label: "Employee",
-      field: "employee",
-      renderCell: ({ employeeName }) => (
-        <Typography variant="h6">{employeeName}</Typography>
-      ),
-    },
+    // {
+    //   label: "Employee",
+    //   field: "employee",
+    //   renderCell: ({ employeeName }) => (
+    //     <Typography variant="h6">{employeeName}</Typography>
+    //   ),
+    // },
     {
       label: "Absent",
       field: "absent",
       align: "center",
       renderCell: ({ absent }) => (
-        <Typography variant="h6">{absent}</Typography>
+        <Typography variant="h6">{absent || 0}</Typography>
       ),
     },
     {
@@ -111,7 +107,7 @@ const AbsenteesReportTable = ({ data }) => {
       ),
     },
   ];
-  return <Table size="small" columns={columns} data={data} />;
+  return <TableComponent columns={columns} data={data} />;
 };
 
 const AbsenteesReportView = () => {
@@ -125,22 +121,11 @@ const AbsenteesReportView = () => {
         filters.from
       ).toLocaleDateString()} to ${new Date(filters.to).toLocaleDateString()})`;
 
-      const rows = reportData.map(({ present, late, absent, ...rest }) => ({
-        present: `${present} days`,
-        late: `${late} days`,
-        absent: `${absent} days`,
-        ...rest,
-      }));
       const columns = [
         {
           label: "Employee Id",
           field: "employeeId",
         },
-        {
-          label: "Employee",
-          field: "employeeName",
-        },
-
         {
           label: "Present",
           field: "present",
@@ -154,20 +139,24 @@ const AbsenteesReportView = () => {
           field: "absent",
         },
       ];
+
+      const rows = reportData.map(({ employeeId, present, late, absent }) => ({
+        employeeId,
+        present: present || 0,
+        late: late || 0,
+        absent: absent || 0,
+      }));
+
+      console.log("rows", rows);
       await makeExcel(getTableDataForExport(rows, columns), filename);
     }
   };
 
-  const [filters, setFilters] = React.useState({
-    searchTerm: "",
-    department: "",
-    from: CURRENT_MONTH_START_DATE,
-    to: CURRENT_MONTH_END_DATE,
-  });
+  const [filters, setFilters] = React.useState("");
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+  const handleFilterChange = () => (e) => {
+    const { value } = e.target;
+    setFilters(value);
   };
 
   const mapAttendanceToReport = (attendanceByDate, maxAbsent) => {
@@ -199,71 +188,20 @@ const AbsenteesReportView = () => {
       }
     });
 
-    // let attendanceReport = {
-    //   byDate: {},
-    //   byRemark: {},
-    //   attendance: {},
-    // };
-
-    // attendanceList.forEach(({ employeeId, date, remark }) => {
-    //   // By date
-    //     if (attendanceReport.byDate[date]) {
-    //       attendanceReport.byDate[date] = {
-    //         ...attendanceReport.byDate[date],
-    //         [remark]:
-    //           attendanceReport.byDate[date][remark] !== undefined
-    //             ? attendanceReport.byDate[date][remark] + 1
-    //             : 1,
-    //       };
-    //     } else {
-    //       attendanceReport.byDate[date] = { [remark]: 1 };
-    //     }
-
-    //   // By remark
-    //   if (attendanceReport.byRemark[remark]) {
-    //     attendanceReport.byRemark[remark] = {
-    //       ...attendanceReport.byRemark[remark],
-    //       [employeeId]:
-    //         attendanceReport.byRemark[remark][employeeId] !== undefined
-    //           ? attendanceReport.byRemark[remark][employeeId] + 1
-    //           : 1,
-    //     };
-    //   } else {
-    //     attendanceReport.byRemark[remark] = { [employeeId]: 1 };
-    //   }
-
-    //   // Employee collected attendance record
-    //   attendanceReport.attendance[employeeId] = {
-    //     ...(attendanceReport.attendance[employeeId] || {}),
-    //     [remark]: parseInt(
-    //       attendanceReport.attendance[employeeId] &&
-    //         attendanceReport.attendance[employeeId][remark] !== undefined
-    //         ? attendanceReport.attendance[employeeId][remark] + 1
-    //         : 1
-    //     ),
-    //     workedHours: parseInt(
-    //       attendanceReport.attendance[employeeId] &&
-    //         attendanceReport.attendance[employeeId]["workedHours"] !== undefined
-    //         ? attendanceReport.attendance[employeeId]["workedHours"]
-    //         : 0
-    //     ),
-    //   };
-    // });
-
     return Object.values(absenteesReport);
   };
 
   const handleSubmit = (filters, attendanceByDate) => {
-    fetchAttendance(
-      new Date(filters.from).toISOString().slice(0, 10),
-      new Date(filters.to).toISOString().slice(0, 10)
-    );
+    fetchAttendance();
+
+    console.log("filters, attendanceByDate)", filters, attendanceByDate);
+
     const dateRange =
       (new Date(filters.to).getTime() - new Date(filters.from).getTime()) /
       (3600000 * 24);
     console.log(
       "[AbsenteesReportView]: Line 272 -> attendanceByDate: ",
-      attendanceByDate
+      dateRange
     );
 
     const countWeekends = (from, to) => {
@@ -300,16 +238,15 @@ const AbsenteesReportView = () => {
 
     handleSubmit(filters, state.attendanceByDate);
 
+    console.log(state.attendanceByDate);
     return () => window.removeEventListener("keypress", enterKeyListener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
     handleSubmit(filters, state.attendanceByDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.from, filters.to]);
-
-  //   React.useEffect(() => {
-  //     // Do something
-  //   }, [filters.from, filters.to]);
 
   return (
     <PageView
@@ -323,12 +260,12 @@ const AbsenteesReportView = () => {
       actions={[
         {
           label: "Export to Excel",
-          icon: { node: <ExportIcon /> },
+          icon: { node: <ExportIcon size={20} /> },
           handler: handleExportClick,
           position: "right",
           otherProps: {
             color: "primary",
-            variant: "text",
+            variant: "outlined",
             disabled: !reportData || !reportData.length,
           },
         },
@@ -345,7 +282,7 @@ const AbsenteesReportView = () => {
       ) : state.error ? (
         <ErrorBoxComponent error={state.error} onRetry={() => handleSubmit()} />
       ) : (
-        reportData && <AbsenteesReportTable data={reportData} />
+        reportData && <AbsenteesReportTable data={reportData || []} />
       )}
     </PageView>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 
 import {
   Box,
@@ -16,22 +16,29 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { Download as ExportIcon } from "react-feather";
-
+import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import TableComponent from "../../../components/TableComponent";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    width: "100%",
+
+    "& .MuiTableCell-root": {
+      padding: theme.spacing(1, 2),
+
+      "&:last-child": {
+        paddingRight: theme.spacing(2),
+      },
+    },
+  },
   textField: {
     minWidth: "25ch",
     margin: theme.spacing(1, 2),
   },
 }));
 const Paystubs = ({ payslips = [] }) => {
+  console.log(payslips);
   const classes = useStyles();
-  const printableRef = React.useRef();
-  const handlePrint = useReactToPrint({ content: () => printableRef.current });
-
   const [filters, setFilters] = React.useState({
     fromDate: new Date(new Date().setMonth(new Date().getMonth() - (1 % 12)))
       .toISOString()
@@ -44,77 +51,41 @@ const Paystubs = ({ payslips = [] }) => {
     setFilters({ ...filters, [name]: value });
   };
 
+  const handleFilterReset = () => {
+    setFilters({
+      fromDate: new Date(new Date().setMonth(new Date().getMonth() - (1 % 12)))
+        .toISOString()
+        .slice(0, 10),
+      toDate: new Date().toISOString().slice(0, 10),
+      status: "ALL",
+    });
+  };
+
   const handleExportClick = () => {
-    console.log("Export Pdf");
-
-    const unit = "pt";
-    const size = "A4"; // Use A1, A2, A3 or A4
-    const orientation = "portrait"; // portrait or landscape
-    const marginLeft = 40;
-    const marginRight = 40;
-    const marginTop = 40;
-    const marginBottom = 20;
-
-    const doc = new jsPDF(orientation, unit, size);
-
-    doc.text(`Employee PaySlips `, marginLeft, marginTop);
-
+    const doc = new jsPDF("p", "pt");
     doc.autoTable({
       head: [
-        [
-          "Payroll Title",
-          "Organization",
-          "Employee Name",
-          "Start Date",
-          "End Date",
-          "Pay Date",
-          "Earnings Total",
-          "Deductions Total",
-          "Net Payment",
-          "Status",
-        ],
+        ["Employee Name", "Pay Date", "Gross payment", "Net payment", "Status"],
       ],
-      body: payslips.map((pay) => [
-        pay.payrollTitle,
-        pay.organization,
-        pay.employeeName,
-        moment(pay.fromDate).format("MM/DD/YYYY"),
-        moment(pay.toDate).format("MM/DD/YYYY"),
-        moment(pay.payDate).format("MM/DD/YYYY"),
-        pay.earningsTotal,
-        pay.deductionsTotal,
-        pay.netPayment,
-        pay.status,
+      body: payslips.map((payslip) => [
+        payslip.employeeName,
+        moment(payslip.payDate).format("DD/MM/YYYY"),
+        payslip.earningsTotal.toLocaleString() + " ETB",
+        payslip.netPayment.toLocaleString() + " ETB",
+        payslip.status,
       ]),
-      startY: marginTop + doc.autoTableEndPosY() + marginBottom,
-      margin: {
-        top: marginTop,
-        left: marginLeft,
-        right: marginRight,
-        bottom: marginBottom,
-      },
-      styles: {
-        overflow: "linebreak",
-        fontSize: 8,
-        cellPadding: 2, // a number, array or
-        halign: "left",
-      },
-      columnStyles: {
-        0: { columnWidth: "auto" },
-      },
-      tableWidth: "auto",
-      theme: "striped", // 'striped', '
-      showHeader: "everyPage",
-      tableId: "paystubs",
-      tableLineWidth: 1.1,
     });
-    doc.save(`PaySlip-${moment().format("MM-DD-YYYY")}.pdf`);
+
+    const fileName = `payslips ${payslips[0].employeeName} ${moment(
+      payslips[0].payDate
+    ).format("DD/MM/YYYY")}.pdf`;
+    doc.save(fileName);
   };
 
-  console.log(payslips);
-  const handlePrintClick = (e) => {
-    handlePrint(e);
-  };
+  React.useEffect(() => {
+    console.log("filters", filters);
+    console.log("payslips", payslips);
+  }, [filters, payslips]);
   return (
     <Box width="100%">
       <Box display="flex" justifyContent="flex-end" flexWrap="wrap" mb={2}>
@@ -125,7 +96,7 @@ const Paystubs = ({ payslips = [] }) => {
             size="small"
             onClick={handleExportClick}
             aria-label="export"
-            startIcon={<ExportIcon />}
+            startIcon={<PictureAsPdfIcon />}
             disabled={payslips.length === 0}
           >
             Export as PDF
@@ -144,8 +115,10 @@ const Paystubs = ({ payslips = [] }) => {
       </Box>
       <Box mb={2}>
         <Card>
-          <CardContent>
-            <Box display="flex" alignItems="center">
+          <CardContent
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
+            <Box display="flex" alignItems="center" flexWrap="wrap">
               <TextField
                 className={classes.textField}
                 label="From"
@@ -174,21 +147,38 @@ const Paystubs = ({ payslips = [] }) => {
                 select
                 name="status"
                 value={filters.status}
+                onChange={handleFilterChange}
                 variant="outlined"
                 margin="dense"
                 size="small"
               >
+                {/* //list of status options to be added here from payslips status */}
                 {[
-                  { label: "ALL", value: "ALL" },
-                  { label: "Pending", value: "pending" },
+                  { label: "All", value: "ALL" },
                   { label: "Approved", value: "approved" },
+                  { label: "Pending", value: "pending" },
                   { label: "Rejected", value: "rejected" },
-                ].map(({ label, value }) => (
-                  <MenuItem value={value} key={value}>
-                    {label}
+                ].map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
                   </MenuItem>
                 ))}
               </TextField>
+
+              <Button
+                variant="contained"
+                size="medium"
+                onClick={handleFilterReset}
+                aria-label="reset"
+                width="100%"
+                style={{
+                  marginLeft: "1rem",
+                  backgroundColor: "#00aeef",
+                  color: "white",
+                }}
+              >
+                Reset
+              </Button>
             </Box>
           </CardContent>
         </Card>
@@ -228,7 +218,7 @@ const Paystubs = ({ payslips = [] }) => {
                   color="textSecondary"
                   component="span"
                 >
-                  {netPayment} ETB
+                  {netPayment.toLocaleString()} ETB
                 </Typography>
               );
             },
@@ -252,7 +242,16 @@ const Paystubs = ({ payslips = [] }) => {
             ),
           },
         ]}
-        data={payslips}
+        data={(payslips || []).filter((payslip) => {
+          const { fromDate, toDate, status } = filters;
+          const { payDate } = payslip;
+          const isDateInRange =
+            moment(payDate).isSameOrAfter(fromDate) &&
+            moment(payDate).isSameOrBefore(toDate);
+          const isStatusMatched =
+            status === "ALL" || String(status).toLowerCase() === status;
+          return isDateInRange && isStatusMatched;
+        })}
         selectionEnabled
       />
     </Box>

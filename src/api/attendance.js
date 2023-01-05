@@ -10,7 +10,9 @@ const path = "/attendance";
 
 function getAttendance(query = {}) {
   return getRequest(
-    `${path}?${typeof query === "string" ? query : queryObjectToString(query)}`
+    `${path}/all?${
+      typeof query === "string" ? query : queryObjectToString(query)
+    }`
   );
 }
 
@@ -18,12 +20,12 @@ function swipe(data) {
   return postRequest(`${path}/swipe`, data);
 }
 
-function checkin(employeeId, time) {
-  return postRequest(`${path}/checkin`, { employeeId, time });
+function checkin(employeeId) {
+  return postRequest(`${path}/checkin`, { employeeId });
 }
 
-function checkout(employeeId, time) {
-  return postRequest(`${path}/checkout`, { employeeId, time });
+function checkout(employeeId) {
+  return postRequest(`${path}/checkout`, { employeeId });
 }
 
 function approveAttendance(data) {

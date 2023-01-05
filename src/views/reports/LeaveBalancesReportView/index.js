@@ -23,7 +23,7 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 
 import Searchbar from "../../../components/common/Searchbar";
-import Table from "../../../components/TableComponent";
+import TableComponent from "../../../components/TableComponent";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
   return (
@@ -112,7 +112,7 @@ const AbsenteesReportTable = ({ data }) => {
       ),
     },
   ];
-  return <Table size="small" columns={columns} data={data} />;
+  return <TableComponent columns={columns} data={data} />;
 };
 
 const LeaveBalancesReportView = () => {
@@ -177,7 +177,7 @@ const LeaveBalancesReportView = () => {
     to: CURRENT_MONTH_END_DATE,
   });
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = () => (e) => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
   };
@@ -214,7 +214,7 @@ const LeaveBalancesReportView = () => {
   };
 
   const handleSubmit = React.useCallback(async () => {
-    await fetchAttendance(filters.from, filters.to);
+    await fetchAttendance();
     const dateRange =
       (new Date(filters.to).getTime() - new Date(filters.from).getTime()) /
       (3600000 * 24);
@@ -225,17 +225,13 @@ const LeaveBalancesReportView = () => {
     setReportData(absenteesReport);
   }, [filters.from, filters.to, state.attendanceByDate]);
 
-  React.useEffect(() => {
-    window.addEventListener("keypress", async (e) => {
-      if (e.keyCode === 13) {
-        await handleSubmit();
-      }
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   handleSubmit();
+  // }, [handleSubmit]);
 
-  //   React.useEffect(() => {
-  //     // Do something
-  //   }, [filters.from, filters.to]);
+  React.useEffect(() => {
+    console.log("reportData", state);
+  }, [reportData]);
 
   return (
     <PageView
@@ -249,14 +245,15 @@ const LeaveBalancesReportView = () => {
         {
           label: "Export to Excel",
           handler: handleExportClick,
-          position: 'right',
-          icon: {  node: <ExportIcon /> },
+          position: "right",
+          icon: { node: <ExportIcon /> },
           otherProps: {
             color: "primary",
             variant: "text",
           },
         },
       ]}
+      backPath="/app/reports"
     >
       <AbsenteesReportFilterbar
         filters={filters}
@@ -267,10 +264,7 @@ const LeaveBalancesReportView = () => {
       {state.isLoading ? (
         <LoadingComponent />
       ) : state.error ? (
-        <ErrorBoxComponent
-          error={state.error}
-          onRetry={async () => await handleSubmit()}
-        />
+        <ErrorBoxComponent error={state.error} />
       ) : (
         reportData && <AbsenteesReportTable data={reportData} />
       )}

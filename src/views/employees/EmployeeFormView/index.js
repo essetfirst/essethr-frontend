@@ -21,7 +21,7 @@ import {
   ButtonGroup,
 } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import SaveIcon from "@material-ui/icons/Save";
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -103,10 +103,19 @@ const EmployeeFormView = ({ employeeId }) => {
   return (
     <Page className={classes.root} title={title}>
       <Box display="flex" flexDirection="column" height="100%">
-        <Container maxWidth={false}>
+        <Container maxWidth={true}>
           <Box display="flex" justifyContent="left">
-            <Box display="flex" justifyContent="left">
-              <Typography className={classes.title} variant="h2">
+            <Box display="flex">
+              <Typography
+                // className={classes.title}
+                color="textPrimary"
+                style={{
+                  fontFamily: "Roboto",
+                  fontSize: "24px",
+                  fontWeight: 100,
+                  margin: "0px 0px 10px 0px",
+                }}
+              >
                 {title}
               </Typography>
             </Box>
@@ -121,9 +130,10 @@ const EmployeeFormView = ({ employeeId }) => {
                 ...values,
                 status:
                   values.endDate &&
-                  values.endDate < new Date().toISOString().slice(0, 10)
-                    ? "Inactive"
-                    : "Active",
+                  new Date(values.startDate) <= new Date(values.endDate) &&
+                  new Date(values.endDate) <= new Date()
+                    ? "inactive"
+                    : "active",
               });
               resetForm();
             }}
@@ -154,12 +164,15 @@ const EmployeeFormView = ({ employeeId }) => {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      disabled={Object.keys(errors).length > 0}
+                      disabled={Object.keys(errors).length > 0 || loading}
                     >
                       {loading ? (
-                        <CircularProgress size={24} color="secondary" />
+                        <CircularProgress size={24} color="inherit" />
                       ) : (
-                        "Save"
+                        <Box display="flex" alignItems="center">
+                          <Box mr={1}>Save</Box>
+                          <SaveIcon style={{ fontSize: 16 }} />
+                        </Box>
                       )}
                     </Button>
                   </ButtonGroup>
@@ -199,20 +212,21 @@ const EmployeeFormView = ({ employeeId }) => {
         .oneOf(["Permanent", "Temporary", "Internship"], "Choose contract type")
         .required("Contract type is required"),
       startDate: Yup.date().required("Start date is required"),
-      endDate: Yup.date(),
       hireDate: Yup.date().required("Hire date is required"),
+      endDate: Yup.date(),
     });
   }
 
   function formUi(handleChange, handleBlur, touched, errors, values) {
     return (
-      <Paper>
-        <Container
-          component={Box}
-          display="flex"
-          justifyItems="center"
-          style={{ padding: "10px" }}
-        >
+      <Paper
+        style={{
+          padding: "10px",
+          borderRadius: "10px",
+          boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.05)",
+        }}
+      >
+        <Container maxWidth={true} display="flex" flexDirection="column" p={0}>
           <Grid container spacing={2}>
             {[
               {
@@ -346,7 +360,8 @@ const EmployeeFormView = ({ employeeId }) => {
                 type: "date",
                 onChange: handleChange,
                 onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 6 },
+                GridProps: { sm: 12, md: 6, lg: 4 },
+                error: values.hireDate < values.birthDay,
               },
               {
                 label: "Work start date ex. 2020-01-01",
@@ -355,7 +370,18 @@ const EmployeeFormView = ({ employeeId }) => {
                 type: "date",
                 onChange: handleChange,
                 onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 6 },
+                GridProps: { sm: 12, md: 6, lg: 4 },
+                error: values.startDate < values.hireDate,
+              },
+              {
+                label: "Work end date ex. 2020-01-01",
+                name: "endDate",
+                type: "date",
+                onChange: handleChange,
+                onBlur: handleBlur,
+                GridProps: { sm: 12, md: 6, lg: 4 },
+                disabled: values.contractType === "Permanent",
+                error: values.endDate < values.startDate,
               },
             ].map(
               (
@@ -376,7 +402,7 @@ const EmployeeFormView = ({ employeeId }) => {
                   <TextField
                     required={required}
                     select={select}
-                    error={Boolean(touched[name] && errors[name])}
+                    error={Boolean(touched[name] && errors[name]) || rest.error}
                     helperText={touched[name] && errors[name]}
                     label={label}
                     name={name}
@@ -413,7 +439,7 @@ const EmployeeFormView = ({ employeeId }) => {
         firstName: "",
         surName: "",
         lastName: "",
-        gender: "Female",
+        gender: "",
         birthDay: new Date().toISOString().slice(0, 10),
         nationalID: "",
         image: "",
@@ -425,9 +451,9 @@ const EmployeeFormView = ({ employeeId }) => {
         department: "",
         position: "",
         contractType: "",
+        hireDate: new Date().toISOString().slice(0, 10),
         startDate: new Date().toISOString().slice(0, 10),
         endDate: new Date().toISOString().slice(0, 10),
-        hireDate: new Date().toISOString().slice(0, 10),
       }
     );
   }
@@ -439,8 +465,7 @@ const EmployeeFormView = ({ employeeId }) => {
         const { success, message, employee, error } =
           await API.employees.create(employeeInfo);
         if (success) {
-          console.log(employee);
-          addEmployee(employeeInfo);
+          addEmployee(employee);
           notify({
             message: message,
             type: "success",

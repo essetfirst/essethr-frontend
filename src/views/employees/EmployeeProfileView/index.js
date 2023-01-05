@@ -36,12 +36,17 @@ import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStatio
 import PrintIcon from "@material-ui/icons/Print";
 import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
 
-import FemaleNoprofileImage from "../../../assets/images/female_no_profile.jpg";
-import MaleNoprofileImage from "../../../assets/images/male_no_profile.jpg";
+import FemaleNoprofileImage from "../../../assets/images/female_no_profile.png";
+import MaleNoprofileImage from "../../../assets/images/male_no_profile.png";
 import EmployeeBranchTransferDialog from "./EmployeeBranchTransferDialog";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    backgroundColor: theme.palette.background.dark,
+    minHeight: "100%",
+    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+  },
   image: {
     marginTop: 50,
     display: "inline-block",
@@ -97,6 +102,7 @@ const EmployeeProfileView = () => {
     API.employees
       .getDetails(params.id)
       .then(({ success, employee, error }) => {
+        console.log(employee);
         success
           ? dispatch({
               type: types.FETCH_EMPLOYEE_SUCCESS,
@@ -161,7 +167,7 @@ const EmployeeProfileView = () => {
                 >
                   <BackIcon />
                 </IconButton>
-                <Typography style={{ fontWeight: 600, fontSize: 14 }}>
+                <Typography style={{ fontWeight: 600, fontSize: 18 }}>
                   Employees
                 </Typography>
               </Box>
@@ -175,8 +181,8 @@ const EmployeeProfileView = () => {
                     size="2"
                     src={
                       state.employee && state.employee.gender === "Male"
-                        ? require("../../../assets/images/male_no_profile.png")
-                        : require("../../../assets/images/female_no_profile.png")
+                        ? MaleNoprofileImage
+                        : FemaleNoprofileImage
                     }
                     alt={`${name}`}
                     className={classes.avatar}
@@ -194,7 +200,7 @@ const EmployeeProfileView = () => {
                       <Chip
                         size="small"
                         style={
-                          state.employee && state.employee.status === "Active"
+                          state.employee && state.employee.status === "active"
                             ? {
                                 backgroundColor: "#4caf50",
                                 color: "#fff",

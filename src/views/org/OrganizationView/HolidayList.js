@@ -165,15 +165,19 @@ const HolidayList = ({
           },
         ]}
         data={(holidays || []).filter((h) => {
-          const { name, date } = h;
-          const searchTermLower = searchTerm.toLowerCase();
-          return (
-            name.toLowerCase().includes(searchTermLower) ||
-            moment(date)
-              .format("MMMM Do")
-              .toLowerCase()
-              .includes(searchTermLower)
-          );
+          try {
+            const { name, date } = h;
+            const searchTermLower = searchTerm.toLowerCase();
+            return (
+              name.toLowerCase().includes(searchTermLower) ||
+              moment(date)
+                .format("MMMM Do")
+                .toLowerCase()
+                .includes(searchTermLower)
+            );
+          } catch (error) {
+            return false;
+          }
         })}
         selectionEnabled
         onSortParamsChange={onSortParamsChange}

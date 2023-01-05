@@ -212,7 +212,6 @@ const SignUp = () => {
                   c_password: values.c_password,
                 },
               };
-              console.log(signupInfo);
               handleSignup(signupInfo);
             }}
           >

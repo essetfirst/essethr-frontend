@@ -11,6 +11,7 @@ import {
 import GetAppIcon from "@material-ui/icons/GetApp";
 import API from "../../../api";
 
+import moment from "moment";
 import PageView from "../../../components/PageView";
 
 import TableComponent from "../../../components/TableComponent";
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1),
   },
 }));
-
 const types = {
   REQUESTING: "REQUESTING",
   REQUEST_SUCCESS: "REQUEST_SUCCESS",
@@ -82,19 +82,15 @@ const PayrollListView = () => {
   }, [fetchPayroll]);
 
   const handleRetry = () => {
-    // onFetchPayrolls();
+    // fetchPayroll();
   };
 
-  const [filters, setFilters] = React.useState({
-    searchTerm: "",
-    fromDate: "",
-    toDate: "",
-    sortBy: "",
-    sortOrder: "",
-  });
+  const [filters, setFilters] = React.useState("");
 
-  const handleFilterChange = (filterName) => (e) => {
-    setFilters({ ...filters, [filterName]: e.target.value });
+  const handleFilterChange = () => (e) => {
+    const { value } = e.target;
+    console.log(value);
+    setFilters(value);
   };
 
   const [selectedPayrolls, setSelectedPayrolls] = React.useState([]);
@@ -144,40 +140,38 @@ const PayrollListView = () => {
       className={classes.root}
     >
       <Searchbar
-        searchTerm={filters.searchTerm}
-        onSearchTermChange={handleFilterChange("searchTerm")}
+        searchTerm={filters}
+        onSearchTermChange={handleFilterChange}
+        searchTermPlaceholder="Search by title"
       />
-
       <TableComponent
         size="small"
         columns={[
           {
             field: "title",
             label: "Title",
-            renderCell: ({ _id, payrollTitle }) => (
+            renderCell: ({ _id, title }) => (
               <Typography
                 variant="subtitle2"
-                // component={Link}
-                // href={`/app/payroll/${_id}`}
+                href={`/app/payroll/${_id}`}
                 onClick={() => handleRowClick({ _id })}
                 style={{ cursor: "pointer" }}
               >
-                {payrollTitle}
+                {title}
               </Typography>
             ),
           },
           {
             field: "fromDate",
             label: "Start Date",
-            renderCell: ({ fromDate }) =>
-              new Date(fromDate).toLocaleDateString(),
+            renderCell: ({ fromDate }) => moment(fromDate).format("DD/MM/YYYY"),
           },
           {
             field: "toDate",
             label: "End Date",
-            renderCell: ({ toDate }) => new Date(toDate).toLocaleDateString(),
+            renderCell: ({ toDate }) => moment(toDate).format("DD/MM/YYYY"),
           },
-          { field: "employeesCount", label: "# of Employees", align: "center" },
+          { field: "employeesCount", label: "No. of Employees" },
           { field: "totalPayment", label: "Total Amount" },
           {
             field: "status",
@@ -191,7 +185,16 @@ const PayrollListView = () => {
             ),
           },
         ]}
-        data={state.payrolls || []}
+        data={(state.payroll || []).filter((payroll) => {
+          const { title, fromDate, toDate, status } = payroll;
+          const searchTerm = filters.toLowerCase();
+          return (
+            title.toLowerCase().includes(searchTerm) ||
+            moment(fromDate).format("DD/MM/YYYY").includes(searchTerm) ||
+            moment(toDate).format("DD/MM/YYYY").includes(searchTerm) ||
+            status.toLowerCase().includes(searchTerm)
+          );
+        })}
         requestState={{
           requesting: state.requesting,
           error: state.error,
@@ -206,7 +209,6 @@ const PayrollListView = () => {
             size: "small",
           },
         ]}
-        // onRowClick={handleRowClick}
         onSelectionChange={handlePayrollSelectionChange}
         selectionActions={[
           {
@@ -223,11 +225,6 @@ const PayrollListView = () => {
           },
         ]}
       />
-
-      {/* <code>{JSON.stringify(state)}</code>
-      {state.error && (
-        <ErrorBoxComponent error={state.error} onRetry={handleRetry} />
-      )} */}
     </PageView>
   );
 };

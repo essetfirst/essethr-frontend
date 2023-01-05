@@ -66,12 +66,11 @@ const DepartmentList = ({
   };
 
   const handleDeleteClick = (_id) => {
-    // console.log(_id);
+    console.log(_id);
     onDeleteDepartment(_id);
   };
 
   const handleFormSubmit = (departmentInfo) => {
-    console.log("DepartmentId: ", selectedId);
     selectedId
       ? onUpdateDepartment(departmentInfo)
       : onCreateDepartment(departmentInfo);

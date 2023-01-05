@@ -66,61 +66,45 @@ const PayrollDetailsView = () => {
     fetchPayroll();
   }, [fetchPayroll]);
 
-  const handleExportClick = async ({ _id }) => {
+  const handleExportClick = async () => {
     console.log("im about to export");
 
     const columns = [
       {
-        label: "First Name",
-        field: "firstName",
+        label: "Title",
+        field: "title",
       },
       {
-        label: "Job Title",
-        field: "jobTitle",
+        label: "Pay Date",
+        field: "payDate",
       },
       {
-        label: "Organization",
-        field: "organization",
+        label: "Total Payment",
+        field: "totalPayment",
       },
       {
-        label: "Salary",
-        field: "salary",
+        label: "From Date",
+        field: "fromDate",
       },
       {
-        label: "Status",
-        field: "status",
-      },
-      {
-        label: "Employee JoinedDate",
-        field: "employeeJoinedDate",
-      },
-      {
-        label: "Net Payment",
-        field: "netPayment",
+        label: "To Date",
+        field: "toDate",
       },
     ];
 
-    //map state.payroll paysilp array ?
+    const rows = [state.payroll].map((payroll) => ({
+      title: payroll.title,
+      payDate: payroll.payDate,
+      totalPayment: payroll.totalPayment,
+      fromDate: payroll.fromDate,
+      toDate: payroll.toDate,
+    }));
 
-    const data = state.payroll.payslips.map((payslip) => {
-      return {
-        firstName: payslip.employee.name,
-        jobTitle: payslip.employee.jobTitle,
-        salary: payslip.employee.salary,
-        organization: payslip.organization,
-        employeeJoinedDate: payslip.employeeJoinedDate,
-        payrollTitle: payslip.payrollTitle,
-        status: payslip.status,
-        fromDate: payslip.fromDate,
-        netPayment: payslip.netPayment,
-      };
-    });
-
-    // console.log(data);
-
-    console.log(state.payroll);
-    await makeExcel(getTableDataForExport(data, columns));
+    const tableData = getTableDataForExport(rows, columns);
+    const fileName = `${state.payroll.title}`;
+    await makeExcel(tableData, fileName);
   };
+
   const handleRetry = () => {
     fetchPayroll();
   };

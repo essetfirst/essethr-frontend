@@ -204,13 +204,14 @@ const RoutesComponent = () => {
       <Route path="/" element={<MainLayout />}>
         <Route path="/" element={<Navigate to={homePath} replace />} />
         <Route path="home" element={<HomeView />} />
+
         <Route path="signup" element={<SignUpView />} />
         <Route path="signup/success" element={<SignUpSuccessView />} />
         <Route path="signin" element={<SignInView />} />
+
         <Route path="register" element={<RegisterView />} />
         <Route path="login" element={<LoginView />} />
         <Route path="*" element={<NotFoundView />} />
-        {/* <Route path="*" element={<Navigate to="/404" />} /> */}
       </Route>
     </Routes>
   );

@@ -40,8 +40,10 @@ import Chart from "react-apexcharts";
 
 const DailyAttendanceSummaryByRemark = ({
   remarks,
-  dailyAttendanceByRemark = {},
+  totalEmployees,
+  dailyAttendanceByRemark,
 }) => {
+  console.log("dailyAttendanceByRemark", dailyAttendanceByRemark);
   return (
     <Card>
       <CardHeader
@@ -157,7 +159,7 @@ const DailyAttendanceSummaryByRemark = ({
                   },
                   yaxis: {
                     title: {
-                      text: "Attendance",
+                      text: "No. of Employees",
                     },
                   },
                   tooltip: {
@@ -181,8 +183,24 @@ const DailyAttendanceSummaryByRemark = ({
                 }}
                 series={[
                   {
-                    name: "series-1",
-                    data: [50, 20, 75],
+                    name: "Attendance",
+                    data: [
+                      dailyAttendanceByRemark.filter(
+                        (item) => item.remark === "present"
+                      ).length || 0,
+                      dailyAttendanceByRemark.filter(
+                        (item) => item.remark === "late"
+                      ).length || 0,
+
+                      //absent count is total count - present count - late count
+                      totalEmployees -
+                        dailyAttendanceByRemark.filter(
+                          (item) => item.remark === "present"
+                        ).length -
+                        dailyAttendanceByRemark.filter(
+                          (item) => item.remark === "late"
+                        ).length,
+                    ],
                   },
                 ]}
                 type="area"
@@ -274,8 +292,8 @@ const WeeklyAttendanceSummaryByRemark = ({
   );
 };
 
-const AttendanceSummary = ({ totalEmployees = 0 }) => {
-  const [currentDate] = React.useState(new Date().setDate(27));
+const AttendanceSummary = ({ totalEmployees }) => {
+  const [currentDate] = React.useState(moment().format("YYYY-MM-DD"));
   const remarks = [
     {
       label: "Present",
@@ -295,30 +313,9 @@ const AttendanceSummary = ({ totalEmployees = 0 }) => {
   ];
 
   const { state, fetchAttendance } = useAttendance();
-
   React.useEffect(() => {
     (async () => await fetchAttendance(null, null, currentDate))();
   }, [currentDate, fetchAttendance]);
-
-  const getDailyAttendance = (attendanceByDate, date) =>
-    attendanceByDate && attendanceByDate !== undefined
-      ? attendanceByDate[date] || []
-      : [];
-
-  const mapDailyAttendanceToRemarkCount = (dailyAttendance) => {
-    const count = dailyAttendance.reduce(
-      (prev, a) =>
-        a.remark !== undefined && a.remark
-          ? Object.assign({}, prev, {
-              [a.remark]: prev[a.remark] !== undefined ? prev[a.remark] + 1 : 1,
-              absent:
-                prev.absent !== undefined ? prev.absent - 1 : totalEmployees,
-            })
-          : prev,
-      {}
-    );
-    return count;
-  };
 
   const mapWeeklyAttendanceToRemarkCount = (weeklyAttendanceByDate) => {
     const defaultWeeklyAttendanceRemarkCount = new Array(6).map((_) => 0);
@@ -349,11 +346,9 @@ const AttendanceSummary = ({ totalEmployees = 0 }) => {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={6}>
           <DailyAttendanceSummaryByRemark
-            date={currentDate}
             remarks={remarks}
-            dailyAttendanceByRemark={mapDailyAttendanceToRemarkCount(
-              getDailyAttendance(state.attendanceByDate, currentDate)
-            )}
+            dailyAttendanceByRemark={state.attendanceByDate[currentDate] || []}
+            totalEmployees={totalEmployees}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>

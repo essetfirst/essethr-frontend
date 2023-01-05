@@ -11,8 +11,7 @@ import {
   colors,
   Box,
 } from "@material-ui/core";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import EuroSymbolIcon from "@material-ui/icons/EuroSymbol";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 const useStyles = makeStyles(() => ({
   root: {
     height: "100%",
@@ -35,15 +34,20 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
   },
   differenceIcon: {
-    color: colors.indigo[400],
+    color: colors.red[300],
   },
   differenceValue: {
-    color: colors.indigo[400],
+    color: colors.red[300],
     marginRight: 8,
   },
 }));
 
-const TotalPayroll = ({ totalPayroll = 0, className, ...rest }) => {
+const InactiveEmployee = ({
+  totalInactiveEmployees,
+  calculatePercentage,
+  className,
+  ...rest
+}) => {
   const classes = useStyles();
 
   return (
@@ -57,28 +61,38 @@ const TotalPayroll = ({ totalPayroll = 0, className, ...rest }) => {
               variant="h6"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
             >
-              TOTAL PAYROLL
+              INACTIVE EMPLOYEES
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span style={{ color: "#5c6bc0" }}>{totalPayroll || 2500}</span>
+              <span style={{ color: "#5c6bc0" }}>
+                {totalInactiveEmployees || 0}
+              </span>
             </Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
-              <AttachMoneyIcon />
+              <ErrorOutlineIcon />
             </Avatar>
           </Grid>
         </Grid>
         <Box mt={2} />
         <Box mt={2} display="flex" alignItems="center">
-          <EuroSymbolIcon className={classes.differenceIcon} />
-          <Typography className={classes.differenceValue}>100%</Typography>
-          <Typography color="textSecondary" variant="caption">
-            Cash
+          <Typography className={classes.differenceValue}>
+            {calculatePercentage || 0}%
+          </Typography>
+
+          <Typography
+            color="textSecondary"
+            variant="body2"
+            style={{
+              fontFamily: "Poppins",
+            }}
+          >
+            <span>Inactive</span> employees
           </Typography>
         </Box>
       </CardContent>
@@ -86,9 +100,9 @@ const TotalPayroll = ({ totalPayroll = 0, className, ...rest }) => {
   );
 };
 
-TotalPayroll.propTypes = {
+InactiveEmployee.propTypes = {
   className: PropTypes.string,
   totalPayroll: PropTypes.number,
 };
 
-export default TotalPayroll;
+export default InactiveEmployee;

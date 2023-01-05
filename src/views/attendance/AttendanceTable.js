@@ -2,7 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Chip, Link, Typography } from "@material-ui/core";
-import { CheckCircleOutlineRounded as CheckIcon } from "@material-ui/icons";
+import {
+  CheckCircleOutlineRounded as CheckIcon,
+  EditRounded as EditIcon,
+} from "@material-ui/icons";
 
 import TableComponent from "../../components/TableComponent";
 import moment from "moment";
@@ -99,20 +102,18 @@ const AttendanceTable = ({
         {
           label: "REMARK",
           field: "remark",
-          renderCell: ({ checkin, remark }) => {
-            const calculatedRemark =
-              new Date(checkin).toLocaleTimeString() > "08:30:00 AM"
-                ? "late"
-                : "present";
-            const color =
-              (remark || calculatedRemark) === "present"
-                ? "primary"
-                : "secondary";
+          renderCell: ({ remark }) => {
             return (
               <Chip
-                color={color}
                 size="small"
-                label={remark || calculatedRemark}
+                color={
+                  remark === "present"
+                    ? "primary"
+                    : remark === "absent"
+                    ? "secondary"
+                    : "default"
+                }
+                label={remark}
               />
             );
           },

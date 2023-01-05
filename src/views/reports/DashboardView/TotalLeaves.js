@@ -69,7 +69,7 @@ const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
               <span style={{ color: colors.blueGrey[300] }}>
-                {employeeOnLeaveCount || 65}
+                {employeeOnLeaveCount || 1}
               </span>
             </Typography>
           </Grid>

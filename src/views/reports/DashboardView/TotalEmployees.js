@@ -13,11 +13,8 @@ import {
   makeStyles,
   // Divider,
 } from "@material-ui/core";
-
-import {
-  PeopleOutlined as PeopleIcon,
-  ArrowUpward as ArrowUpwardIcon,
-} from "@material-ui/icons";
+import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
+import { PeopleOutlined as PeopleIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   differenceIcon: {
     color: colors.cyan[400],
     fontFamily: "Poppins",
+    fontSize: 14,
   },
   differenceValue: {
     color: colors.cyan[600],
@@ -53,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TotalEmployees = ({
   currentMonthEmployeesCount,
-  lastMonthEmployeesCount,
+  calculatePercentage,
   className,
   ...rest
 }) => {
@@ -67,10 +65,9 @@ const TotalEmployees = ({
             <Typography
               color="textSecondary"
               gutterBottom
-              variant="h6"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
             >
-              TOTAL EMPLOYEES
+              ACTIVE EMPLOYEE
             </Typography>
             <Typography
               color="textPrimary"
@@ -90,13 +87,26 @@ const TotalEmployees = ({
           </Grid>
         </Grid>
         <Box mt={2} />
-        <Box mt={2} display="flex" alignItems="center">
-          <ArrowUpwardIcon className={classes.differenceIcon} />
-          <Typography className={classes.differenceValue} color="textSecondary">
-            76%
+        <Box
+          mt={2}
+          display="flex"
+          justifyContent={"start"}
+          alignItems="center"
+          flexDirection="row"
+        >
+          <Typography
+            className={classes.differenceValue}
+            variant="body2"
+            style={{ fontFamily: "Poppins" }}
+          >
+            {calculatePercentage || 0}%
           </Typography>
-          <Typography color="textSecondary" variant="caption">
-            Since last month
+          <Typography
+            color="textSecondary"
+            variant="body2"
+            style={{ fontFamily: "Poppins" }}
+          >
+            of employee are active
           </Typography>
         </Box>
       </CardContent>

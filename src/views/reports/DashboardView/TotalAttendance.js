@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Poppins",
   },
 }));
-const TotalAttendance = ({ totalAttendance = 0 }) => {
+const TotalAttendance = ({ totalAttendance, calculatePercentage }) => {
   const classes = useStyles();
 
   return (
@@ -69,18 +69,14 @@ const TotalAttendance = ({ totalAttendance = 0 }) => {
               variant="h6"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
             >
-              TOTAL ATTENDANCE
+              TODAY'S ATTENDED
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              {/* make totalAttendance number count up when page load */}
-              <span style={{ color: "#ff9902" }}>
-                {" "}
-                {totalAttendance || 25}{" "}
-              </span>
+              <span style={{ color: "#ff9902" }}> {totalAttendance} </span>
             </Typography>
           </Grid>
           <Grid item>
@@ -91,12 +87,16 @@ const TotalAttendance = ({ totalAttendance = 0 }) => {
         </Grid>
         <Box mt={2} />
         <Box mt={2} display="flex" alignItems="center">
-          <ArrowDownwardIcon className={classes.differenceIcon} />
+          {/* <ArrowDownwardIcon className={classes.differenceIcon} /> */}
           <Typography className={classes.differenceValue} variant="body2">
-            36%
+            {calculatePercentage ? calculatePercentage : 0}%
           </Typography>
-          <Typography color="textSecondary" variant="caption">
-            Since last month
+          <Typography
+            color="textSecondary"
+            variant="body2"
+            style={{ fontFamily: "Poppins" }}
+          >
+            of employees are present
           </Typography>
         </Box>
       </CardContent>

@@ -90,7 +90,6 @@ const RegisterAttendanceDialog = ({
                 .required("Select an employee"),
             })}
             onSubmit={(values) => {
-              console.log(values.employee);
               if (action) {
                 if (action === "checkin") {
                   handleCheckIn(values.employee);
@@ -185,7 +184,6 @@ const RegisterAttendanceDialog = ({
     const handleCheckIn = (employee) => {
       try {
         const employeeId = employee;
-        console.log(employeeId);
         dispatch({ type: types.REGISTER_REQUEST });
         API.checkin(employeeId)
           .then(({ success, message, error }) => {
@@ -201,16 +199,18 @@ const RegisterAttendanceDialog = ({
             } else {
               dispatch({ type: types.REGISTER_REQUEST_FAILURE, error });
               notify({
-                message: "Employee already checked in",
+                message: error,
                 variant: "error",
               });
             }
             onClose();
           })
           .catch((e) => {
+            console.error(e);
             dispatch({ type: types.REGISTER_REQUEST_FAILURE, error: e });
             notify({
-              message: e.message,
+              message: e.error,
+              variant: "error",
             });
             onClose();
           });
@@ -247,7 +247,7 @@ const RegisterAttendanceDialog = ({
             console.log(e);
             dispatch({ type: types.REGISTER_REQUEST_FAILURE, error: e });
             notify({
-              message: e.message,
+              message: e.error,
               variant: "error",
             });
             onClose();

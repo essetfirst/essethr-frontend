@@ -167,7 +167,7 @@ const AttendancePanel = () => {
         { label: "Status", field: "status" },
       ];
 
-      makeExcel(getTableDataForExport(rows, columns), filename);
+      await makeExcel(getTableDataForExport(rows, columns), filename);
     }
   };
 

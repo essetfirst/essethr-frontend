@@ -54,7 +54,7 @@ const DashboardView = () => {
                       .length /
                       (employees || []).length) *
                     100
-                  ).toLocaleString(undefined, { maximumFractionDigits: 1 })
+                  ).toFixed(0)
                 : 0
             }
           />
@@ -69,10 +69,12 @@ const DashboardView = () => {
             calculatePercentage={
               (employees || []).length
                 ? (
-                    (state.attendanceByDate[today]
+                    ((state.attendanceByDate[today]
                       ? state.attendanceByDate[today].length
-                      : 0) / (employees || []).length
-                  ).toFixed(2) * 100
+                      : 0) /
+                      (employees || []).length) *
+                    100
+                  ).toFixed(0)
                 : 0
             }
           />
@@ -92,7 +94,7 @@ const DashboardView = () => {
                       .length /
                       (employees || []).length) *
                     100
-                  ).toLocaleString(undefined, { maximumFractionDigits: 1 })
+                  ).toFixed(0)
                 : 0
             }
           />

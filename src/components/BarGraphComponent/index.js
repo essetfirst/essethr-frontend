@@ -19,11 +19,18 @@ const BarGraphComponent = ({ bars, labels, height, displayLegend }) => {
   };
 
   const options = {
-    // animation: false,
+    animation: false,
 
     cornerRadius: 20,
     layout: { padding: 0, margin: 10 },
-    legend: { display: displayLegend },
+    legend: {
+      display: displayLegend,
+      position: "top",
+      labels: {
+        fontColor: theme.palette.text.secondary,
+      },
+    },
+
     maintainAspectRatio: false,
     responsive: true,
     scales: {

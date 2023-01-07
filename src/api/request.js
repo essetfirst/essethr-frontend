@@ -14,33 +14,45 @@ const getURLPath = (url) => `${apiURL}/${url}`;
 const makeRequest = async (url, method, params, data) => {
   const auth = getAuth();
   const org = getOrg();
-  const options = {
-    method,
-    params: { org },
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: auth && auth.token ? `Bearer ${auth.token}` : "",
-    },
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${auth.token}`,
   };
-  if (params) {
-    options["params"] = JSON.stringify(params);
+  if (org) {
+    headers["X-Organization"] = org.id;
   }
-  if (data) {
-    options["data"] = data;
-  }
-
+  const config = {
+    method,
+    url: getURLPath(url),
+    headers,
+    params,
+    data,
+  };
   try {
-    const res = await axios(getURLPath(url), options);
+    const response = await axios(config);
     console.log(
-      "%c Response: 👉",
-      "background: #009688; color: white",
-      res.data
+      "%c Success: 👉",
+      "background: #2bb956; color: white",
+      response.data
     );
-    return res.data;
-  } catch (error) {
-    console.error("%c Error: 👉", "background: #f44336; color: white", error);
 
-    return error;
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error(
+        "%c Error: 👉",
+        "background: #26a69a; color: white",
+        error.response.data
+      );
+
+      const { status, data } = error.response;
+      if (status === 401) {
+        localStorage.removeItem("auth");
+        window.location.href = "/login";
+      }
+      throw data;
+    }
+    throw error;
   }
 };
 
@@ -56,8 +68,23 @@ export const putRequest = (url, data) => {
   return makeRequest(url, "PUT", null, data);
 };
 
-export const deleteRequest = (url, params) => {
-  return makeRequest(url, "DELETE", params, null);
+export const deleteRequest = (url, data) => {
+  return makeRequest(url, "DELETE", null, data);
+};
+
+export const patchRequest = (url, data) => {
+  return makeRequest(url, "PATCH", null, data);
+};
+
+export const getQueryParams = (search) => {
+  const params = {};
+  const query = search.substring(1);
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split("=");
+    params[pair[0]] = decodeURIComponent(pair[1]);
+  }
+  return params;
 };
 
 export const queryObjectToString = (obj) => {

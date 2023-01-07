@@ -4,7 +4,7 @@ import moment from "moment";
 
 import {
   Box,
-  Button,
+  // Button,
   Card,
   CardContent,
   CardHeader,
@@ -12,6 +12,7 @@ import {
   Divider,
   Grid,
   Typography,
+  useTheme,
 } from "@material-ui/core";
 import {
   AvTimer as PresentIcon,
@@ -43,19 +44,31 @@ const DailyAttendanceSummaryByRemark = ({
   totalEmployees,
   dailyAttendanceByRemark,
 }) => {
-  console.log("dailyAttendanceByRemark", dailyAttendanceByRemark);
+  const theme = useTheme();
   return (
     <Card>
       <CardHeader
         title={
-          <Typography color="textSecondary" gutterBottom variant="h6">
+          <Typography
+            color="textSecondary"
+            style={{
+              fontSize: "1rem",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
             DAILY ATTENDANCE
           </Typography>
         }
         action={
-          <Button size="small" variant="text">
-            {moment().format("DD MMM YYYY")}
-          </Button>
+          <Typography
+            color="textSecondary"
+            style={{
+              fontSize: "1rem",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {moment(new Date()).format("DD MMM YYYY")}
+          </Typography>
         }
       />
       <Divider />
@@ -84,19 +97,6 @@ const DailyAttendanceSummaryByRemark = ({
                     id: "basic-bar",
 
                     stacked: true,
-                    toolbar: {
-                      show: true,
-
-                      tools: {
-                        download: true,
-                        selection: true,
-                        zoom: true,
-                        zoomin: true,
-                        zoomout: true,
-                        pan: true,
-                        reset: true,
-                      },
-                    },
 
                     zoom: {
                       enabled: true,
@@ -105,25 +105,20 @@ const DailyAttendanceSummaryByRemark = ({
 
                       zoomedArea: {
                         fill: {
-                          color: "#90CAF9",
-                          opacity: 0.4,
+                          opacity: 0.9,
 
                           gradient: {
                             enabled: true,
                             shade: "light",
                             type: "vertical",
                             shadeIntensity: 0.5,
-                            gradientToColors: undefined,
                             inverseColors: true,
                             opacityFrom: 1,
                             opacityTo: 1,
                             stops: [0, 50, 100],
-
-                            colorStops: [],
                           },
                         },
                         stroke: {
-                          color: "#0D47A1",
                           width: 1,
                           dashArray: 0,
                         },
@@ -150,16 +145,19 @@ const DailyAttendanceSummaryByRemark = ({
                   },
                   dataLabels: {
                     enabled: true,
+                    formatter: function (val) {
+                      return val;
+                    },
                   },
 
                   stroke: {
                     show: true,
-                    width: 10,
-                    colors: ["transparent"],
+                    width: 7,
                   },
                   yaxis: {
                     title: {
                       text: "No. of Employees",
+                      fontColor: theme.palette.text.secondary,
                     },
                   },
                   tooltip: {
@@ -170,20 +168,14 @@ const DailyAttendanceSummaryByRemark = ({
                     },
                   },
                   legend: {
-                    displayLegend: true,
                     labels: {
-                      colors: colors.grey[600],
-                      useSeriesColors: false,
-
-                      formatter: function (val) {
-                        return val;
-                      },
+                      colors: theme.palette.text.secondary,
                     },
                   },
                 }}
                 series={[
                   {
-                    name: "Attendance",
+                    name: "count",
                     data: [
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "present"
@@ -191,8 +183,6 @@ const DailyAttendanceSummaryByRemark = ({
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "late"
                       ).length || 0,
-
-                      //absent count is total count - present count - late count
                       totalEmployees -
                         dailyAttendanceByRemark.filter(
                           (item) => item.remark === "present"
@@ -207,15 +197,6 @@ const DailyAttendanceSummaryByRemark = ({
                 width="100%"
               />
             </div>
-
-            {/* <DailyAttendanceSummaryByRemarChart
-              attendanceByRemark={remarkSeries}
-            /> */}
-          </Grid>
-          <Grid item xs={12}>
-            {/* <DailyAttendanceSummaryByRemarkList
-              attendanceByRemark={remarkSeries}
-            /> */}
           </Grid>
         </Grid>
       </CardContent>
@@ -223,36 +204,132 @@ const DailyAttendanceSummaryByRemark = ({
   );
 };
 
-const WeeklyAttendanceSummaryByRemarkChart = () => {
+const WeeklyAttendanceSummaryByRemarkChart = ({
+  remarks,
+  totalEmployees,
+  weeklyAttendanceByRemark = [],
+}) => {
+  const daysOfWeek = Object.keys(weeklyAttendanceByRemark);
+  const daysOfWeekInEnglish = daysOfWeek.map((day) =>
+    moment(day).format("ddd")
+  );
   return (
     <BarGraphComponent
-      steps={5}
+      step={5}
       height={400}
-      labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+      labels={daysOfWeekInEnglish}
       displayLegend={true}
       bars={[
         {
           label: "Present",
-          color: colors.teal[500],
-          data: [10, 20, 30, 40, 50, 60, 70],
+          color: colors.teal[400],
+          data: [
+            weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
+              (item) => item.remark === "present"
+            ).length || 0,
+          ],
         },
         {
           label: "Late",
-          color: colors.orange[500],
-          data: [30, 40, 50, 60, 70, 80, 90],
+          color: colors.orange[400],
+          data: [
+            weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+            weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
+              (item) => item.remark === "late"
+            ).length || 0,
+          ],
         },
         {
           label: "Absent",
-          color: colors.red[500],
-          data: [90, 80, 70, 60, 50, 40, 30],
+          color: colors.red[300],
+          data: [
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+            totalEmployees -
+              weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
+                (item) => item.remark === "present"
+              ).length -
+              weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
+                (item) => item.remark === "late"
+              ).length || 0,
+          ],
         },
       ]}
-
-      // bars={weeklyAttendanceByRemark.map(({ label, color, data }) => ({
-      //   label,
-      //   color,
-      //   data,
-      // }))}
     />
   );
 };
@@ -260,24 +337,60 @@ const WeeklyAttendanceSummaryByRemarkChart = () => {
 const WeeklyAttendanceSummaryByRemark = ({
   remarks,
   weeklyAttendanceByRemark,
+  totalEmployees,
 }) => {
-  const remarkSeries = remarks.map(({ label, color }) => ({
-    label,
-    color,
-    data: weeklyAttendanceByRemark[String(label).toLowerCase()],
-  }));
+  const daysOfWeek = Object.keys(weeklyAttendanceByRemark);
+  const dataOfweeklyAttendanceByRemark = Object.values(
+    weeklyAttendanceByRemark
+  );
+
+  moment.locale("en");
+  const daysOfWeekInEnglish = daysOfWeek.map((day) => moment(day).format("dd"));
+
+  const data = [];
+  for (let i = 0; i < daysOfWeekInEnglish.length; i++) {
+    data.push({
+      day: daysOfWeekInEnglish[i],
+      present: dataOfweeklyAttendanceByRemark[i].filter(
+        (item) => item.remark === "present"
+      ).length,
+      late: dataOfweeklyAttendanceByRemark[i].filter(
+        (item) => item.remark === "late"
+      ).length,
+      absent: dataOfweeklyAttendanceByRemark[i].filter(
+        (item) => item.remark === "absent"
+      ).length,
+    });
+  }
+
   return (
     <Card style={{ height: "100%" }}>
       <CardHeader
         title={
-          <Typography color="textSecondary" gutterBottom variant="h6">
+          <Typography
+            color="textSecondary"
+            variant="h6"
+            style={{
+              fontSize: "1rem",
+              fontFamily: "Poppins",
+            }}
+          >
             WEEKLY ATTENDANCE
           </Typography>
         }
         action={
-          <Button size="small" variant="text">
-            Last 7 days
-          </Button>
+          <Typography
+            color="textSecondary"
+            variant="h6"
+            style={{
+              fontSize: "1rem",
+              fontFamily: "Poppins",
+            }}
+          >
+            {/* use moment to get the current week date range */}
+            {moment().startOf("week").format("DD MMM")} -{" "}
+            {moment().endOf("week").format("DD MMM")}
+          </Typography>
         }
       />
 
@@ -285,7 +398,9 @@ const WeeklyAttendanceSummaryByRemark = ({
 
       <CardContent style={{ height: "100%" }} className="p-0">
         <WeeklyAttendanceSummaryByRemarkChart
-          weeklyAttendanceByRemark={remarkSeries}
+          weeklyAttendanceByRemark={weeklyAttendanceByRemark}
+          remarks={remarks}
+          totalEmployees={totalEmployees}
         />
       </CardContent>
     </Card>
@@ -317,29 +432,29 @@ const AttendanceSummary = ({ totalEmployees }) => {
     (async () => await fetchAttendance(null, null, currentDate))();
   }, [currentDate, fetchAttendance]);
 
-  const mapWeeklyAttendanceToRemarkCount = (weeklyAttendanceByDate) => {
-    const defaultWeeklyAttendanceRemarkCount = new Array(6).map((_) => 0);
-    const defaultWeeklyAttendanceAbsentCount = new Array(6).map(
-      (_) => totalEmployees
-    );
-    return Object.values(weeklyAttendanceByDate)
-      .flat()
-      .reduce((prev, a) => {
-        const { remark, date } = a;
-        if (!remark || !date) return prev;
-        const weekDay = new Date(date).getDay() - 1;
-        if (prev[remark] !== undefined) {
-          prev[remark][weekDay] = prev[remark][weekDay] + 1;
-          prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
-        } else {
-          prev[remark] = defaultWeeklyAttendanceRemarkCount;
-          prev["absent"] = defaultWeeklyAttendanceAbsentCount;
-          prev[remark][weekDay] = 1;
-          prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
-        }
-        return prev;
-      }, {});
-  };
+  // const mapWeeklyAttendanceToRemarkCount = (weeklyAttendanceByDate) => {
+  //   const defaultWeeklyAttendanceRemarkCount = new Array(6).map((_) => 0);
+  //   const defaultWeeklyAttendanceAbsentCount = new Array(6).map(
+  //     (_) => totalEmployees
+  //   );
+  //   return Object.values(weeklyAttendanceByDate)
+  //     .flat()
+  //     .reduce((prev, a) => {
+  //       const { remark, date } = a;
+  //       if (!remark || !date) return prev;
+  //       const weekDay = new Date(date).getDay() - 1;
+  //       if (prev[remark] !== undefined) {
+  //         prev[remark][weekDay] = prev[remark][weekDay] + 1;
+  //         prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
+  //       } else {
+  //         prev[remark] = defaultWeeklyAttendanceRemarkCount;
+  //         prev["absent"] = defaultWeeklyAttendanceAbsentCount;
+  //         prev[remark][weekDay] = 1;
+  //         prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
+  //       }
+  //       return prev;
+  //     }, {});
+  // };
 
   return (
     <Box mb={2}>
@@ -354,9 +469,8 @@ const AttendanceSummary = ({ totalEmployees }) => {
         <Grid item xs={12} sm={12} md={6}>
           <WeeklyAttendanceSummaryByRemark
             remarks={remarks}
-            weeklyAttendanceByRemark={mapWeeklyAttendanceToRemarkCount(
-              state.attendanceByDate
-            )}
+            weeklyAttendanceByRemark={state.attendanceByDate}
+            totalEmployees={totalEmployees}
           />
         </Grid>
       </Grid>

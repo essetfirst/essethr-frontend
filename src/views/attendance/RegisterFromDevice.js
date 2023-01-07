@@ -34,7 +34,6 @@ const RegisterFromDevice = ({ onRefresh }) => {
         const employees = org ? org.employees : [];
         console.log("Employees: ", employees);
         const stdEmployeeId = parseInt(String(employeeId).replace(/Enter/, ""));
-        console.log({ stdEmployeeId });
         // if (
         //   !(
         //     employees.filter((emp) => emp.employeeId === stdEmployeeId).length >
@@ -62,7 +61,6 @@ const RegisterFromDevice = ({ onRefresh }) => {
               device: "Card Reader",
             })
             .then(({ success, message, action, error, ...rest }) => {
-              console.log(rest);
               if (success) {
                 if (action === "checkin" || action === "breakin") {
                   welcomeTrack.play();

@@ -18,7 +18,10 @@ const EmployeeAvatarGroup = ({ employees }) => {
     <AvatarGroup max={4} style={{ padding: "8px 0" }}>
       {employees.map(({ avatar, title }) => (
         <Avatar alt={title}>
-          <img src={avatar} />
+          <img
+            src={avatar}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </Avatar>
       ))}
     </AvatarGroup>

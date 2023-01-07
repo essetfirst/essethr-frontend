@@ -1,4 +1,4 @@
-import { createMuiTheme, colors } from "@material-ui/core";
+import { createMuiTheme, colors, responsiveFontSizes } from "@material-ui/core";
 import shadows from "./shadows";
 import typography from "./typography";
 
@@ -10,7 +10,7 @@ export const lightTheme = createMuiTheme({
       paper: "#FFFFFF",
     },
     primary: {
-      main: colors.teal[500],
+      main: colors.teal[400],
     },
     secondary: {
       main: colors.deepOrange[500],
@@ -19,6 +19,17 @@ export const lightTheme = createMuiTheme({
   shape: {
     borderRadius: 8,
   },
+
+  responsiveFontSizes: true,
+
+  overrides: {
+    MuiTableCell: {
+      root: {
+        borderBottom: "1px solid rgba(0, 0, 0, 0.10)",
+      },
+    },
+  },
+
   shadows,
   typography,
 });
@@ -27,10 +38,9 @@ export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     background: {
-      default: "#1F2937",
-      paper: "#353d4a",
+      default: colors.blueGrey[900],
+      paper: colors.blueGrey[800],
     },
-
     primary: {
       main: colors.blueGrey[500],
     },
@@ -38,8 +48,18 @@ export const darkTheme = createMuiTheme({
       main: colors.deepOrange[500],
     },
   },
+
   shape: {
     borderRadius: 8,
+  },
+
+  responsiveFontSizes: true,
+  overrides: {
+    MuiTableCell: {
+      root: {
+        borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+      },
+    },
   },
 
   shadows,

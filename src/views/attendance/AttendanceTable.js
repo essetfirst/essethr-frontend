@@ -57,7 +57,7 @@ const AttendanceTable = ({
           field: "checkout",
           sortable: true,
           renderCell: ({ checkout }) =>
-            checkout ? moment(checkout).format("hh:mm A") : "N/A",
+            checkout ? moment(checkout).format("hh:mm A") : " - ",
         },
         {
           label: "WORKED HRS",

@@ -7,12 +7,19 @@ import {
   makeStyles,
   MenuItem,
   TextField,
+  Typography,
 } from "@material-ui/core";
 
 import PageView from "../../../components/PageView";
 import Table from "../../../components/TableComponent";
+import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 
+import AddIcon from "@material-ui/icons/Add";
+
+import useOrg from "../../../providers/org";
 import API from "../../../api";
+import useAuth from "../../../providers/auth";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -47,7 +54,8 @@ const UserListView = () => {
   const classes = useStyles();
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const [orgsObj, setOrgsObj] = React.useState({});
+  const { org } = useOrg();
+  const { auth } = useAuth();
 
   const roleOptions = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
 
@@ -67,29 +75,8 @@ const UserListView = () => {
       });
   }
 
-  function fetchOrgs() {
-    API.orgs
-      .getAll()
-      .then(({ success, orgs, error }) => {
-        if (success) {
-          setOrgsObj(
-            orgs
-              .map((org) => ({ [org._id]: org }))
-              .reduce((prev, next) => {
-                return Object.assign({}, prev, next);
-              }, {})
-          );
-        } else {
-          console.error(error);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
   React.useEffect(() => {
-    fetchOrgs();
+    console.log("fetching users", auth);
     fetchUsers();
   }, []);
 
@@ -137,10 +124,12 @@ const UserListView = () => {
     <PageView
       className={classes.root}
       title="Users"
+      backPath={"/orgs"}
       actions={[
         {
           label: "Create",
           handler: handleCreateClick,
+          icon: { node: <AddCircleRoundedIcon size="16px" /> },
           otherProps: { variant: "contained", color: "primary", size: "small" },
         },
       ]}
@@ -190,45 +179,33 @@ const UserListView = () => {
           {
             label: "Organization",
             field: "org",
-            renderCell: ({ _id, org }) => (
-              <TextField
-                fullWidth
-                select
-                name="org"
-                onChange={handleUserAttributeChange(_id)}
-                value={userAttribute[_id] && userAttribute[_id].org}
-                defaultValue={org || "N/A"}
-                variant="outlined"
-                margin="dense"
+            renderCell: () => (
+              <Typography
+                style={{
+                  maxWidth: "20ch",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
               >
-                <MenuItem value={"N/A"}>{"N/A"}</MenuItem>
-                {Object.values(orgsObj).map(({ _id, name }) => (
-                  <MenuItem key={_id} value={_id}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </TextField>
+                {org.name}
+              </Typography>
             ),
           },
           {
             label: "Role",
             field: "role",
-            renderCell: ({ _id, role }) => (
-              <TextField
-                fullWidth
-                select
-                name="role"
-                onChange={handleUserAttributeChange(_id)}
-                value={(userAttribute[_id] && userAttribute[_id].role) || role}
-                variant="outlined"
-                margin="dense"
+            renderCell: () => (
+              <Typography
+                style={{
+                  maxWidth: "20ch",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
               >
-                {roleOptions.map((role) => (
-                  <MenuItem key={role} value={role}>
-                    {role}
-                  </MenuItem>
-                ))}
-              </TextField>
+                {auth.user.role}
+              </Typography>
             ),
           },
           {
@@ -249,13 +226,39 @@ const UserListView = () => {
             ),
           },
 
-          { label: "Created On", field: "createdOn" },
+          {
+            label: "Created On",
+            field: "createdOn",
+            renderCell: ({ createdOn }) =>
+              moment(createdOn).format("DD/MM/YYYY"),
+          },
         ]}
         data={state.users.filter(
           ({ name, firstName, lastName, role }) =>
             `${firstName} ${lastName}`.includes(filters.searchTerm) &&
             (filters.role === "ALL" || filters.role === role)
         )}
+        actions={[
+          {
+            label: "Edit",
+            handler: ({ _id }) => {
+              console.log(`-> Line 260: Editing user ${_id}...`);
+            },
+            hide: ({ _id }) => userAttribute[_id],
+            color: "primary",
+            variant: "contained",
+          },
+          {
+            label: "Cancel",
+            handler: ({ _id }) => {
+              console.log(`-> Line 260: Cancelling changes on user ${_id}...`);
+              setUserAttribute({});
+            },
+            hide: ({ _id }) => userAttribute[_id],
+            color: "default",
+            variant: "contained",
+          },
+        ]}
         rowActions={[
           {
             label: "Apply",
@@ -263,7 +266,7 @@ const UserListView = () => {
               console.log(`-> Line 260: Applying changes on user ${_id}...`);
               handleApplyChanges(_id);
             },
-            hide: ({ _id }) => !userAttribute[_id],
+            hide: ({ _id }) => userAttribute[_id],
             color: "secondary",
             variant: "contained",
           },

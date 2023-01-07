@@ -152,7 +152,7 @@ const EditAttendanceDialog = ({ employee, attendance, open, onClose }) => {
         // console.error(e);
         dispatch({
           type: types.EDIT_ATTENDANCE_FAILURE,
-          error: categorizeError(e) ,
+          error: categorizeError(e),
         });
       });
   };
@@ -215,7 +215,7 @@ const EditAttendanceDialog = ({ employee, attendance, open, onClose }) => {
               status: Yup.string(),
             })}
             onSubmit={(values) => {
-              console.log("Edit attendance values", values);
+              // console.log("Edit attendance values", values);
               const { date, checkin, checkout, status } = values;
               const [checkinHrs, checkinMins] = (
                 (String(checkin).includes(":") && checkin) ||
@@ -254,10 +254,10 @@ const EditAttendanceDialog = ({ employee, attendance, open, onClose }) => {
                 //   ).getTime(),
                 status,
               };
-              console.log(
-                "[EditAttendanceDialog]: Line 171 -> Attendance info: ",
-                attendanceInfo
-              );
+              // console.log(
+              //   "[EditAttendanceDialog]: Line 171 -> Attendance info: ",
+              //   attendanceInfo
+              // );
               handleEdit(attendanceInfo);
             }}
           >

@@ -16,7 +16,7 @@ const makeRequest = async (url, method, params, data) => {
   const org = getOrg();
   const headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${auth.token}`,
+    Authorization: auth && auth.token ? `Bearer ${auth.token}` : "",
   };
   if (org) {
     headers["X-Organization"] = org.id;
@@ -41,14 +41,13 @@ const makeRequest = async (url, method, params, data) => {
     if (error.response) {
       console.error(
         "%c Error: 👉",
-        "background: #26a69a; color: white",
+        "background: #d46357; color: white",
         error.response.data
       );
 
       const { status, data } = error.response;
       if (status === 401) {
-        localStorage.removeItem("auth");
-        window.location.href = "/login";
+        localStorage.clear();
       }
       throw data;
     }

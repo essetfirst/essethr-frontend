@@ -1,26 +1,9 @@
 import React from "react";
-import { Typography, Button, Box, Grid, IconButton } from "@material-ui/core";
+import { Typography, Box, Grid } from "@material-ui/core";
 import { SentimentVeryDissatisfied } from "@material-ui/icons";
-import { makeStyles } from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
 import AutorenewIcon from "@material-ui/icons/Autorenew";
 import PageView from "./PageView";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(1),
-      width: theme.spacing(16),
-      height: theme.spacing(16),
-    },
-  },
-
-  SentimentVeryDissatisfied: {
-    //aniimate the icon
-  },
-}));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -59,7 +42,6 @@ class ErrorBoundary extends React.Component {
                 borderRadius={8}
               >
                 <SentimentVeryDissatisfied
-                  //aniimate the icon
                   style={{
                     fontSize: "15rem",
                   }}
@@ -73,7 +55,9 @@ class ErrorBoundary extends React.Component {
                   gutterBottom
                 >
                   {/* only oops will be red color */}
-                  <span style={{ color: "#f44336" }}>Oops!</span>
+                  <span style={{ color: "#f44336", fontSize: "3rem" }}>
+                    Oops!
+                  </span>
                   <br />
                   Something went wrong.
                   <br />

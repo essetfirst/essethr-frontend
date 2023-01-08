@@ -25,6 +25,7 @@ import CustomAvatar from "../../../components/CustomAvatar";
 import API from "../../../api";
 import arrayToMap from "../../../utils/arrayToMap";
 import useOrg from "../../../providers/org";
+import { useTheme } from "../../../providers/theme";
 
 import GeneralDetails from "./GeneralDetails";
 import Paystubs from "./Paystubs";
@@ -90,9 +91,10 @@ const EmployeeProfileView = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { org } = useOrg();
+  const { darkMode } = useTheme();
+
   const [state, dispatch] = React.useReducer(fetchReducer, fetchInitialState);
   const employeePrintableCardRef = React.useRef();
-
   const handlePrint = useReactToPrint({
     content: () => employeePrintableCardRef.current,
   });
@@ -102,7 +104,6 @@ const EmployeeProfileView = () => {
     API.employees
       .getDetails(params.id)
       .then(({ success, employee, error }) => {
-        console.log(employee);
         success
           ? dispatch({
               type: types.FETCH_EMPLOYEE_SUCCESS,
@@ -167,8 +168,13 @@ const EmployeeProfileView = () => {
                 >
                   <BackIcon />
                 </IconButton>
-                <Typography style={{ fontWeight: 600, fontSize: 18 }}>
-                  Employees
+                <Typography
+                  style={{
+                    fontWeight: 400,
+                    fontSize: 18,
+                  }}
+                >
+                  Back
                 </Typography>
               </Box>
             </Box>
@@ -282,7 +288,15 @@ const EmployeeProfileView = () => {
           )}
           {/* </Card> */}
           <TabbedComponent
-            tabsProps={{ textColor: "primary", indicatorColor: "primary" }}
+            tabsProps={{
+              indicatorColor: !darkMode ? "primary" : "secondary",
+              textColor: !darkMode ? "primary" : "secondary",
+              variant: "fullWidth",
+              classes: {
+                root: classes.tabsRoot,
+                indicator: classes.tabsIndicator,
+              },
+            }}
             tabs={[
               {
                 label: "General",

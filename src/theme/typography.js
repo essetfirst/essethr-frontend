@@ -3,39 +3,68 @@ export default {
   h1: {
     fontWeight: 500,
     fontSize: 35,
-    letterSpacing: "-0.24px",
+    fontFamily: "Ubuntu",
   },
   h2: {
     fontWeight: 500,
     fontSize: 25,
-    letterSpacing: "-0.24px",
+    fontFamily: "Ubuntu",
   },
   h3: {
     fontWeight: 500,
     fontSize: 20,
-    letterSpacing: "-0.06px",
+    fontFamily: "Ubuntu",
   },
   h4: {
     fontWeight: 500,
     fontSize: 18,
-    letterSpacing: "-0.06px",
+    fontFamily: "Ubuntu",
   },
   h5: {
     fontWeight: 500,
     fontSize: 16,
-    letterSpacing: "-0.05px",
+    fontFamily: "Ubuntu",
   },
   h6: {
     fontWeight: 500,
     fontSize: 14,
-    letterSpacing: "-0.05px",
+    fontFamily: "Ubuntu",
   },
   body1: {
     fontWeight: 500,
     fontSize: 14,
-    letterSpacing: "-0.06px",
+    fontFamily: "Ubuntu",
   },
   overline: {
     fontWeight: 800,
+    fontSize: 12,
+    fontFamily: "Ubuntu",
+  },
+  subtitle1: {
+    fontWeight: 500,
+    fontSize: 16,
+    fontFamily: "Ubuntu",
+  },
+  subtitle2: {
+    fontWeight: 500,
+    fontSize: 14,
+    fontFamily: "Ubuntu",
+  },
+  caption: {
+    fontWeight: 500,
+    fontSize: 12,
+    fontFamily: "Ubuntu",
+  },
+  body2: {
+    fontWeight: 500,
+    fontSize: 12,
+    fontFamily: "Ubuntu",
+  },
+
+  textSecondary: {
+    color: "#6c757d",
+  },
+  textPrimary: {
+    color: "#212529",
   },
 };

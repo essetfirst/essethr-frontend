@@ -24,9 +24,10 @@ import {
   Typography,
   MenuItem,
   Menu,
+  TextField,
 } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {},
 
   text: {
@@ -43,10 +44,10 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
   const { darkMode, toggleDarkMode } = useTheme();
   const { auth, logout } = useAuth();
-  const { setCurrentOrg } = useOrg();
-  const [setOrgs] = React.useState([]);
-  const [setOrgName] = React.useState("");
+  const [orgs, setOrgs] = React.useState([]);
+  const [orgName, setOrgName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { currentOrg, setCurrentOrg } = useOrg();
   const navigate = useNavigate();
 
   const handleClick = (event) => {
@@ -115,7 +116,22 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
               toggleDarkMode();
             }}
           >
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            {/* //animation for dark mode toggle button icons  */}
+            {darkMode ? (
+              <Brightness7Icon
+                InputProps={{
+                  animation: setAnchorEl ? "spin 5s linear infinite" : "",
+                  color: "#fff",
+                }}
+              />
+            ) : (
+              <Brightness4Icon
+                InputProps={{
+                  animation: setAnchorEl ? "spin 5s linear infinite" : "",
+                  color: "#fff",
+                }}
+              />
+            )}
           </IconButton>
         </Box>
         <Box>
@@ -159,6 +175,53 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             </Menu>
           </Box>
         </Box>
+        <Hidden smDown>
+          {auth.isAuth &&
+            Array.isArray(orgs) &&
+            orgs.length > 0 &&
+            (auth.user.role === "ADMIN" ? (
+              <TextField
+                select
+                value={currentOrg}
+                onChange={(e) => {
+                  setCurrentOrg(e.target.value);
+                  const org = orgs.find((o) => o._id === e.target.value);
+                  setOrgName(org.branch || org.name);
+                }}
+                variant="outlined"
+                size="small"
+                style={{
+                  marginLeft: "20px",
+                  borderRadius: "8px",
+                }}
+                InputProps={{
+                  style: {
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "#fff",
+                      color: "#000",
+
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#fff",
+
+                        "&:hover": {
+                          borderColor: "#fff",
+                        },
+                      },
+                    },
+                  },
+                }}
+              >
+                {orgs.map((org) => (
+                  <MenuItem key={org._id} value={org._id}>
+                    {org.branch || org.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            ) : (
+              <Typography variant="subtitle1">{orgName}</Typography>
+            ))}
+        </Hidden>
       </Toolbar>
     </AppBar>
   );

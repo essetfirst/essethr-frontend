@@ -14,7 +14,7 @@ import PageView from "../../../components/PageView";
 import Table from "../../../components/TableComponent";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 
-import AddIcon from "@material-ui/icons/Add";
+// eslint-disable-next-line no-unused-vars
 
 import useOrg from "../../../providers/org";
 import API from "../../../api";
@@ -105,7 +105,7 @@ const UserListView = () => {
   const handleApplyChanges = (id) => {
     API.users
       .editById(id, userAttribute[id])
-      .then(({ success, user, error }) => {
+      .then(({ success, error }) => {
         if (success) {
           // console.log(message);
           setUserAttribute({});
@@ -234,7 +234,7 @@ const UserListView = () => {
           },
         ]}
         data={state.users.filter(
-          ({ name, firstName, lastName, role }) =>
+          ({ firstName, lastName, role }) =>
             `${firstName} ${lastName}`.includes(filters.searchTerm) &&
             (filters.role === "ALL" || filters.role === role)
         )}

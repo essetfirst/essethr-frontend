@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useReactToPrint } from "react-to-print";
+import ReactToPrint from "react-to-print";
 import { useSnackbar } from "notistack";
 import { Box, makeStyles } from "@material-ui/core";
 import PageView from "../../../components/PageView";
@@ -259,7 +259,7 @@ const EmployeeListView = () => {
       },
     ];
 
-    const rows = state.employees.map((employee) => {
+    const rows = await state.employees.map((employee) => {
       return {
         employeeId: employee.employeeId,
         firstName: employee.firstName,
@@ -289,13 +289,12 @@ const EmployeeListView = () => {
     });
   };
 
-  const printListRef = React.useRef();
-  const handlePrintList = useReactToPrint({
-    content: () => printListRef.current,
-  });
-
+  //Print the employees list to pdf file and download it using React to Print Component
+  const componentRef = React.useRef();
   const handlePrintClick = () => {
-    handlePrintList();
+    ReactToPrint({
+      content: () => componentRef.current,
+    });
   };
 
   //Sorting and Filtering
@@ -409,10 +408,7 @@ const EmployeeListView = () => {
         open={importDialogOpen}
         onClose={handleImportDialogClose}
         onFileRead={(data) => {
-          console.log(
-            "[EmployeeList]: Line 334 -> Data imported from file: ",
-            data
-          );
+          handleImportDialogClose();
         }}
       />
 
@@ -456,7 +452,6 @@ const EmployeeListView = () => {
           onTransferClicked={handleTransferClick}
           onDeleteClicked={handleDeleteClickDialog}
           onMultipleDeleteClicked={handleDeleteMultipleClick}
-          requestState={state}
         />
       ) : (
         <ResultsGrid

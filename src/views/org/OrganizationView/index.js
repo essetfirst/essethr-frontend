@@ -7,13 +7,12 @@ import { useSnackbar } from "notistack";
 import sort from "../../../helpers/sort";
 import {
   Box,
-  Button,
   Card,
-  CardContent,
   Container,
   Divider,
   Grid,
   Typography,
+  colors,
   makeStyles,
 } from "@material-ui/core";
 
@@ -21,11 +20,9 @@ import {
   LocationOnOutlined as AddressIcon,
   MailOutlineOutlined as MailIcon,
   PhoneOutlined as PhoneIcon,
+  PeopleAltOutlined as PeopleIcon,
 } from "@material-ui/icons";
-
-import { Edit as EditIcon } from "react-feather";
 import PageView from "../../../components/PageView";
-import LoadingComponent from "../../../components/LoadingComponent";
 import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 import TabbedComponent from "../../../components/TabbedComponent";
 import API from "../../../api";
@@ -39,6 +36,7 @@ import LeaveTypeList from "./LeaveTypeList";
 import HolidayList from "./HolidayList";
 import VerifiedUserRoundedIcon from "@material-ui/icons/VerifiedUserRounded";
 import DialogDelete from "./DialogDelete";
+import { useTheme } from "../../../providers/theme";
 
 const types = {
   REQUESTING: "REQUESTING",
@@ -60,15 +58,11 @@ const reducer = (state, action) => {
   }
 };
 const useStyles = makeStyles((theme) => ({
-  root: {
-    fontFamily: "Poppins",
-  },
   card: {
     padding: theme.spacing(3),
     marginBottom: theme.spacing(3),
     width: "100%",
     borderRadius: "8px",
-
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
   },
   divider: {
@@ -83,6 +77,7 @@ const OrganizationView = ({ id }) => {
   const { notificationSnackbar } = useNotificationSnackbar();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
+  const { darkMode } = useTheme();
 
   const {
     currentOrg,
@@ -195,7 +190,6 @@ const OrganizationView = ({ id }) => {
       }
     >
       <Container>
-        {state.requesting && <LoadingComponent />}
         {state.error && (
           <ErrorBoxComponent error={state.error} onRetry={() => fetchOrg()} />
         )}
@@ -206,75 +200,84 @@ const OrganizationView = ({ id }) => {
               onClose={handleDeleteDialogClose}
               onDelete={handleDeleteDialogConfirm}
             />
-
             <Card className={classes.card}>
-              <CardContent>
-                <Box display="flex" alignItems="center" mr={1}>
-                  <Grid item sm={12}>
-                    <Box mt={1} />
-                    {[
-                      {
-                        label: state.org.phone,
-                        icon: <PhoneIcon fontSize="small" />,
-                      },
-                      {
-                        label: state.org.email,
-                        icon: <MailIcon fontSize="small" />,
-                      },
-                      {
-                        label: state.org.address,
-                        icon: <AddressIcon fontSize="small" />,
-                      },
-                    ].map(({ icon, label }, index) => (
+              <Box
+                display="flex"
+                alignItems="center"
+                mr={1}
+                style={{ width: "100%", overflowX: "auto" }}
+              >
+                {[
+                  {
+                    label: state.org.phone,
+                    icon: <PhoneIcon fontSize="small" />,
+                    color: colors.deepOrange[400],
+                  },
+                  {
+                    label: state.org.email,
+                    icon: <MailIcon fontSize="small" />,
+                    color: colors.deepPurple[400],
+                  },
+                  {
+                    label: state.org.address,
+                    icon: <AddressIcon fontSize="small" />,
+                    color: colors.green[400],
+                  },
+                  {
+                    label: "Total Employees:" + state.org.employees.length,
+                    icon: <PeopleIcon fontSize="small" />,
+                    color: colors.blue[400],
+                  },
+                ].map(({ icon, label, color }, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginRight: "8rem",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
                       <Typography
-                        key={index}
-                        variant="subtitle1"
+                        component="span"
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          marginBottom: "20px",
+                          marginRight: "0.5rem",
+                          color,
                         }}
                       >
-                        <Typography
-                          component="span"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginRight: "10px",
-                          }}
-                        >
-                          {icon}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          component="span"
-                          className={classes.root}
-                        >
-                          {label}
-                        </Typography>
+                        {icon}
                       </Typography>
-                    ))}
-                    <Box mb={3} />
-                  </Grid>
-                  <Grid item sm={4}>
-                    <Box display="flex" justifyContent="flex-end">
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={handleEditOrgClick}
-                        endIcon={<EditIcon size={25} />}
+                      <Typography
+                        variant="body2"
+                        component="span"
+                        className={classes.root}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          fontSize: "0.8rem",
+                        }}
                       >
-                        Edit
-                      </Button>
-                    </Box>
-                  </Grid>
-                </Box>
-              </CardContent>
+                        {label}
+                      </Typography>
+                    </Typography>
+                  </div>
+                ))}
+              </Box>
+              <Grid item sm={12}>
+                <Divider />
+                {currentOrg === orgId && tabFunc()}
+              </Grid>
             </Card>
-            <Grid item sm={12}>
-              <Divider />
-              {currentOrg === orgId && tabFunc()}
-            </Grid>
           </Grid>
         )}
       </Container>
@@ -286,8 +289,14 @@ const OrganizationView = ({ id }) => {
       <TabbedComponent
         key={3}
         tabsProps={{
-          textColor: "primary",
-          indicatorColor: "primary",
+          indicatorColor: !darkMode ? "primary" : "secondary",
+          textColor: !darkMode ? "primary" : "secondary",
+          variant: "fullWidth",
+
+          classes: {
+            root: classes.tabsRoot,
+            indicator: classes.tabsIndicator,
+          },
         }}
         tabs={[
           {

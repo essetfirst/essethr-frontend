@@ -134,23 +134,30 @@ const PositionList = ({
               `${(departmentsMap[department] || {}).name || "N/A"}`,
           },
           {
-            field: "parent",
-            label: "Parent",
-            renderCell: ({ parent }) => {
-              const parentPosition = positionsMap[parent];
-              return parentPosition ? parentPosition.title : "N/A";
-            },
-          },
-          {
             field: "salary",
             label: "Salary",
             renderCell: ({ salary }) => {
               return (
                 <Box display="flex" alignItems="center">
-                  <AttachMoneyOutlinedIcon fontSize="small" />
-                  <Typography variant="body2">{salary.toFixed(2)}</Typography>
+                  <Typography variant="body2">
+                    {salary
+                      .toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })
+                      .replace(".00", "")}{" "}
+                    ETB
+                  </Typography>
                 </Box>
               );
+            },
+          },
+          {
+            field: "parent",
+            label: "Parent",
+            renderCell: ({ parent }) => {
+              const parentPosition = positionsMap[parent];
+              return parentPosition ? parentPosition.title : "N/A";
             },
           },
         ]}
@@ -164,7 +171,7 @@ const PositionList = ({
               (departmentsMap[department] || {}).name.includes(search)
             );
           } catch (error) {
-            // console.error(error);
+            console.error(error);
           }
         })}
         selectionEnabled

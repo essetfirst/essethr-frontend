@@ -49,26 +49,26 @@ const DailyAttendanceSummaryByRemark = ({
     <Card>
       <CardHeader
         title={
-          <Typography
-            color="textSecondary"
-            style={{
-              fontSize: "1rem",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            DAILY ATTENDANCE
-          </Typography>
-        }
-        action={
-          <Typography
-            color="textSecondary"
-            style={{
-              fontSize: "1rem",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {moment(new Date()).format("DD MMM YYYY")}
-          </Typography>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              color="textSecondary"
+              style={{
+                fontSize: "1rem",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              DAILY ATTENDANCE
+            </Typography>
+            <Typography
+              color="textSecondary"
+              style={{
+                fontSize: "1rem",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {moment(new Date()).format("DD MMM YYYY")}
+            </Typography>
+          </div>
         }
       />
       <Divider />
@@ -95,36 +95,12 @@ const DailyAttendanceSummaryByRemark = ({
 
                   chart: {
                     id: "basic-bar",
-
                     stacked: true,
-
-                    zoom: {
-                      enabled: true,
-                      type: "x",
-                      autoScaleYaxis: true,
-
-                      zoomedArea: {
-                        fill: {
-                          opacity: 0.9,
-
-                          gradient: {
-                            enabled: true,
-                            shade: "light",
-                            type: "vertical",
-                            shadeIntensity: 0.5,
-                            inverseColors: true,
-                            opacityFrom: 1,
-                            opacityTo: 1,
-                            stops: [0, 50, 100],
-                          },
-                        },
-                        stroke: {
-                          width: 1,
-                          dashArray: 0,
-                        },
-                      },
+                    toolbar: {
+                      show: false,
                     },
                   },
+
                   xaxis: {
                     categories: ["Present", "Late", "Absent"],
                   },
@@ -152,7 +128,7 @@ const DailyAttendanceSummaryByRemark = ({
 
                   stroke: {
                     show: true,
-                    width: 7,
+                    width: 4,
                   },
                   yaxis: {
                     title: {
@@ -177,12 +153,17 @@ const DailyAttendanceSummaryByRemark = ({
                   {
                     name: "count",
                     data: [
+                      //Presnt Count
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "present"
                       ).length || 0,
+
+                      //LATE COUNT
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "late"
                       ).length || 0,
+
+                      //ABSENT COUNT = Total Employees - Present Count - Late Count
                       totalEmployees -
                         dailyAttendanceByRemark.filter(
                           (item) => item.remark === "present"
@@ -339,64 +320,39 @@ const WeeklyAttendanceSummaryByRemark = ({
   weeklyAttendanceByRemark,
   totalEmployees,
 }) => {
-  const daysOfWeek = Object.keys(weeklyAttendanceByRemark);
-  const dataOfweeklyAttendanceByRemark = Object.values(
-    weeklyAttendanceByRemark
-  );
-
-  moment.locale("en");
-  const daysOfWeekInEnglish = daysOfWeek.map((day) => moment(day).format("dd"));
-
-  const data = [];
-  for (let i = 0; i < daysOfWeekInEnglish.length; i++) {
-    data.push({
-      day: daysOfWeekInEnglish[i],
-      present: dataOfweeklyAttendanceByRemark[i].filter(
-        (item) => item.remark === "present"
-      ).length,
-      late: dataOfweeklyAttendanceByRemark[i].filter(
-        (item) => item.remark === "late"
-      ).length,
-      absent: dataOfweeklyAttendanceByRemark[i].filter(
-        (item) => item.remark === "absent"
-      ).length,
-    });
-  }
-
   return (
     <Card style={{ height: "100%" }}>
       <CardHeader
         title={
-          <Typography
-            color="textSecondary"
-            variant="h6"
-            style={{
-              fontSize: "1rem",
-              fontFamily: "Poppins",
-            }}
-          >
-            WEEKLY ATTENDANCE
-          </Typography>
-        }
-        action={
-          <Typography
-            color="textSecondary"
-            variant="h6"
-            style={{
-              fontSize: "1rem",
-              fontFamily: "Poppins",
-            }}
-          >
-            {/* use moment to get the current week date range */}
-            {moment().startOf("week").format("DD MMM")} -{" "}
-            {moment().endOf("week").format("DD MMM")}
-          </Typography>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              color="textSecondary"
+              variant="h6"
+              style={{
+                fontSize: "1rem",
+                fontFamily: "Poppins",
+              }}
+            >
+              WEEKLY ATTENDANCE
+            </Typography>
+            <Typography
+              color="textSecondary"
+              variant="h6"
+              style={{
+                fontSize: "1rem",
+                fontFamily: "Poppins",
+              }}
+            >
+              {moment().startOf("week").format("DD MMM")} -{" "}
+              {moment().endOf("week").format("DD MMM")}
+            </Typography>
+          </div>
         }
       />
 
       <Divider />
 
-      <CardContent style={{ height: "100%" }} className="p-0">
+      <CardContent style={{ padding: "0.5rem" }}>
         <WeeklyAttendanceSummaryByRemarkChart
           weeklyAttendanceByRemark={weeklyAttendanceByRemark}
           remarks={remarks}
@@ -431,30 +387,6 @@ const AttendanceSummary = ({ totalEmployees }) => {
   React.useEffect(() => {
     (async () => await fetchAttendance(null, null, currentDate))();
   }, [currentDate, fetchAttendance]);
-
-  // const mapWeeklyAttendanceToRemarkCount = (weeklyAttendanceByDate) => {
-  //   const defaultWeeklyAttendanceRemarkCount = new Array(6).map((_) => 0);
-  //   const defaultWeeklyAttendanceAbsentCount = new Array(6).map(
-  //     (_) => totalEmployees
-  //   );
-  //   return Object.values(weeklyAttendanceByDate)
-  //     .flat()
-  //     .reduce((prev, a) => {
-  //       const { remark, date } = a;
-  //       if (!remark || !date) return prev;
-  //       const weekDay = new Date(date).getDay() - 1;
-  //       if (prev[remark] !== undefined) {
-  //         prev[remark][weekDay] = prev[remark][weekDay] + 1;
-  //         prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
-  //       } else {
-  //         prev[remark] = defaultWeeklyAttendanceRemarkCount;
-  //         prev["absent"] = defaultWeeklyAttendanceAbsentCount;
-  //         prev[remark][weekDay] = 1;
-  //         prev["absent"][weekDay] = prev["absent"][weekDay] - 1;
-  //       }
-  //       return prev;
-  //     }, {});
-  // };
 
   return (
     <Box mb={2}>

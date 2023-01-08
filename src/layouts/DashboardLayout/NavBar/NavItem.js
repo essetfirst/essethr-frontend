@@ -38,21 +38,20 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Poppins",
   },
   active: {
-    color: colors.teal[500],
     "& $title": {
       fontWeight: theme.typography.fontWeightBold,
     },
     "& $icon": {
-      color: theme.palette.primary.main,
+      color: theme.palette.primary.secondary,
     },
-    backgroundColor: "rgba(0, 0, 0, 0.08)",
+    backgroundColor: "rgba(0, 0, 0, 0.10)",
 
     "&:hover": {
       backgroundColor: "rgba(0, 0, 0, 0.08)",
     },
 
     "&:hover $title": {
-      fontWeight: theme.typography.fontWeightMedium,
+      fontWeight: theme.typography.fontWeightBold,
     },
   },
 }));

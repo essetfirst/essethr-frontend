@@ -116,9 +116,9 @@ const AbsenteesReportTable = ({ data }) => {
 };
 
 const LeaveBalancesReportView = () => {
-  const { state, fetchAttendance } = useAttendance();
+  const { state } = useAttendance();
 
-  const [reportData, setReportData] = React.useState(null);
+  const [reportData] = React.useState(null);
 
   const handleExportClick = async () => {
     if (reportData.length > 0) {
@@ -182,48 +182,18 @@ const LeaveBalancesReportView = () => {
     setFilters({ ...filters, [name]: value });
   };
 
-  const mapAttendanceToReport = (attendanceByDate, dateRange) => {
-    let absenteesReport = {};
-
-    const attendanceList = [];
-    Object.keys(attendanceByDate).forEach((date) =>
-      attendanceList.push(...attendanceByDate[date])
-    );
-
-    attendanceList.forEach(({ employeeId, employeeName, date, remark }) => {
-      if (absenteesReport[employeeId]) {
-        absenteesReport[employeeId] = {
-          employeeId,
-          employeeName,
-          [remark]: 1,
-          absent: dateRange,
-        };
-      } else {
-        absenteesReport = {
-          [employeeId]: {
-            ...absenteesReport[employeeId],
-            employeeName,
-            [remark]: absenteesReport[employeeId][remark] + 1,
-            absent: dateRange - absenteesReport[employeeId][remark] + 1,
-          },
-        };
-      }
-    });
-
-    return Object.values(absenteesReport);
-  };
-
-  const handleSubmit = React.useCallback(async () => {
-    await fetchAttendance();
-    const dateRange =
-      (new Date(filters.to).getTime() - new Date(filters.from).getTime()) /
-      (3600000 * 24);
-    const absenteesReport = mapAttendanceToReport(
-      state.attendanceByDate,
-      dateRange
-    );
-    setReportData(absenteesReport);
-  }, [filters.from, filters.to, state.attendanceByDate]);
+  // const handleSubmit = React.useCallback(async () => {
+  //   await fetchAttendance();
+  //   const dateRange =
+  //     (new Date(filters.to).getTime() - new Date(filters.from).getTime()) /
+  //     (3600000 * 24);
+  //   const absenteesReport = mapAttendanceToReport(
+  //     state.attendanceByDate,
+  //     dateRange
+  //   );
+  //   setReportData(absenteesReport);
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [filters.from, filters.to, state.attendanceByDate]);
 
   // React.useEffect(() => {
   //   handleSubmit();
@@ -231,6 +201,7 @@ const LeaveBalancesReportView = () => {
 
   React.useEffect(() => {
     console.log("reportData", state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportData]);
 
   return (

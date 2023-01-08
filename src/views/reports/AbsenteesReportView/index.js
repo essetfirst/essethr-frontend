@@ -18,7 +18,6 @@ import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 
 import Searchbar from "../../../components/common/Searchbar";
 import TableComponent from "../../../components/TableComponent";
-import moment from "moment";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
   return (

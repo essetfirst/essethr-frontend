@@ -1,4 +1,4 @@
-import { createMuiTheme, colors, responsiveFontSizes } from "@material-ui/core";
+import { createMuiTheme, colors } from "@material-ui/core";
 import shadows from "./shadows";
 import typography from "./typography";
 
@@ -10,10 +10,10 @@ export const lightTheme = createMuiTheme({
       paper: "#FFFFFF",
     },
     primary: {
-      main: colors.teal[400],
+      main: colors.blueGrey[500],
     },
     secondary: {
-      main: colors.deepOrange[500],
+      main: colors.deepOrange[800],
     },
   },
   shape: {
@@ -26,6 +26,28 @@ export const lightTheme = createMuiTheme({
     MuiTableCell: {
       root: {
         borderBottom: "1px solid rgba(0, 0, 0, 0.10)",
+      },
+    },
+    MuiOutlinedInput: {
+      root: {
+        "& $notchedOutline": {
+          borderColor: colors.blueGrey[400],
+        },
+        "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+          borderColor: colors.blueGrey[400],
+          "@media (hover: none)": {
+            borderColor: colors.blueGrey[400],
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      root: {
+        color: "#6e737a",
+
+        "&$focused": {
+          color: "#6e737a",
+        },
       },
     },
   },
@@ -45,7 +67,7 @@ export const darkTheme = createMuiTheme({
       main: colors.blueGrey[500],
     },
     secondary: {
-      main: colors.deepOrange[500],
+      main: colors.grey[400],
     },
   },
 
@@ -58,6 +80,29 @@ export const darkTheme = createMuiTheme({
     MuiTableCell: {
       root: {
         borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+      },
+    },
+    MuiOutlinedInput: {
+      root: {
+        "& $notchedOutline": {
+          borderColor: colors.blueGrey[400],
+        },
+        "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+          borderColor: colors.blueGrey[400],
+          "@media (hover: none)": {
+            borderColor: colors.blueGrey[400],
+          },
+        },
+      },
+    },
+
+    MuiInputLabel: {
+      root: {
+        color: "#e4e4e4",
+
+        "&$focused": {
+          color: "#e4e4e4",
+        },
       },
     },
   },

@@ -47,6 +47,19 @@ const LoginIcon = ({ icon, ...props }) => {
   );
 };
 
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Link color="inherit" href="/">
+        esset HR
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -69,14 +82,12 @@ const LoginView = () => {
               showPassword: false,
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string("Must be a valid email")
-                .max(255)
-                .required("Email is required"),
+              email: Yup.string("Must be a valid email").email().required(),
               password: Yup.string().max(255).required("Password is required"),
             })}
             onSubmit={(values) => {
               login(values, () => {
-                navigate("/app/dashboard", { replace: true });
+                navigate("/");
               });
             }}
           >
@@ -120,7 +131,7 @@ const LoginView = () => {
                             </IconButton>
                           }
                         >
-                          <strong>Error </strong>Incorrect email or password
+                          Incorrect email or password
                         </Alert>
                       </Collapse>
                     </Box>
@@ -176,9 +187,10 @@ const LoginView = () => {
                     size="large"
                     type="submit"
                     variant="contained"
+                    style={{ fontFamily: "Ubuntu" }}
                   >
                     {auth.loading ? (
-                      <CircularProgress size={24} color="primary" />
+                      <CircularProgress size={24} color="inherit" />
                     ) : (
                       "Login"
                     )}
@@ -195,6 +207,9 @@ const LoginView = () => {
               </form>
             )}
           </Formik>
+          <Box mt={2}>
+            <Copyright />
+          </Box>
         </Container>
       </Box>
     </Page>

@@ -47,7 +47,22 @@ const ResultsTable = ({
 
   return (
     <>
-      {employees.length === 0 && <LoadingComponent />}
+      {employees.length === 0 && (
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
+          <Typography variant="h4" color="textSecondary">
+            <Box fontWeight="fontWeightBold" m={1}>
+              <LoadingComponent />
+            </Box>
+          </Typography>
+        </Box>
+      )}
+
       {employees.length > 0 && (
         <>
           <TableComponent
@@ -102,8 +117,10 @@ const ResultsTable = ({
                   <Typography variant="h6">
                     {parseFloat(
                       (positionsMap[position] || {}).salary || 0
-                    ).toFixed(2)}{" "}
-                    ETB
+                    ).toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
                   </Typography>
                 ),
               },
@@ -111,10 +128,12 @@ const ResultsTable = ({
               {
                 label: "Hired",
                 field: "hireDate",
-                renderCell: ({ hireDate }) =>
-                  `${moment(hireDate).format("MMM DD,  Y")} (
-                ${moment(hireDate).fromNow()}
-              )`,
+                renderCell: ({ hireDate }) => (
+                  <Typography variant="h6">
+                    {moment(hireDate).format("MMM DD,  Y")} (
+                    {moment(hireDate).fromNow()})
+                  </Typography>
+                ),
               },
               {
                 label: "STATUS",
@@ -147,19 +166,19 @@ const ResultsTable = ({
             data={employees || []}
             rowActions={[
               {
-                icon: <VisibilityIcon fontSize="small" />,
-                label: "View",
+                icon: <VisibilityIcon fontSize="small" color="primary" />,
+                label: "View Details",
                 handler: ({ _id }) => onViewClicked(_id),
               },
               {
-                icon: <EditIcon fontSize="small" />,
-                label: "Edit",
+                icon: <EditIcon fontSize="small" color="secondary" />,
+                label: "Edit Details",
                 handler: ({ _id }) => onEditClicked(_id),
               },
 
               {
-                icon: <DeleteIcon fontSize="small" />,
-                label: "Delete",
+                icon: <DeleteIcon fontSize="small" color="error" />,
+                label: "Delete Employee",
                 handler: ({ _id }) => onDeleteClicked(_id),
               },
             ]}

@@ -78,6 +78,7 @@ const TabbedComponent = ({ title, tabs, variant, appBarProps, tabsProps }) => {
       variant="scrollable"
       value={selectedTab}
       onChange={handleChange}
+      aria-label="tabs"
       {...tabsProps}
     >
       {tabList}
@@ -86,11 +87,7 @@ const TabbedComponent = ({ title, tabs, variant, appBarProps, tabsProps }) => {
 
   return (
     <Box className={classes.root}>
-      {title && (
-        <Typography color="textPrimary" variant="h3" gutterBottom>
-          {title}
-        </Typography>
-      )}
+      {title && <Typography>{title}</Typography>}
       {variant === undefined || !variant ? (
         <Box>
           {tabHeaderList}
@@ -108,20 +105,6 @@ const TabbedComponent = ({ title, tabs, variant, appBarProps, tabsProps }) => {
   );
 };
 
-/*
-tabs = {
-    {
-        label: Hello,
-        panel: <React.Fragment />,
-        selected: true
-    },
-    {
-        label: "Araya",
-        panel: 
-    }
-
-}
-*/
 TabbedComponent.propTypes = {
   title: PropTypes.string,
   tabs: PropTypes.arrayOf(

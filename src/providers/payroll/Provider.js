@@ -80,7 +80,6 @@ const Provider = ({ children }) => {
       dispatch({ type: types.FETCH_PAYROLL_REQUEST });
       const { success, payrolls, error } = API.payroll.getAll(currentOrg._id);
       if (success) {
-        console.log("Payrollsssssssssss: ", payrolls);
         dispatch({ type: types.FETCH_PAYROLL_SUCCESS, payload: payrolls });
       } else {
         dispatch({ type: types.FETCH_PAYROLL_FAILURE, error });

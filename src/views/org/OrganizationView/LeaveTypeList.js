@@ -17,7 +17,6 @@ import {
 } from "@material-ui/core";
 
 import {
-  AddOutlined as AddIcon,
   CheckCircleRounded,
   DeleteOutlined as DeleteIcon,
   EditOutlined as EditIcon,
@@ -166,6 +165,7 @@ const LeaveTypeList = ({
               ),
           },
         ]}
+        // eslint-disable-next-line array-callback-return
         data={(leaveTypes || []).filter((lt) => {
           try {
             return (

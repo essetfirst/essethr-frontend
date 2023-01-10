@@ -86,22 +86,33 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
       <Toolbar>
         <Hidden lgUp>
-          <IconButton color="inherit" onClick={onMobileNavOpen}>
+          <IconButton
+            color="inherit"
+            onClick={onMobileNavOpen}
+            aria-label="open drawer"
+            edge="start"
+            title="menu"
+          >
             <MenuIcon />
           </IconButton>
         </Hidden>
         <Hidden smDown>
-          <RouterLink to="/">
+          <RouterLink to="/" aria-label="home" name="home">
             <BusinessIcon
+              aria-label="home"
               style={{ color: "#fff", fontSize: "2rem", marginRight: "10px" }}
             />
           </RouterLink>
           <RouterLink to="/app/dashboard">
             <Typography
-              component="span"
-              variant="h4"
-              style={{ color: "#fff" }}
-              className={classes.text}
+              color="inherit"
+              variant="h5"
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: 800,
+                fontSize: "1.1rem",
+                color: "#fff",
+              }}
             >
               Esset HR
             </Typography>
@@ -112,26 +123,13 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         <Box alignItems="center" display="flex" ml={2}>
           <IconButton
             color="inherit"
+            aria-label="dark mode"
+            title="dark mode"
             onClick={() => {
               toggleDarkMode();
             }}
           >
-            {/* //animation for dark mode toggle button icons  */}
-            {darkMode ? (
-              <Brightness7Icon
-                InputProps={{
-                  animation: setAnchorEl ? "spin 5s linear infinite" : "",
-                  color: "#fff",
-                }}
-              />
-            ) : (
-              <Brightness4Icon
-                InputProps={{
-                  animation: setAnchorEl ? "spin 5s linear infinite" : "",
-                  color: "#fff",
-                }}
-              />
-            )}
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
         </Box>
         <Box>

@@ -1,19 +1,10 @@
 import React from "react";
-
-import { makeStyles } from "@material-ui/core";
-
 import { Settings as SettingsIcon } from "react-feather";
 import PageView from "../../../components/PageView";
 import TabbedComponent from "../../../components/TabbedComponent";
 import ViewInDevelopment from "../../../components/ViewInDevelopment";
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
-  card: {},
-}));
-
 const SettingsView = () => {
-  const classes = useStyles();
   return (
     <PageView title="Settings" icon={<SettingsIcon />}>
       <TabbedComponent

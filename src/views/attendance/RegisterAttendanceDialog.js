@@ -153,7 +153,7 @@ const RegisterAttendanceDialog = ({
                       disabled={state.isLoading}
                     >
                       {state.isLoading ? (
-                        <CircularProgress color="primary" />
+                        <CircularProgress size={24} />
                       ) : action ? (
                         action
                       ) : (

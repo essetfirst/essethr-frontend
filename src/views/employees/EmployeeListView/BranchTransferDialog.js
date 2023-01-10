@@ -7,9 +7,7 @@ import * as Yup from "yup";
 import {
   Box,
   Button,
-  ButtonGroup,
   Dialog,
-  DialogActions,
   DialogContent,
   Divider,
   Grid,
@@ -40,14 +38,17 @@ const BranchTransferDialog = ({ open, onClose, employee, onTransfer }) => {
       if (success) {
         if (Array.isArray(orgs) && orgs.length > 0) {
           setOrgs(orgs);
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           orgsMap = (orgs || [])
             .map((org) => {
+              // eslint-disable-next-line react-hooks/exhaustive-deps
               departmentsMap = {
                 ...(org.departments || []).reduce(
                   (o, d) => ({ ...o, [d._id]: { org: org._id, ...d } }),
                   {}
                 ),
               };
+              // eslint-disable-next-line react-hooks/exhaustive-deps
               positionsMap = {
                 ...(org.positions || []).reduce(
                   (o, p) => ({ ...o, [p._id]: { org: org._id, ...p } }),

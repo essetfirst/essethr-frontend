@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoadingComponent = ({ color = "gray", ...rest }) => {
+const LoadingComponent = ({ color = "primary", ...rest }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>

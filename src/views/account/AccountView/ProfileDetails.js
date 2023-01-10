@@ -43,7 +43,6 @@ const ProfileDetails = ({
     label: r,
     value: String(r).toUpperCase(),
   }));
-  console.log(user);
   const [editMode, setEditMode] = React.useState(false);
   const toggleEditMode = () => setEditMode(!editMode);
 
@@ -75,11 +74,6 @@ const ProfileDetails = ({
           {}
         );
         if (!deepEqual(userInfo, newUserInfo)) {
-          // It means something has changed
-          console.log(
-            "[ProfileDetails]: Line 69 -> Updating user account: ",
-            newUserInfo
-          );
           onUpdateAccount(newUserInfo) && setEditMode(false);
         }
       }}
@@ -131,6 +125,7 @@ const ProfileDetails = ({
                 >
                   <Typography
                     variant="h6"
+                    component={"span"}
                     style={{
                       fontWeight: "bold",
                       textAlign: "center",
@@ -140,6 +135,7 @@ const ProfileDetails = ({
                   >
                     <Typography
                       variant="h6"
+                      component={"span"}
                       style={{
                         fontWeight: "bold",
                         textAlign: "center",
@@ -159,6 +155,7 @@ const ProfileDetails = ({
                   </Typography>
                   <Typography
                     variant="h1"
+                    component={"span"}
                     style={{
                       fontWeight: "bold",
                     }}

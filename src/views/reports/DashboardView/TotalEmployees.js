@@ -13,7 +13,6 @@ import {
   makeStyles,
   // Divider,
 } from "@material-ui/core";
-import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
 import { PeopleOutlined as PeopleIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,12 +37,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   differenceIcon: {
-    color: colors.cyan[400],
     fontFamily: "Poppins",
     fontSize: 14,
   },
   differenceValue: {
-    color: colors.cyan[600],
     fontFamily: "Poppins",
     marginRight: theme.spacing(1),
   },
@@ -64,20 +61,18 @@ const TotalEmployees = ({
           <Grid item>
             <Typography
               color="textSecondary"
-              gutterBottom
+              variant="h1"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
+              gutterBottom
             >
               ACTIVE EMPLOYEE
             </Typography>
             <Typography
-              color="textPrimary"
-              variant="h3"
+              color="textSecondary"
+              variant="h2"
               style={{ fontWeight: 600, fontFamily: "Poppins", fontSize: 35 }}
             >
-              <span style={{ color: "#00BFA6" }}>
-                {" "}
-                {currentMonthEmployeesCount || 0}{" "}
-              </span>
+              <span> {currentMonthEmployeesCount || 0} </span>
             </Typography>
           </Grid>
           <Grid item>

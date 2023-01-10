@@ -12,7 +12,6 @@ import {
   TextField,
   ListItemAvatar,
   Avatar,
-  Typography,
 } from "@material-ui/core";
 
 import { SearchOutlined as SearchIcon } from "@material-ui/icons";
@@ -43,10 +42,10 @@ const EmployeeSelect = ({ employees, onSelectionChange }) => {
 
   const handleChange = (e) => setSearchTerm(e.target.value);
 
-  const selectionChange = React.useCallback(
-    () => onSelectionChange(selected),
-    [selected, onSelectionChange]
-  );
+  // const selectionChange = React.useCallback(
+  //   () => onSelectionChange(selected),
+  //   [selected, onSelectionChange]
+  // );
   // React.useEffect(() => {
   //   selectionChange(selected);
   // }, [selected, selectionChange]);

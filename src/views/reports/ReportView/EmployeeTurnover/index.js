@@ -1,7 +1,6 @@
-import { Box, Button, Divider, Grid, Typography } from "@material-ui/core";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 import React from "react";
-import { Bar } from "react-chartjs-2";
 import BarGraphComponent from "../../../../components/BarGraphComponent";
 
 import CardWithTitle from "../../../../components/CardWithTitle";

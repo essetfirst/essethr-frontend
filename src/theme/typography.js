@@ -62,9 +62,18 @@ export default {
   },
 
   textSecondary: {
+    fontWeight: 500,
     color: "#6c757d",
+    fontFamily: "Ubuntu",
   },
   textPrimary: {
     color: "#212529",
+    fontFamily: "Ubuntu",
+  },
+
+  button: {
+    fontWeight: 500,
+    fontSize: 12,
+    fontFamily: "Ubuntu",
   },
 };

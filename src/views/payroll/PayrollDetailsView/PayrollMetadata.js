@@ -1,30 +1,31 @@
 import React from "react";
 
 import {
-  Box,
   Card,
   CardContent,
+  colors,
   Grid,
   makeStyles,
   Typography,
 } from "@material-ui/core";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
+import moment from "moment";
+
 const useStyles = makeStyles((theme) => ({
   card: {
     padding: theme.spacing(2),
   },
   title: {
-    textShadow: "0.5px 0.5px 0.5px #000",
+    textShadow: "1px 1px 1px #f4f6f8",
     fontFamily: "Poppins",
-  },
-  money: {
-    color: "#00c853",
-    fontFamily: "Poppins",
+
+    color: colors.lightBlue[300],
+
+    fontWeight: "bold",
   },
   textWithBorder: {
-    border: "2px solid #f4f6f8",
-    padding: theme.spacing(1),
+    border: "5px solid #f4f6f8",
+    padding: theme.spacing(2),
     borderRadius: "5px",
     marginTop: "10px",
     fontFamily: "Poppins",
@@ -53,8 +54,8 @@ const PayrollMetadata = ({ metadata }) => {
             </Typography>
             <Typography variant="h6" className={classes.textWithBorder}>
               <strong>Period: </strong>
-              {new Date(fromDate).toLocaleDateString()} -{" "}
-              {new Date(toDate).toLocaleDateString()}
+              {moment(fromDate).format("DD MMM YYYY")} -{" "}
+              {moment(toDate).format("DD MMM YYYY")}
             </Typography>
             <Typography variant="h6" className={classes.textWithBorder}>
               <strong>Frequency: </strong>
@@ -62,30 +63,33 @@ const PayrollMetadata = ({ metadata }) => {
             </Typography>
             <Typography variant="h6" className={classes.textWithBorder}>
               {new Date(payDate).toLocaleDateString() <
-              new Date().toLocaleDateString()
-                ? "Paid on: "
-                : "To be paid on"}{" "}
-              <strong>{payDate}</strong>
+              new Date().toLocaleDateString() ? (
+                <strong>Pay On: </strong>
+              ) : (
+                <strong>To Be Paid On: </strong>
+              )}{" "}
+              {payDate}
             </Typography>
           </Grid>
-          <Grid item sm={6} align="center" style={{ marginTop: "2.3rem" }}>
+          <Grid item sm={6} align="center" style={{ marginTop: "4.3rem" }}>
             <Grid display="flex" justifyContent="flex-end" flexDirection="row">
               <Typography
                 variant="h3"
                 align="right"
-                gutterBottom
                 className={classes.textWithBorder}
               >
-                <strong> {employeesCount} </strong> E m p l o y e e
+                <strong>{employeesCount}</strong> E m p l o y e e s
               </Typography>
               <Typography
                 variant="h1"
                 align="right"
-                gutterBottom
                 className={classes.textWithBorder}
-                style={{ color: "#009688" }}
+                color="primary"
               >
-                {parseInt(totalPayment)} ETB
+                {totalPayment.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "ETB",
+                })}
               </Typography>
             </Grid>
           </Grid>

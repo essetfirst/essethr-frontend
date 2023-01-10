@@ -20,6 +20,7 @@ import FemaleAvatar from "../../../assets/images/female_no_profile.png";
 import PageView from "../../../components/PageView";
 import moment from "moment";
 import TableComponent from "../../../components/TableComponent";
+import LocalPhoneOutlinedIcon from "@material-ui/icons/LocalPhoneOutlined";
 
 const PayslipDetailsEmployeeBrief = ({ employee }) => {
   const { name, jobTitle, phone, gender } = employee;
@@ -48,7 +49,25 @@ const PayslipDetailsEmployeeBrief = ({ employee }) => {
         >
           {jobTitle}
         </Typography>
-        <Typography align="center" variant="h6">
+        <Typography
+          variant="h5"
+          color="textSecondary"
+          align="center"
+          gutterBottom
+          mt={2}
+        >
+          <span style={{ marginRight: "6px" }}>
+            <LocalPhoneOutlinedIcon
+              size="small"
+              style={{
+                marginRight: "6px",
+                display: "inline-block",
+                justifyContent: "center",
+                alignItems: "center",
+                verticalAlign: "middle",
+              }}
+            />
+          </span>
           {phone}
         </Typography>
       </Box>
@@ -66,12 +85,7 @@ const PayslipDetailsSummary = ({ summary }) => {
       mt={5}
       mb={5}
     >
-      <Typography
-        variant="h2"
-        color="textSecondary"
-        align="center"
-        gutterBottom
-      >
+      <Typography variant="h2" color="body1" align="center" gutterBottom>
         {payrollTitle}
       </Typography>
       <Box mt={1} />
@@ -99,13 +113,14 @@ const PayslipDetailsSummary = ({ summary }) => {
         {`Pay Date`.toUpperCase()}
       </Typography>
       <Typography variant="h5" align="center">
-        {new Date(payDate).toDateString()}
+        {moment(payDate).format("DD MMM YYYY")}
       </Typography>
     </Box>
   );
 };
 
 const PayslipDetailsEarningsList = ({ earnings }) => {
+  console.log("earnings", earnings);
   return (
     <Box mt={4}>
       <Typography variant="h4" align="center" gutterBottom>
@@ -115,8 +130,14 @@ const PayslipDetailsEarningsList = ({ earnings }) => {
         columns={[
           { field: "desc", label: "Description" },
           { field: "hours", label: "Hours" },
-          { field: "rate", label: "Hourly Rate" },
-          { field: "amount", label: "Amount (ETB)" },
+          {
+            field: "rate",
+            label: "Hourly Rate",
+          },
+          {
+            field: "amount",
+            label: "Amount (ETB)",
+          },
         ]}
         data={earnings || []}
       />
@@ -171,13 +192,6 @@ const PayslipDetailsView = ({ payslip }) => {
     <PageView
       backPath={`/app/payroll/${payrollId ? payrollId : ""}`}
       title="Employee Payslip"
-      // actions={[
-      //   {
-      //     label: "Create templated payslip",
-      //     position: "left",
-      //     otherProps: { variant: "contained", color: "primary", size: "small" },
-      //   },
-      // ]}
     >
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
@@ -189,12 +203,10 @@ const PayslipDetailsView = ({ payslip }) => {
                     align="center"
                     style={{
                       textTransform: "uppercase",
-                      fontFamily: "Poppins",
-                      fontWeight: 500,
+                      fontWeight: "lighter",
                       fontSize: "2rem",
-                      lineHeight: "2.5rem",
-                      letterSpacing: "0.1em",
-                      marginBottom: "16px",
+
+                      fontFamily: "Poppins",
                     }}
                   >
                     {String(organization).toUpperCase()}
@@ -233,9 +245,20 @@ const PayslipDetailsView = ({ payslip }) => {
                   >
                     {"Gross Salary".toUpperCase()}
                   </Typography>
-                  <Typography variant="h2" color="primary" align="center">
+                  <Typography
+                    variant="h2"
+                    align="center"
+                    style={{
+                      color: "#4caf50",
+                    }}
+                  >
                     {/* moeny number format  */}
-                    <strong>{parseInt(earningsTotal)} ETB</strong>
+                    <strong>
+                      {parseInt(earningsTotal).toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "ETB",
+                      })}
+                    </strong>
                   </Typography>
                 </Grid>
 
@@ -248,8 +271,21 @@ const PayslipDetailsView = ({ payslip }) => {
                   >
                     {"Deducted".toUpperCase()}
                   </Typography>
-                  <Typography variant="h2" color="error" align="center">
-                    <strong>-{parseInt(deductionsTotal)} ETB</strong>
+                  <Typography
+                    variant="h2"
+                    align="center"
+                    style={{
+                      color: "#f44336",
+                    }}
+                  >
+                    {/* deducting money will be ETB format and always negative */}
+                    <strong>
+                      - {"  "}
+                      {parseInt(deductionsTotal).toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "ETB",
+                      })}
+                    </strong>
                   </Typography>
                 </Grid>
                 <Grid item sm={4} md={4}>
@@ -261,8 +297,18 @@ const PayslipDetailsView = ({ payslip }) => {
                   >
                     {"Net Salary".toUpperCase()}
                   </Typography>
-                  <Typography variant="h2" align="center">
-                    <strong>{parseInt(netPayment)} ETB</strong>
+                  <Typography
+                    variant="h2"
+                    align="center"
+                    gutterBottom
+                    style={{ color: "#2196f3" }}
+                  >
+                    <strong>
+                      {parseInt(netPayment).toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "ETB",
+                      })}
+                    </strong>
                   </Typography>
                 </Grid>
               </Grid>

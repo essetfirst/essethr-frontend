@@ -11,8 +11,12 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import PhoneIcon from "@material-ui/icons/Phone";
 import PrintIcon from "@material-ui/icons/Print";
 import LoadingComponent from "../../../components/LoadingComponent";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
+import BlockIcon from "@material-ui/icons/Block";
 
 const ResultsTable = ({
+  state,
   org,
   onSortParamsChange,
   employees = [],
@@ -119,7 +123,7 @@ const ResultsTable = ({
                       (positionsMap[position] || {}).salary || 0
                     ).toLocaleString("en-US", {
                       style: "currency",
-                      currency: "USD",
+                      currency: "ETB",
                     })}
                   </Typography>
                 ),
@@ -157,6 +161,17 @@ const ResultsTable = ({
                           ? "primary"
                           : "secondary"
                       }
+                      icon={
+                        eStatus === "on probation" ? (
+                          <EditIcon />
+                        ) : eStatus === "terminated" ? (
+                          <IndeterminateCheckBoxIcon />
+                        ) : eStatus === "active" ? (
+                          <CheckCircleOutlineIcon />
+                        ) : (
+                          <BlockIcon />
+                        )
+                      }
                       label={eStatus}
                     />
                   );
@@ -171,7 +186,7 @@ const ResultsTable = ({
                 handler: ({ _id }) => onViewClicked(_id),
               },
               {
-                icon: <EditIcon fontSize="small" color="secondary" />,
+                icon: <EditIcon fontSize="small" style={{ color: "orange" }} />,
                 label: "Edit Details",
                 handler: ({ _id }) => onEditClicked(_id),
               },
@@ -217,14 +232,18 @@ const ResultsTable = ({
                 department,
                 position,
               }) => {
-                return {
-                  _id,
-                  employeeId,
-                  firstName,
-                  surName,
-                  department: (departmentsMap[department] || {}).name,
-                  position: (positionsMap[position] || {}).title,
+                const employee = {
+                  id: employeeId || _id,
+                  org: org.name,
+                  name: `${firstName} ${surName}`,
+                  department: department
+                    ? departmentsMap[department].name
+                    : "Department",
+                  jobTitle: position
+                    ? positionsMap[position].title
+                    : "Job Title",
                 };
+                return employee;
               }
             )}
         />

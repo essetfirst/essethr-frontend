@@ -6,11 +6,11 @@ export const lightTheme = createMuiTheme({
   palette: {
     type: "light",
     background: {
-      default: "#F4F6F8",
-      paper: "#FFFFFF",
+      default: colors.blueGrey[50],
+      paper: colors.grey[50],
     },
     primary: {
-      main: colors.blueGrey[500],
+      main: colors.teal[500],
     },
     secondary: {
       main: colors.deepOrange[800],
@@ -67,7 +67,7 @@ export const darkTheme = createMuiTheme({
       main: colors.blueGrey[500],
     },
     secondary: {
-      main: colors.grey[400],
+      main: colors.common.white,
     },
   },
 

@@ -65,7 +65,6 @@ const Provider = ({ persistKey = "org", children }) => {
   React.useEffect(() => {
     try {
       // If user is of role ADMIN then last time he chose as org has to be saved
-      console.log("[OrgProvider]: Line 71 -> currentOrg: ", state.currentOrg);
       localStorage.setItem(persistKey, JSON.stringify(state.currentOrg));
     } catch (e) {
       console.warn(e);

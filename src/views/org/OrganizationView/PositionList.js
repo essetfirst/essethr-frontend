@@ -5,7 +5,6 @@ import {
   EditOutlined as EditIcon,
   SearchOutlined as SearchIcon,
 } from "@material-ui/icons";
-import AttachMoneyOutlinedIcon from "@material-ui/icons/AttachMoneyOutlined";
 import Table from "../../../components/TableComponent";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import PositionForm from "./PositionForm";
@@ -161,6 +160,7 @@ const PositionList = ({
             },
           },
         ]}
+        // eslint-disable-next-line array-callback-return
         data={(positions || []).filter((p) => {
           try {
             const { title, description, department } = p;

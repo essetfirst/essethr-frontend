@@ -29,7 +29,6 @@ import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import NavItem from "./NavItem";
 import RecentActorsIcon from "@material-ui/icons/RecentActors";
 import useAuth from "../../../providers/auth";
-import MenuOpenIcon from "@material-ui/icons/MenuOpen";
 import MenuIcon from "@material-ui/icons/Menu";
 
 const navItems = [
@@ -89,7 +88,7 @@ const adminNavItems = [
   },
 ];
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
     width: 206,
   },
@@ -141,8 +140,7 @@ const useStyles = makeStyles(() => ({
     cursor: "pointer",
     position: "absolute",
     left: 220,
-    top: 10,
-    zIndex: 100,
+    top: 1,
   },
 }));
 
@@ -177,19 +175,11 @@ const NavBar = ({
   }, [minimized]);
 
   const minContent = (
-    <Box
-      onClick={handleMinimize}
-      style={{
-        cursor: "pointer",
-        position: "absolute",
-        left: 220,
-        top: 10,
-        zIndex: 100,
-      }}
-      className={classes.menuIcon}
-    >
-      <MenuOpenIcon />
-    </Box>
+    <Hidden mdDown>
+      <div onClick={handleMinimize}>
+        <MenuIcon className={classes.menuIcon} />
+      </div>
+    </Hidden>
   );
   const content = itemsNav();
 
@@ -223,17 +213,6 @@ const NavBar = ({
           anchor={minimize ? "bottom" : "bottom"}
           classes={{
             paper: classes.minimizedDrawer,
-            paperAnchorBottom: classes.minimizedDrawer,
-            paperAnchorDockedBottom: classes.minimizedDrawer,
-
-            paperAnchorTop: classes.minimizedDrawer,
-            paperAnchorDockedTop: classes.minimizedDrawer,
-
-            paperAnchorLeft: classes.minimizedDrawer,
-            paperAnchorDockedLeft: classes.minimizedDrawer,
-
-            paperAnchorRight: classes.minimizedDrawer,
-            paperAnchorDockedRight: classes.minimizedDrawer,
           }}
           open={minimize}
           variant="persistent"
@@ -249,7 +228,7 @@ const NavBar = ({
                   alignItems: "center",
                 }}
               >
-                <MenuIcon style={{ fontSize: "21px" }} />
+                <MenuIcon />
               </Box>
               <Box
                 display="flex"
@@ -276,6 +255,7 @@ const NavBar = ({
                       border: "1px solid #fff",
                       borderRadius: "50%",
                     }}
+                    alt="Person"
                   />
                 </Box>
               </Box>
@@ -283,7 +263,7 @@ const NavBar = ({
               {navItems.map((item) => (
                 <NavItem
                   href={item.href}
-                  // key={item.title}
+                  key={item.title}
                   // title={item.title}
                   icon={item.icon}
                 />
@@ -298,9 +278,10 @@ const NavBar = ({
   function itemsNav() {
     return (
       <Box height="100%" display="flex" flexDirection="column">
+        {minContent}
+
         {auth.isAuth && (
           <>
-            {minContent}
             <Box
               display="inline-block"
               alignItems="center"
@@ -322,6 +303,7 @@ const NavBar = ({
                   variant="rounded"
                   className={classes.avatar}
                   src={require("../../../assets/images/hope.jpg")}
+                  alt="Person"
                 />
               </Box>
               <Box

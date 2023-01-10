@@ -52,6 +52,7 @@ const DailyAttendanceSummaryByRemark = ({
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Typography
               color="textSecondary"
+              variant="h3"
               style={{
                 fontSize: "1rem",
                 fontFamily: "Poppins, sans-serif",
@@ -61,6 +62,7 @@ const DailyAttendanceSummaryByRemark = ({
             </Typography>
             <Typography
               color="textSecondary"
+              variant="h3"
               style={{
                 fontSize: "1rem",
                 fontFamily: "Poppins, sans-serif",
@@ -327,7 +329,7 @@ const WeeklyAttendanceSummaryByRemark = ({
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Typography
               color="textSecondary"
-              variant="h6"
+              variant="h1"
               style={{
                 fontSize: "1rem",
                 fontFamily: "Poppins",
@@ -337,7 +339,7 @@ const WeeklyAttendanceSummaryByRemark = ({
             </Typography>
             <Typography
               color="textSecondary"
-              variant="h6"
+              variant="h2"
               style={{
                 fontSize: "1rem",
                 fontFamily: "Poppins",

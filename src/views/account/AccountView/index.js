@@ -52,8 +52,6 @@ const Account = () => {
     getInitialState(auth.user)
   );
 
-  console.log(state.user);
-
   const handleUpdateAccount = (accountInfo) => {
     dispatch({ type: types.ACCOUNT_EDIT_REQUEST });
     API.users
@@ -86,31 +84,60 @@ const Account = () => {
   };
 
   const handleUploadImage = (image) => {
-    // Do something
+    dispatch({ type: types.ACCOUNT_EDIT_REQUEST });
+    API.users
+      .uploadImage(image)
+      .then(({ success, user, error }) => {
+        if (success) {
+          dispatch({ type: types.ACCOUNT_EDIT_SUCCESS, payload: user });
+          notify({ success, message: "User account updated", error });
+          return true;
+        } else {
+          dispatch({ type: types.ACCOUNT_EDIT_FAILURE, error });
+          notify({ success: false, error });
+          return false;
+        }
+      })
+      .catch((e) => {
+        const error =
+          String(e).includes("Unexpected token P") ||
+          String(e).includes("JSON.parse") ||
+          String(e).includes("NetworkError")
+            ? "Something went wrong. Please check connection and retry."
+            : String(e);
+        dispatch({
+          type: types.ACCOUNT_EDIT_FAILURE,
+          error,
+        });
+        notify({ success: false, error, severe: true });
+        return false;
+      });
   };
 
   return (
-    <PageView
-      title="Account"
-      icon={
-        <span style={{ verticalAlign: "middle" }}>
-          <AccountBoxIcon fontSize="large" />
-        </span>
-      }
-    >
-      <Grid container spacing={3}>
-        <Grid item lg={4} md={6} xs={12}>
-          <Profile user={state.user} onUploadImage={handleUploadImage} />
+    <React.Fragment>
+      <PageView
+        title="Account"
+        icon={
+          <span style={{ verticalAlign: "middle" }}>
+            <AccountBoxIcon fontSize="large" />
+          </span>
+        }
+      >
+        <Grid container spacing={3}>
+          <Grid item lg={4} md={6} xs={12}>
+            <Profile user={state.user} onUploadImage={handleUploadImage} />
+          </Grid>
+          <Grid item lg={8} md={6} xs={12}>
+            <ProfileDetails
+              isUpdating={state.isLoading}
+              user={state.user}
+              onUpdateAccount={handleUpdateAccount}
+            />
+          </Grid>
         </Grid>
-        <Grid item lg={8} md={6} xs={12}>
-          <ProfileDetails
-            isUpdating={state.isLoading}
-            user={state.user}
-            onUpdateAccount={handleUpdateAccount}
-          />
-        </Grid>
-      </Grid>
-    </PageView>
+      </PageView>
+    </React.Fragment>
   );
 };
 

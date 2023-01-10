@@ -127,20 +127,19 @@ const ResultsGrid = ({
     <Grid container spacing={3}>
       {employees.map(({ _id, department, position, ...employeeDetails }) => {
         return (
-          <>
-            <Grid key={_id} item xs={12} sms={12} md={4}>
-              <CoolEmployeeCard
-                employee={{
-                  _id,
-                  departmentDetails: departmentsMap[department],
-                  positionDetails: positionsMap[position],
-                  ...employeeDetails,
-                }}
-                onEdit={() => onEditClicked(_id)}
-                onDelete={() => onDeleteClicked(_id)}
-              />
-            </Grid>
-          </>
+          <Grid key={_id} item xs={12} sms={12} md={4}>
+            <CoolEmployeeCard
+              key={_id}
+              employee={{
+                _id,
+                departmentDetails: departmentsMap[department],
+                positionDetails: positionsMap[position],
+                ...employeeDetails,
+              }}
+              onEdit={() => onEditClicked(_id)}
+              onDelete={() => onDeleteClicked(_id)}
+            />
+          </Grid>
         );
       })}
     </Grid>

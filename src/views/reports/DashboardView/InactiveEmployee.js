@@ -33,11 +33,8 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
     justifyContent: "center",
   },
-  differenceIcon: {
-    color: colors.red[300],
-  },
+  differenceIcon: {},
   differenceValue: {
-    color: colors.red[300],
     marginRight: 8,
   },
 }));
@@ -57,20 +54,18 @@ const InactiveEmployee = ({
           <Grid item>
             <Typography
               color="textSecondary"
-              gutterBottom
-              variant="h6"
+              variant="h1"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
+              gutterBottom
             >
               INACTIVE EMPLOYEES
             </Typography>
             <Typography
-              color="textPrimary"
-              variant="h3"
+              color="textSecondary"
+              variant="h2"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span style={{ color: "#5c6bc0" }}>
-                {totalInactiveEmployees || 0}
-              </span>
+              <span>{totalInactiveEmployees || 0}</span>
             </Typography>
           </Grid>
           <Grid item>
@@ -81,7 +76,7 @@ const InactiveEmployee = ({
         </Grid>
         <Box mt={2} />
         <Box mt={2} display="flex" alignItems="center">
-          <Typography className={classes.differenceValue}>
+          <Typography className={classes.differenceValue} color="textSecondary">
             {calculatePercentage || 0}%
           </Typography>
 

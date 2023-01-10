@@ -107,13 +107,11 @@ const Row = (rowProps) => {
   return (
     <TableRow
       hover
-      style={
-        {
-          // background:
-          // parseInt(Math.random() * 10) % 2 === 0 ? "lightorange" : "white",
-          // background: "grey",
-        }
-      }
+      style={{
+        cursor: typeof onRowClicked === "function" ? "pointer" : "default",
+
+        transition: "all 0.5s ease",
+      }}
       aria-checked={isItemSelected}
       tabIndex={-1}
       role="checkbox"
@@ -121,6 +119,8 @@ const Row = (rowProps) => {
       onClick={() =>
         typeof onRowClicked === "function" && onRowClicked(rowData)
       }
+      key={rowId}
+      id={labelId}
     >
       {selectable && (
         <TableCell padding="checkbox">
@@ -137,7 +137,7 @@ const Row = (rowProps) => {
         ? renderRow(rowData)
         : defaultRowCellsRender(rowData)}
       {rowActions.length > 0 && (
-        // <TableCell>{renderRowActionButtons(row)}</TableCell>
+        // <TableCell>{renderRowActionButtons(row)}</TableCell>,
         <TableCell>
           <IconButton onClick={handleActionMenuClick} aria-label="action">
             <MoreVertIcon />

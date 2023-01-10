@@ -86,9 +86,9 @@ const EmployeeBranchTransferDialog = ({ open, onClose, employee }) => {
       });
   }, [auth]);
 
-  React.useEffect(() => {
-    fetchOrganizations();
-  }, [fetchOrganizations]);
+  // React.useEffect(() => {
+  //   fetchOrganizations();
+  // }, [fetchOrganizations]);
 
   //   React.useEffect(() => {}, []);
 
@@ -314,7 +314,7 @@ EmployeeBranchTransferDialog.propTypes = {
     position: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
-  onTransfer: PropTypes.func.isRequired,
+  onTransfer: PropTypes.func,
 };
 
 export default EmployeeBranchTransferDialog;

@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, Divider, Typography, Card, CardContent } from "@material-ui/core";
+import { Box, Typography, Card, CardContent } from "@material-ui/core";
 import { useBarcode } from "@createnextapp/react-barcode";
 import CustomAvatar from "../../../components/CustomAvatar";
 
 const EmployeeIDCard = ({ employee }) => {
-  const { id, org, firstName, image, position, department, surName, jobTitle } =
-    employee;
+  const { id, org, name, image, department, jobTitle } = employee;
   const { inputRef } = useBarcode({
     value: String(id),
     options: {
@@ -16,7 +15,7 @@ const EmployeeIDCard = ({ employee }) => {
   });
 
   return (
-    <Box p={2} width={350} display="flex" flexDirection="column">
+    <Box p={2} width={500} display="flex" flexDirection="column">
       <Card
         style={{
           width: "100%",
@@ -25,7 +24,7 @@ const EmployeeIDCard = ({ employee }) => {
           flexDirection: "column",
           justifyContent: "space-between",
           backgroundColor: "#fff",
-          borderRadius: 10,
+          borderRadius: 8,
           boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
         }}
       >
@@ -40,7 +39,7 @@ const EmployeeIDCard = ({ employee }) => {
         >
           <Box display="flex" mt={1}>
             <CustomAvatar src={image} size="3">
-              {String(firstName || "")
+              {String(name || "")
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
@@ -61,24 +60,16 @@ const EmployeeIDCard = ({ employee }) => {
               </Typography>
               <Typography style={{ color: "#000" }}>
                 Name:
-                {` ${firstName} ${surName}`}
+                {` ${name}`}
               </Typography>
               <Typography color="textSecondary" style={{ color: "#000" }}>
+                Position:
                 {department}
                 {" • "}
-                {position}
+                {` ${jobTitle}`}
               </Typography>
-              <Box m={1} />
-              {/* <Typography>{gender}</Typography> */}
-              <Box
-                width="100%"
-                height="100%"
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="flex-start"
-                // alignSelf="flex-start"
-              >
-                <img ref={inputRef} alt={"barcode"} height={10} width={100} />
+              <Box width="100%" height="100%">
+                <img ref={inputRef} alt={"barcode"} height={45} width={100} />
               </Box>
             </Box>
           </Box>

@@ -2,7 +2,6 @@ import React from "react";
 
 import PageView from "../../../../components/PageView";
 import CardWithTitle from "../../../../components/CardWithTitle";
-import TableComponent from "../../../../components/TableComponent";
 import BarGraphComponent from "../../../../components/BarGraphComponent";
 
 const AgeBreakdown = ({ ageByCategory = {} }) => {

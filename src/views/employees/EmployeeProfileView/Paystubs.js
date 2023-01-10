@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Paystubs = ({ payslips = [] }) => {
-  console.log(payslips);
   const classes = useStyles();
   const [filters, setFilters] = React.useState({
     fromDate: new Date(new Date().setMonth(new Date().getMonth() - (1 % 12)))
@@ -82,10 +81,6 @@ const Paystubs = ({ payslips = [] }) => {
     doc.save(fileName);
   };
 
-  React.useEffect(() => {
-    console.log("filters", filters);
-    console.log("payslips", payslips);
-  }, [filters, payslips]);
   return (
     <Box width="100%">
       <Box display="flex" justifyContent="flex-end" flexWrap="wrap" mb={2}>
@@ -218,7 +213,10 @@ const Paystubs = ({ payslips = [] }) => {
                   color="textSecondary"
                   component="span"
                 >
-                  {netPayment.toLocaleString()} ETB
+                  {netPayment.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "ETB",
+                  })}
                 </Typography>
               );
             },

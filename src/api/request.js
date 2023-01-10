@@ -12,6 +12,7 @@ const getOrg = () => {
 const getURLPath = (url) => `${apiURL}/${url}`;
 
 const makeRequest = async (url, method, params, data) => {
+  //CONFIG OF AXIOS TO MAKE Request
   const auth = getAuth();
   const org = getOrg();
   const headers = {
@@ -28,6 +29,8 @@ const makeRequest = async (url, method, params, data) => {
     params,
     data,
   };
+
+  //MAKE Request WItH AXIOS
   try {
     const response = await axios(config);
     console.log(
@@ -55,6 +58,7 @@ const makeRequest = async (url, method, params, data) => {
   }
 };
 
+//EXPORT FUNCTIONS TO USE IN HTTP REQUESTS
 export const postRequest = (url, data) => {
   return makeRequest(url, "POST", null, data);
 };
@@ -93,5 +97,6 @@ export const queryObjectToString = (obj) => {
       query = `${key}=${obj[key]}&${query}`;
     }
   });
+
   return query;
 };

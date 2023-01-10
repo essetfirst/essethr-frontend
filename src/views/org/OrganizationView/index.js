@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
 import sort from "../../../helpers/sort";
@@ -72,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
 
 const OrganizationView = ({ id }) => {
   const classes = useStyles();
-  const navigate = useNavigate();
   const params = useParams();
   const { notificationSnackbar } = useNotificationSnackbar();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -138,9 +137,9 @@ const OrganizationView = ({ id }) => {
     }
   }, [orgId, org, fetchOrg]);
 
-  const handleEditOrgClick = () => {
-    navigate("/app/orgs/edit", orgId);
-  };
+  // const handleEditOrgClick = () => {
+  //   navigate("/app/orgs/edit", orgId);
+  // };
 
   const { departmentsMap, positionsMap, leaveTypesMap, holidaysMap } =
     mapper(state);

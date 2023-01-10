@@ -44,13 +44,6 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 125,
     paddingTop: 125,
   },
-  title: {
-    marginTop: theme.spacing(1),
-    display: "flex",
-    fontFamily: "Poppins",
-    fontSize: "20px",
-    fontWeight: 600,
-  },
   buttonProgress: {
     color: "#cee2f4",
     position: "absolute",
@@ -104,16 +97,13 @@ const EmployeeFormView = ({ employeeId }) => {
     <Page className={classes.root} title={title}>
       <Box display="flex" flexDirection="column" height="100%">
         <Container maxWidth={true}>
-          <Box display="flex" justifyContent="left">
+          <Box display="flex" justifyContent="center" mb={2}>
             <Box display="flex">
               <Typography
-                // className={classes.title}
-                color="textPrimary"
                 style={{
-                  fontFamily: "Roboto",
-                  fontSize: "24px",
-                  fontWeight: 100,
-                  margin: "0px 0px 10px 0px",
+                  fontSize: 24,
+                  lineHeight: 1.2,
+                  letterSpacing: 5.15,
                 }}
               >
                 {title}
@@ -220,13 +210,14 @@ const EmployeeFormView = ({ employeeId }) => {
   function formUi(handleChange, handleBlur, touched, errors, values) {
     return (
       <Paper
+        elevation={3}
         style={{
-          padding: "10px",
-          borderRadius: "10px",
-          boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.05)",
+          padding: "1rem",
+          borderRadius: "0.5rem",
+          backgroundColor: "#f5f5f5",
         }}
       >
-        <Container maxWidth={true} display="flex" flexDirection="column" p={0}>
+        <Container maxWidth="lg" style={{ padding: 0 }} disableGutters>
           <Grid container spacing={2}>
             {[
               {
@@ -381,7 +372,6 @@ const EmployeeFormView = ({ employeeId }) => {
                 onBlur: handleBlur,
                 GridProps: { sm: 12, md: 6, lg: 4 },
                 disabled: values.contractType === "Permanent",
-                error: values.endDate < values.startDate,
               },
             ].map(
               (
@@ -398,7 +388,7 @@ const EmployeeFormView = ({ employeeId }) => {
                 },
                 index
               ) => (
-                <Grid item {...GridProps} key={index}>
+                <Grid item key={index} {...GridProps}>
                   <TextField
                     required={required}
                     select={select}

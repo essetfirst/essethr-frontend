@@ -6,12 +6,11 @@ import { Box, Chip, Typography } from "@material-ui/core";
 
 import TableComponent from "../../../components/TableComponent";
 
-const Attendance = ({ attendanceByDate }) => {
-  console.log(attendanceByDate);
+const Attendance = ({ attendanceByDate, onSortParamsChange }) => {
   return (
     <Box>
       <TableComponent
-        size="small"
+        size="medium"
         columns={[
           {
             label: "Date",
@@ -32,18 +31,37 @@ const Attendance = ({ attendanceByDate }) => {
             label: "Worked Hours",
             field: "workedHours",
             renderCell: ({ checkin, checkout }) => {
-              const checkinTime = moment(checkin);
-              const checkoutTime = moment(checkout);
-              const duration = moment.duration(checkoutTime.diff(checkinTime));
-              const hours = parseInt(duration.asHours());
-              const minutes = parseInt(duration.asMinutes()) % 60;
+              if (!checkout)
+                return (
+                  <Typography variant="h6">
+                    <i>not checked out</i>
+                  </Typography>
+                );
+              const checkinDate = new Date(checkin);
+              const checkoutDate = checkout ? new Date(checkout) : new Date();
+              const workedHours = checkoutDate - checkinDate;
+              const hours = Math.floor(workedHours / 1000 / 60 / 60);
+              const minutes = Math.floor(
+                (workedHours / 1000 / 60 / 60 - hours) * 60
+              );
               return (
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  component="span"
-                >
-                  {hours}h {minutes}m
+                <Typography variant="h6" component="span">
+                  <span
+                    style={{
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {hours}
+                  </span>{" "}
+                  hrs{" "}
+                  <span
+                    style={{
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {minutes}
+                  </span>{" "}
+                  mins
                 </Typography>
               );
             },
@@ -54,7 +72,9 @@ const Attendance = ({ attendanceByDate }) => {
             renderCell: ({ remark }) => (
               <Chip
                 color={
-                  remark === "late" || remark === "absent" ? "error" : "primary"
+                  remark === "late" || remark === "absent"
+                    ? "default"
+                    : "primary"
                 }
                 label={remark}
               />
@@ -79,6 +99,7 @@ const Attendance = ({ attendanceByDate }) => {
         ]}
         data={Object.values(attendanceByDate)}
         selectionEnabled
+        onSortParamsChange={onSortParamsChange}
       />
     </Box>
   );

@@ -48,18 +48,32 @@ const PayslipList = ({ payslips }) => {
         {
           field: "earningsTotal",
           label: "Earnings",
-          renderCell: ({ earningsTotal }) => `${parseInt(earningsTotal)} ETB`,
+          renderCell: ({ earningsTotal }) => {
+            return earningsTotal.toLocaleString("en-US", {
+              style: "currency",
+              currency: "ETB",
+            });
+          },
         },
         {
           field: "deductionsTotal",
           label: "Deductions",
-          renderCell: ({ deductionsTotal }) =>
-            `${parseInt(deductionsTotal)} ETB`,
+          renderCell: ({ deductionsTotal }) => {
+            return deductionsTotal.toLocaleString("en-US", {
+              style: "currency",
+              currency: "ETB",
+            });
+          },
         },
         {
           field: "netPayment",
           label: "Net Payment",
-          renderCell: ({ netPayment }) => `${parseInt(netPayment)} ETB`,
+          renderCell: ({ netPayment }) => {
+            return netPayment.toLocaleString("en-US", {
+              style: "currency",
+              currency: "ETB",
+            });
+          },
         },
       ]}
       data={payslips}

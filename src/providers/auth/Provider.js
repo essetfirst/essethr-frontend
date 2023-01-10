@@ -72,7 +72,7 @@ const Provider = ({ children, persistKey = "auth" }) => {
       })
       .catch((e) => {
         console.error(e);
-        dispatch({ type: "LOGIN_ERROR", error: "Something went wrong." });
+        dispatch({ type: "LOGIN_ERROR", error: "Something went wrong" });
       })
       .finally(() => cb && cb());
   };
@@ -82,7 +82,7 @@ const Provider = ({ children, persistKey = "auth" }) => {
       .logout()
       .then(({ success }) => {
         if (success) {
-          localStorage.setItem(persistKey, null);
+          localStorage.clear();
           dispatch({ type: "LOGOUT_SUCCESS" });
         } else {
         }

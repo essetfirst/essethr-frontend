@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Box, Chip, Typography } from "@material-ui/core";
+import { Chip, Typography } from "@material-ui/core";
 import TableComponent from "../../../../components/TableComponent";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import DeleteDialog from "./DeleteDialog";
 
 const MONTHS = [
   "Jan",

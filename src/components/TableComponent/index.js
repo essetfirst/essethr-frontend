@@ -17,8 +17,8 @@ import {
   Typography,
 } from "@material-ui/core";
 
-// import { Ballot as EmptyTableIcon } from "@material-ui/icons";
-import EmptyTableIcon from "../../icons/EmptyTable";
+import { Ballot as EmptyTableIcon } from "@material-ui/icons";
+// import EmptyTableIcon from "../../icons/EmptyTable";
 
 import LoadingComponent from "../LoadingComponent";
 import ErrorBoxComponent from "../ErrorBoxComponent";
@@ -208,6 +208,7 @@ const TableComponent = ({
                   mountOnEnter
                   unmountOnExit
                 >
+                  {/* skeleton for Table Row */}
                   <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                     <TableCell colSpan={columns.length + 2}>
                       <Box
@@ -215,7 +216,6 @@ const TableComponent = ({
                         width="100%"
                         display="flex"
                         justifyContent="center"
-                        alignItems="center"
                       >
                         <LoadingComponent />
                       </Box>

@@ -40,6 +40,7 @@ import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox"
 import FemaleNoprofileImage from "../../../assets/images/female_no_profile.png";
 import MaleNoprofileImage from "../../../assets/images/male_no_profile.png";
 import EmployeeBranchTransferDialog from "./EmployeeBranchTransferDialog";
+import sort from "../../../helpers/sort";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -147,216 +148,248 @@ const EmployeeProfileView = () => {
     ? `${state.employee.firstName} ${state.employee.surName}`
     : "";
 
+  const getSortedList = React.useCallback((list, sortParams, orderDir) => {
+    return sort(list, sortParams, orderDir);
+  }, []);
+
+  const [sortParamss, setSortParamss] = React.useState("checkin");
+  const [orderDir, setOrdirDir] = React.useState("asc");
+
+  const onSortParamsChange = (sortParams, orderDir) => {
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+    dispatch({ type: types.FETCH_EMPLOYEE_REQUEST });
+
+    const sortedEmployees = getSortedList(
+      state.employee.attendance,
+      sortParams,
+      orderDir
+    );
+
+    dispatch({
+      type: types.FETCH_EMPLOYEE_SUCCESS,
+      payload: { ...state.employee, attendance: sortedEmployees },
+    });
+  };
+
+  const handleSortRequest = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChange(sortParams, isAsc ? "desc" : "asc");
+  };
+
   return (
-    <PageView className={classes.root}>
-      {state.isFetching ? (
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <LoadingComponent />
-        </Box>
-      ) : state.error ? (
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <h1>Employee not found!</h1>
-        </Box>
-      ) : (
-        <Container maxWidth="md">
-          <Box mb={4} display="flex" alignItems="center">
-            <Box flexGrow={1}>
-              <Box display="flex" alignItems="center">
-                <IconButton
-                  onClick={() => navigate(-1)}
-                  style={{ marginRight: 1 }}
-                >
-                  <BackIcon />
-                </IconButton>
-                <Typography
-                  style={{
-                    fontWeight: 400,
-                    fontSize: 18,
-                  }}
-                >
-                  Back
-                </Typography>
+    <React.Fragment>
+      <PageView className={classes.root}>
+        {state.isFetching ? (
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <LoadingComponent />
+          </Box>
+        ) : state.error ? (
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <h1>Employee not found!</h1>
+          </Box>
+        ) : (
+          <Container maxWidth="md">
+            <Box mb={4} display="flex" alignItems="center">
+              <Box flexGrow={1}>
+                <Box display="flex" alignItems="center">
+                  <IconButton
+                    onClick={() => navigate(-1)}
+                    style={{ marginRight: 1 }}
+                  >
+                    <BackIcon />
+                  </IconButton>
+                  <Typography
+                    style={{
+                      fontWeight: 400,
+                      fontSize: 18,
+                    }}
+                  >
+                    Back
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-          </Box>
-          <Box mb={1}>
-            <Grid container spacing={4}>
-              <Grid item sm={12} md={8}>
-                <Box display="flex">
-                  <CustomAvatar
-                    size="2"
-                    src={
-                      state.employee && state.employee.gender === "Male"
-                        ? MaleNoprofileImage
-                        : FemaleNoprofileImage
-                    }
-                    alt={`${name}`}
-                    className={classes.avatar}
-                  />
-                  <Box ml={2}>
-                    <Typography variant="h1">{name} </Typography>
-                    <Typography variant="body2">
-                      {state.employee
-                        ? (state.employee.positionDetails || {}).title
-                        : "Job Title"}
-                      {" • "}
-                      {state.employee
-                        ? (state.employee.departmentDetails || {}).name
-                        : "Department"}{" "}
-                      <Chip
-                        size="small"
-                        style={
-                          state.employee && state.employee.status === "active"
-                            ? {
-                                backgroundColor: "#4caf50",
-                                color: "#fff",
-                                marginLeft: "10px",
-                              }
-                            : {
-                                backgroundColor: "#f44336",
-                                color: "#fff",
-                                marginLeft: "10px",
-                              }
-                        }
-                        color={state.employee ? "primary" : "default"}
-                        label={(state.employee || {}).status || "active"}
-                      />
-                    </Typography>
+            <Box mb={1}>
+              <Grid container spacing={4}>
+                <Grid item sm={12} md={8}>
+                  <Box display="flex">
+                    <CustomAvatar
+                      size="2"
+                      src={
+                        state.employee && state.employee.gender === "Male"
+                          ? MaleNoprofileImage
+                          : FemaleNoprofileImage
+                      }
+                      alt={`${name}`}
+                      className={classes.avatar}
+                    />
+                    <Box ml={2}>
+                      <Typography variant="h1">{name} </Typography>
+                      <Typography component={"span"} variant={"body2"}>
+                        {state.employee
+                          ? (state.employee.positionDetails || {}).title
+                          : "Job Title"}
+                        {" • "}
+                        {state.employee
+                          ? (state.employee.departmentDetails || {}).name
+                          : "Department"}{" "}
+                        <Chip
+                          size="small"
+                          style={
+                            state.employee && state.employee.status === "active"
+                              ? {
+                                  backgroundColor: "#4caf50",
+                                  color: "#fff",
+                                  marginLeft: "10px",
+                                }
+                              : {
+                                  backgroundColor: "#f44336",
+                                  color: "#fff",
+                                  marginLeft: "10px",
+                                }
+                          }
+                          color={state.employee ? "primary" : "default"}
+                          label={(state.employee || {}).status || "active"}
+                        />
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
+                </Grid>
+                <Grid item md={4}>
+                  <Box display="flex" justifyContent="flex-end">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={handleEditProfileClick}
+                      endIcon={<EditIcon />}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleProfileMenuClick}
+                      endIcon={<ActionsIcon />}
+                      style={{ marginLeft: "8px" }}
+                    >
+                      Actions
+                    </Button>
+                  </Box>
+                </Grid>
               </Grid>
-              <Grid item md={4}>
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleEditProfileClick}
-                    endIcon={<EditIcon />}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleProfileMenuClick}
-                    endIcon={<ActionsIcon />}
-                    style={{ marginLeft: "8px" }}
-                  >
-                    Actions
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
+            </Box>
 
-          <Menu
-            id="employee-profile-menu"
-            anchorEl={profileMenuAnchorEl}
-            keepMounted
-            open={Boolean(profileMenuAnchorEl)}
-            onClose={handleProfileMenuClose}
-          >
-            <MenuItem onClick={handleEditProfileClick}>
-              <EditIcon style={{ marginRight: "8px" }} />
-              Edit Profile
-            </MenuItem>
-            <MenuItem onClick={handleTransferBranchClick}>
-              <TransferWithinAStationIcon style={{ marginRight: "8px" }} />
-              Transfer Branch
-            </MenuItem>
-            <MenuItem onClick={handlePrint}>
-              <PrintIcon style={{ marginRight: "8px" }} />
-              Print
-            </MenuItem>
+            <Menu
+              id="employee-profile-menu"
+              anchorEl={profileMenuAnchorEl}
+              keepMounted
+              open={Boolean(profileMenuAnchorEl)}
+              onClose={handleProfileMenuClose}
+            >
+              <MenuItem onClick={handleEditProfileClick}>
+                <EditIcon style={{ marginRight: "8px" }} />
+                Edit Profile
+              </MenuItem>
+              <MenuItem onClick={handleTransferBranchClick}>
+                <TransferWithinAStationIcon style={{ marginRight: "8px" }} />
+                Transfer Branch
+              </MenuItem>
+              <MenuItem onClick={handlePrint}>
+                <PrintIcon style={{ marginRight: "8px" }} />
+                Print
+              </MenuItem>
 
-            <MenuItem onClick={handleTerminateClick}>
-              <IndeterminateCheckBoxIcon style={{ marginRight: "8px" }} />
-              Terminate
-            </MenuItem>
-          </Menu>
-          {state.employee && (
-            <EmployeeBranchTransferDialog
-              open={transferBranchDialogOpen}
-              onClose={handleTransferBranchDialogClose}
-              employee={{
-                name,
-                _id: state.employee._id,
-                org: state.employee.org,
-                position: state.employee.position,
+              <MenuItem onClick={handleTerminateClick}>
+                <IndeterminateCheckBoxIcon style={{ marginRight: "8px" }} />
+                Terminate
+              </MenuItem>
+            </Menu>
+            {state.employee && (
+              <EmployeeBranchTransferDialog
+                open={transferBranchDialogOpen}
+                onClose={handleTransferBranchDialogClose}
+                employee={{
+                  name,
+                  _id: state.employee._id,
+                  org: state.employee.org,
+                  position: state.employee.position,
+                }}
+              />
+            )}
+            {/* </Card> */}
+            <TabbedComponent
+              tabsProps={{
+                indicatorColor: !darkMode ? "primary" : "secondary",
+                textColor: !darkMode ? "primary" : "secondary",
+                variant: "fullWidth",
+                classes: {
+                  root: classes.tabsRoot,
+                  indicator: classes.tabsIndicator,
+                },
               }}
+              tabs={[
+                {
+                  label: "General",
+                  panel: state.employee ? (
+                    <GeneralDetails details={state.employee} />
+                  ) : null,
+                },
+                {
+                  label: "Attendance",
+                  panel: (
+                    <Attendance
+                      attendanceByDate={arrayToMap(
+                        state.employee ? state.employee.attendance : [],
+                        "date"
+                      )}
+                      onSortParamsChange={handleSortRequest}
+                    />
+                  ),
+                },
+                {
+                  label: "Leaves",
+                  panel: (
+                    <Leaves
+                      leaves={state.employee ? state.employee.leaves : []}
+                      allowance={{}}
+                    />
+                  ),
+                },
+                {
+                  label: "Payslips",
+                  panel: (
+                    <Paystubs
+                      payslips={state.employee ? state.employee.payslips : []}
+                    />
+                  ),
+                },
+              ]}
             />
-          )}
-          {/* </Card> */}
-          <TabbedComponent
-            tabsProps={{
-              indicatorColor: !darkMode ? "primary" : "secondary",
-              textColor: !darkMode ? "primary" : "secondary",
-              variant: "fullWidth",
-              classes: {
-                root: classes.tabsRoot,
-                indicator: classes.tabsIndicator,
-              },
+          </Container>
+        )}
+        <Box style={{ display: "none" }}>
+          <EmployeePrintableIDCard
+            ref={employeePrintableCardRef}
+            employee={{
+              id: state.employee ? state.employee.employeeId : params.id,
+              org: org.name,
+              name: `${state.employee ? `${name}` : "Employee "}`,
+              image:
+                (state.employee && state.employee.gender === "Male"
+                  ? MaleNoprofileImage
+                  : FemaleNoprofileImage) || MaleNoprofileImage,
+              department: state.employee
+                ? state.employee.departmentDetails.name
+                : "Department",
+              jobTitle: state.employee
+                ? state.employee.positionDetails.title
+                : "Job Title",
             }}
-            tabs={[
-              {
-                label: "General",
-                panel: state.employee ? (
-                  <GeneralDetails details={state.employee} />
-                ) : null,
-              },
-              {
-                label: "Attendance",
-                panel: (
-                  <Attendance
-                    attendanceByDate={arrayToMap(
-                      state.employee ? state.employee.attendance : [],
-                      "date"
-                    )}
-                  />
-                ),
-              },
-              {
-                label: "Leaves",
-                panel: (
-                  <Leaves
-                    leaves={state.employee ? state.employee.leaves : []}
-                    allowance={{}}
-                  />
-                ),
-              },
-              {
-                label: "Payslips",
-                panel: (
-                  <Paystubs
-                    payslips={state.employee ? state.employee.payslips : []}
-                  />
-                ),
-              },
-            ]}
           />
-        </Container>
-      )}
-      <div style={{ display: "none" }}>
-        <EmployeePrintableIDCard
-          ref={employeePrintableCardRef}
-          employee={{
-            id: state.employee ? state.employee.employeeId : params.id,
-            org: org.name,
-            name: `${state.employee ? `${name}` : "Employee "}`,
-            image:
-              (state.employee && state.employee.gender === "Male"
-                ? MaleNoprofileImage
-                : FemaleNoprofileImage) || MaleNoprofileImage,
-            department: state.employee
-              ? state.employee.departmentDetails.name
-              : "Department",
-            jobTitle: state.employee
-              ? state.employee.positionDetails.title
-              : "Job Title",
-          }}
-        />
-      </div>
-    </PageView>
+        </Box>
+      </PageView>
+    </React.Fragment>
   );
 };
 

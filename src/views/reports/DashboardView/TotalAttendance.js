@@ -11,12 +11,7 @@ import {
   Box,
 } from "@material-ui/core";
 
-import {
-  AccessTime as AttendanceIcon,
-  // TimeToLeave as LeaveIcon,
-  // ArrowUpward as ArrowUpwardIcon,
-  ArrowDownward as ArrowDownwardIcon,
-} from "@material-ui/icons";
+import { AccessTime as AttendanceIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,11 +41,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   differenceIcon: {
-    color: "#ff9902",
     fontFamily: "Poppins",
   },
   differenceValue: {
-    color: "#ff9902",
     marginRight: theme.spacing(1),
     fontFamily: "Poppins",
   },
@@ -66,17 +59,17 @@ const TotalAttendance = ({ totalAttendance, calculatePercentage }) => {
             <Typography
               color="textSecondary"
               gutterBottom
-              variant="h6"
+              variant="h1"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
             >
               TODAY'S ATTENDED
             </Typography>
             <Typography
-              color="textPrimary"
-              variant="h3"
+              color="textSecondary"
+              variant="h2"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span style={{ color: "#ff9902" }}> {totalAttendance} </span>
+              <span> {totalAttendance} </span>
             </Typography>
           </Grid>
           <Grid item>

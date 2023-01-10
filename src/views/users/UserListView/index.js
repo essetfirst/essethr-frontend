@@ -78,6 +78,7 @@ const UserListView = () => {
   React.useEffect(() => {
     console.log("fetching users", auth);
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [filters, setFilters] = React.useState({

@@ -9,7 +9,6 @@ import useOrg from "../../../providers/org";
 import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import arrayToMap from "../../../utils/arrayToMap";
 import sort from "../../../helpers/sort";
-import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 import FileImportDialog from "../../../components/common/FileImportDialog";
 import Toolbar from "./Toolbar";
 import BranchTransferDialog from "./BranchTransferDialog";
@@ -18,7 +17,7 @@ import ResultsGrid from "./ResultsGrid";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
 import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
-
+import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 import {
   UploadCloud as ImportIcon,
   Download as ExportIcon,
@@ -474,6 +473,7 @@ const EmployeeListView = () => {
           onEditClicked={handleEditClick}
           onTransferClicked={handleTransferClick}
           onDeleteClicked={handleDeleteClick}
+          state={state}
         />
       )}
     </PageView>

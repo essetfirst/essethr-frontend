@@ -2,10 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Chip, Link, Typography } from "@material-ui/core";
-import {
-  CheckCircleOutlineRounded as CheckIcon,
-  EditRounded as EditIcon,
-} from "@material-ui/icons";
+import { CheckCircleOutlineRounded as CheckIcon } from "@material-ui/icons";
 
 import TableComponent from "../../components/TableComponent";
 import moment from "moment";
@@ -67,7 +64,7 @@ const AttendanceTable = ({
             if (!checkout)
               return (
                 <Typography variant="h6">
-                  <i>in progress</i>
+                  <i>not checked out yet</i>
                 </Typography>
               );
             const checkinDate = new Date(checkin);

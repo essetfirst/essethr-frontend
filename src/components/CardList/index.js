@@ -1,8 +1,6 @@
 import React from "react";
 import {
   Box,
-  Card,
-  CardContent,
   IconButton,
   List,
   ListItem,
@@ -11,10 +9,7 @@ import {
   ListItemText,
   Paper,
 } from "@material-ui/core";
-import {
-  ChevronRightOutlined,
-  KeyboardArrowRight as GoToIcon,
-} from "@material-ui/icons";
+import { KeyboardArrowRight as GoToIcon } from "@material-ui/icons";
 import { useNavigate } from "react-router";
 
 const CardList = ({ cards }) => {

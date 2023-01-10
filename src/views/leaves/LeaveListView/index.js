@@ -19,7 +19,6 @@ import {
   DialogContent,
   makeStyles,
   TextField,
-  Typography,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({

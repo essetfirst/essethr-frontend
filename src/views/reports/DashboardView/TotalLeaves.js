@@ -12,10 +12,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import {
-  ArrowUpward as ArrowUpwardIcon,
-  TimeToLeave as LeaveIcon,
-} from "@material-ui/icons";
+import { TimeToLeave as LeaveIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,11 +35,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
-  differenceIcon: {
-    color: colors.blueGrey[400],
-  },
+  differenceIcon: {},
   differenceValue: {
-    color: colors.blueGrey[400],
     marginRight: theme.spacing(1),
   },
 }));
@@ -58,19 +52,17 @@ const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
             <Typography
               color="textSecondary"
               gutterBottom
-              variant="h6"
+              variant="h1"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14 }}
             >
               EMPLOYEE ON LEAVE
             </Typography>
             <Typography
-              color="textPrimary"
-              variant="h3"
+              color="textSecondary"
+              variant="h2"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span style={{ color: colors.blueGrey[300] }}>
-                {employeeOnLeaveCount || 1}
-              </span>
+              <span>{employeeOnLeaveCount || 1}</span>
             </Typography>
           </Grid>
           <Grid item>
@@ -80,8 +72,7 @@ const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
           </Grid>
         </Grid>
         <Box mt={2} display="flex" alignItems="center">
-          <ArrowUpwardIcon className={classes.differenceIcon} />
-          <Typography className={classes.differenceValue} variant="body2">
+          <Typography className={classes.differenceValue} color="textSecondary">
             16%
           </Typography>
           <Typography color="textSecondary" variant="caption">

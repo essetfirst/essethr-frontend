@@ -16,6 +16,7 @@ import RoutesComponent from "./Routes";
 import { useTheme } from "./providers/theme";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const App = ({ config: appConfig }) => {
   const config = { ...defaultConfig, ...appConfig };
@@ -30,9 +31,6 @@ const App = ({ config: appConfig }) => {
   );
 
   return (
-    // This code is used to initialize the application and provide context to the application.
-    // This code is used to provide the application with the authentication provider, the organization provider, the attendance provider, and the notification provider.
-
     <React.Fragment>
       <ThemeProvider theme={mode}>
         <CssBaseline />
@@ -43,19 +41,21 @@ const App = ({ config: appConfig }) => {
                 <OrgProvider>
                   <AttendanceProvider>
                     <LeaveProvider>
-                      <SnackbarProvider
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        autoHideDuration={2000}
-                        hideIconVariant={true}
-                        maxSnack={3}
-                      >
-                        <NotificationSnackbarProvider>
-                          <RoutesComponent />
-                        </NotificationSnackbarProvider>
-                      </SnackbarProvider>
+                      <PerfectScrollbar>
+                        <SnackbarProvider
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                          }}
+                          autoHideDuration={2000}
+                          hideIconVariant={true}
+                          maxSnack={3}
+                        >
+                          <NotificationSnackbarProvider>
+                            <RoutesComponent />
+                          </NotificationSnackbarProvider>
+                        </SnackbarProvider>
+                      </PerfectScrollbar>
                     </LeaveProvider>
                   </AttendanceProvider>
                 </OrgProvider>

@@ -3,7 +3,6 @@ import React from "react";
 import {
   Card,
   CardContent,
-  colors,
   Grid,
   makeStyles,
   Typography,
@@ -15,14 +14,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     padding: theme.spacing(2),
   },
-  title: {
-    textShadow: "1px 1px 1px #f4f6f8",
-    fontFamily: "Poppins",
-
-    color: colors.lightBlue[300],
-
-    fontWeight: "bold",
-  },
+  title: {},
   textWithBorder: {
     border: "5px solid #f4f6f8",
     padding: theme.spacing(2),
@@ -72,7 +64,7 @@ const PayrollMetadata = ({ metadata }) => {
             </Typography>
           </Grid>
           <Grid item sm={6} align="center" style={{ marginTop: "4.3rem" }}>
-            <Grid display="flex" justifyContent="flex-end" flexDirection="row">
+            <Grid display="flex">
               <Typography
                 variant="h3"
                 align="right"

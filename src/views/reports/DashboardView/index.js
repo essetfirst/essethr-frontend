@@ -10,12 +10,18 @@ import TotalEmployees from "./TotalEmployees";
 import TotalAttendance from "./TotalAttendance";
 import TotalLeaves from "./TotalLeaves";
 import InactiveEmployee from "./InactiveEmployee";
-
+import Backdrop from "@material-ui/core/Backdrop";
 import AttendanceSummary from "../../attendance/AttendanceSummary";
 import useAttendance from "../../../providers/attendance";
+import { ThreeDots } from "react-loading-icons";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+    backdropFilter: "blur(3px)",
+  },
 }));
 
 const DashboardView = () => {
@@ -41,6 +47,12 @@ const DashboardView = () => {
         </span>
       }
     >
+      {!employees && (
+        <Backdrop className={classes.backdrop} open>
+          <ThreeDots width={100} height={100} fill="#fff" />
+        </Backdrop>
+      )}
+
       <Grid container spacing={2}>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
           <TotalEmployees

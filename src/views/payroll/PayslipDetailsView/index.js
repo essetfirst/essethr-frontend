@@ -28,7 +28,7 @@ const PayslipDetailsEmployeeBrief = ({ employee }) => {
     <Box display="flex" flexDirection="column" alignItems="center">
       <Avatar
         src={gender === "Male" ? MaleAvatar : FemaleAvatar}
-        sizes={10}
+        sizes="large"
         variant="square"
         style={{
           width: "128px",
@@ -85,7 +85,7 @@ const PayslipDetailsSummary = ({ summary }) => {
       mt={5}
       mb={5}
     >
-      <Typography variant="h2" color="body1" align="center" gutterBottom>
+      <Typography variant="h2" color="inherit" align="center" gutterBottom>
         {payrollTitle}
       </Typography>
       <Box mt={1} />
@@ -120,13 +120,13 @@ const PayslipDetailsSummary = ({ summary }) => {
 };
 
 const PayslipDetailsEarningsList = ({ earnings }) => {
-  console.log("earnings", earnings);
   return (
     <Box mt={4}>
       <Typography variant="h4" align="center" gutterBottom>
         {"EARNINGS"}
       </Typography>
       <TableComponent
+        key={earnings.id}
         columns={[
           { field: "desc", label: "Description" },
           { field: "hours", label: "Hours" },
@@ -152,6 +152,7 @@ const PayslipDetailsDeductionsList = ({ deductions }) => {
       </Typography>
 
       <TableComponent
+        key={deductions.id}
         columns={[
           { field: "desc", label: "Description" },
           { field: "rate", label: "Rate" },

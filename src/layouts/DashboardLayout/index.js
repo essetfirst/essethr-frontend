@@ -8,8 +8,8 @@ import { makeStyles } from "@material-ui/core";
 import TopBar from "./TopBar";
 import NavBar from "./NavBar";
 
-import RegisterFromDevice from "../../views/attendance/RegisterFromDevice";
-import { Alert } from "@material-ui/lab";
+// import RegisterFromDevice from "../../views/attendance/RegisterFromDevice";
+// import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,25 +63,7 @@ const DashboardLayout = () => {
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className={classes.root}>
-      {/* Start: this is a notification board from us developers to users */}
-      {alert && (
-        <Alert
-          severity="info"
-          style={{
-            position: "absolute",
-            top: "0",
-            left: "0",
-            width: "100%",
-            zIndex: "9999",
-          }}
-        >
-          <strong>Hi there!</strong> We are still working on this feature. We
-          will notify you when it's ready.
-        </Alert>
-      )}
-
-      {/* End */}
+    <>
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <NavBar
         onMobileClose={() => setMobileNavOpen(false)}
@@ -91,13 +73,12 @@ const DashboardLayout = () => {
         <div className={classes.contentContainer}>
           <div className={classes.content}>
             <PerfectScrollbar>
-              <RegisterFromDevice />
               <Outlet />
             </PerfectScrollbar>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

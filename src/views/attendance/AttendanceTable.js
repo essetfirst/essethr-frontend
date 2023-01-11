@@ -104,10 +104,10 @@ const AttendanceTable = ({
               <Chip
                 size="small"
                 color={
-                  remark === "present"
-                    ? "primary"
-                    : remark === "absent"
+                  remark === "late"
                     ? "secondary"
+                    : remark === "present"
+                    ? "primary"
                     : "default"
                 }
                 label={remark}

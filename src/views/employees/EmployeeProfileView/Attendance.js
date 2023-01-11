@@ -25,7 +25,15 @@ const Attendance = ({ attendanceByDate, onSortParamsChange }) => {
           {
             label: "Check out",
             field: "checkout",
-            renderCell: ({ checkout }) => moment(checkout).format("hh:mm A"),
+            renderCell: ({ checkout }) => {
+              if (!checkout)
+                return (
+                  <Typography variant="h6">
+                    <i>not checked out</i>
+                  </Typography>
+                );
+              return moment(checkout).format("hh:mm A");
+            },
           },
           {
             label: "Worked Hours",
@@ -34,15 +42,15 @@ const Attendance = ({ attendanceByDate, onSortParamsChange }) => {
               if (!checkout)
                 return (
                   <Typography variant="h6">
-                    <i>not checked out</i>
+                    <i>N/A</i>
                   </Typography>
                 );
               const checkinDate = new Date(checkin);
               const checkoutDate = checkout ? new Date(checkout) : new Date();
-              const workedHours = checkoutDate - checkinDate;
-              const hours = Math.floor(workedHours / 1000 / 60 / 60);
+              const workedHourss = checkoutDate - checkinDate;
+              const hours = Math.floor(workedHourss / 1000 / 60 / 60);
               const minutes = Math.floor(
-                (workedHours / 1000 / 60 / 60 - hours) * 60
+                (workedHourss / 1000 / 60 / 60 - hours) * 60
               );
               return (
                 <Typography variant="h6" component="span">

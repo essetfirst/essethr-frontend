@@ -11,9 +11,6 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import PhoneIcon from "@material-ui/icons/Phone";
 import PrintIcon from "@material-ui/icons/Print";
 import LoadingComponent from "../../../components/LoadingComponent";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
-import BlockIcon from "@material-ui/icons/Block";
 
 const ResultsTable = ({
   state,
@@ -160,17 +157,6 @@ const ResultsTable = ({
                           : eStatus === "active"
                           ? "primary"
                           : "secondary"
-                      }
-                      icon={
-                        eStatus === "on probation" ? (
-                          <EditIcon />
-                        ) : eStatus === "terminated" ? (
-                          <IndeterminateCheckBoxIcon />
-                        ) : eStatus === "active" ? (
-                          <CheckCircleOutlineIcon />
-                        ) : (
-                          <BlockIcon />
-                        )
                       }
                       label={eStatus}
                     />

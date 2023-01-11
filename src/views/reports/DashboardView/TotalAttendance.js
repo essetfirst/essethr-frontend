@@ -4,7 +4,7 @@ import {
   Avatar,
   Card,
   CardContent,
-  // colors,
+  colors,
   Grid,
   makeStyles,
   Typography,
@@ -16,23 +16,17 @@ import { AccessTime as AttendanceIcon } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
-    boxShadow: "10px 0px 10px 0px rgba(0,0,0,0.25)",
+
+    boxShadow: "10px 0px 10px 0px rgba(0,0,0,0.05)",
     borderRadius: 10,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    [theme.breakpoints.down("sm")]: {
-      height: "100%",
-      width: "100%",
-    },
   },
   avatar: {
-    backgroundColor: "#ff9902",
+    backgroundColor: colors.teal[300],
     height: 56,
     width: 56,
 
-    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.25)",
-    borderRadius: "50%",
+    boxShadow: "10px 10px 10px 10px rgba(0,0,0,0.08)",
+    borderRadius: 8,
     position: "relative",
     color: "#fff",
     fontSize: 30,

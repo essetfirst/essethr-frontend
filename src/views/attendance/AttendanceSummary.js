@@ -93,18 +93,48 @@ const DailyAttendanceSummaryByRemark = ({
                       enabled: true,
                       speed: 350,
                     },
+
+                    dropShadow: {
+                      enabled: true,
+                      top: 1,
+                      left: 1,
+                      blur: 1,
+                    },
                   },
 
                   chart: {
                     id: "basic-bar",
                     stacked: true,
                     toolbar: {
-                      show: false,
+                      show: true,
+
+                      tools: {
+                        download: true,
+                        selection: true,
+                        zoom: false,
+                        zoomin: false,
+                        zoomout: false,
+                        pan: false,
+                        reset: false,
+                      },
+                      autoSelected: "zoom",
+                      style: {
+                        colors: theme.palette.text.secondary,
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: "12px",
+                      },
                     },
                   },
 
                   xaxis: {
                     categories: ["Present", "Late", "Absent"],
+                    labels: {
+                      style: {
+                        colors: theme.palette.text.secondary,
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: "12px",
+                      },
+                    },
                   },
                   plotOptions: {
                     bar: {
@@ -129,13 +159,22 @@ const DailyAttendanceSummaryByRemark = ({
                   },
 
                   stroke: {
-                    show: true,
-                    width: 4,
+                    show: false,
+                    width: 2,
                   },
                   yaxis: {
                     title: {
                       text: "No. of Employees",
-                      fontColor: theme.palette.text.secondary,
+                      style: {
+                        color: theme.palette.text.secondary,
+                        fontFamily: "Poppins, sans-serif",
+                      },
+                    },
+                    labels: {
+                      style: {
+                        colors: theme.palette.text.secondary,
+                        fontFamily: "Poppins, sans-serif",
+                      },
                     },
                   },
                   tooltip: {
@@ -155,17 +194,12 @@ const DailyAttendanceSummaryByRemark = ({
                   {
                     name: "count",
                     data: [
-                      //Presnt Count
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "present"
                       ).length || 0,
-
-                      //LATE COUNT
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "late"
                       ).length || 0,
-
-                      //ABSENT COUNT = Total Employees - Present Count - Late Count
                       totalEmployees -
                         dailyAttendanceByRemark.filter(
                           (item) => item.remark === "present"
@@ -188,7 +222,6 @@ const DailyAttendanceSummaryByRemark = ({
 };
 
 const WeeklyAttendanceSummaryByRemarkChart = ({
-  remarks,
   totalEmployees,
   weeklyAttendanceByRemark = [],
 }) => {
@@ -196,6 +229,43 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
   const daysOfWeekInEnglish = daysOfWeek.map((day) =>
     moment(day).format("ddd")
   );
+
+  if (daysOfWeek.length > 7) {
+    daysOfWeek.splice(0, 1);
+    daysOfWeekInEnglish.splice(0, 1);
+  }
+
+  const presentCount = daysOfWeek.map((day) => {
+    const dayAttendance = weeklyAttendanceByRemark[day];
+    return (
+      dayAttendance?.filter((item) => item.remark === "present").length || 0
+    );
+  });
+
+  const lateCount = daysOfWeek.map((day) => {
+    const dayData = weeklyAttendanceByRemark[day];
+
+    if (!dayData) {
+      return 0;
+    }
+
+    const lateItems = dayData.filter((item) => item.remark === "late");
+
+    return lateItems.length;
+  });
+
+  const absentCount = daysOfWeek.map((day) => {
+    const attendance = weeklyAttendanceByRemark[day];
+    if (!attendance) {
+      return totalEmployees;
+    }
+    return (
+      totalEmployees -
+      attendance.filter((item) => item.remark === "present").length -
+      attendance.filter((item) => item.remark === "late").length
+    );
+  });
+
   return (
     <BarGraphComponent
       step={5}
@@ -206,111 +276,17 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
         {
           label: "Present",
           color: colors.teal[400],
-          data: [
-            weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
-              (item) => item.remark === "present"
-            ).length || 0,
-          ],
+          data: [...presentCount],
         },
         {
           label: "Late",
           color: colors.orange[400],
-          data: [
-            weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-            weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
-              (item) => item.remark === "late"
-            ).length || 0,
-          ],
+          data: [...lateCount],
         },
         {
           label: "Absent",
           color: colors.red[300],
-          data: [
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[0]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[1]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[2]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[3]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[4]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[5]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-            totalEmployees -
-              weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
-                (item) => item.remark === "present"
-              ).length -
-              weeklyAttendanceByRemark[daysOfWeek[6]]?.filter(
-                (item) => item.remark === "late"
-              ).length || 0,
-          ],
+          data: [...absentCount],
         },
       ]}
     />

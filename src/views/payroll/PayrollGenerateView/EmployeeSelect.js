@@ -17,7 +17,6 @@ import {
 import { SearchOutlined as SearchIcon } from "@material-ui/icons";
 
 const EmployeeSelect = ({ employees, onSelectionChange }) => {
-  // const classes = useStyles();
   const [selected, setSelected] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
 
@@ -41,14 +40,6 @@ const EmployeeSelect = ({ employees, onSelectionChange }) => {
   };
 
   const handleChange = (e) => setSearchTerm(e.target.value);
-
-  // const selectionChange = React.useCallback(
-  //   () => onSelectionChange(selected),
-  //   [selected, onSelectionChange]
-  // );
-  // React.useEffect(() => {
-  //   selectionChange(selected);
-  // }, [selected, selectionChange]);
 
   return (
     <Box display="flex" flexDirection="column" flex="1">
@@ -84,26 +75,38 @@ const EmployeeSelect = ({ employees, onSelectionChange }) => {
         </ListItem>
         <Divider />
         {employees
-          .filter(({ name }) => name.includes(searchTerm))
-          .map(({ id, name }) => {
-            let labelId = `employee-list-item-${id}`;
-            return (
-              <ListItem key={id}>
-                <ListItemAvatar>
-                  <Avatar alt={name} />
-                </ListItemAvatar>
-                <ListItemText id={labelId} primary={name} />
-                <ListItemSecondaryAction>
-                  <Checkbox
-                    edge="end"
-                    onChange={handleToggle(id)}
-                    checked={selected.indexOf(id) !== -1}
-                    inputProps={{ "aria-labelledby": labelId }}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            );
-          })}
+          .filter(({ name }) =>
+            name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map(({ id, name, avatar }) => (
+            <ListItem
+              key={id}
+              button
+              selected={selected.indexOf(id) !== -1}
+              onClick={handleToggle(id)}
+            >
+              <ListItemAvatar>
+                <Avatar
+                  src={
+                    avatar
+                      ? avatar
+                      : `https://avatars.dicebear.com/api/avataaars/${name}.svg`
+                  }
+                />
+              </ListItemAvatar>
+              <ListItemText id={`employee-list-item-${id}`} primary={name} />
+              <ListItemSecondaryAction>
+                <Checkbox
+                  edge="end"
+                  onChange={handleToggle(id)}
+                  checked={selected.indexOf(id) !== -1}
+                  inputProps={{
+                    "aria-labelledby": `employee-list-item-${id}`,
+                  }}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
       </List>
     </Box>
   );

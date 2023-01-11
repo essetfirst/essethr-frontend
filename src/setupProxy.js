@@ -9,10 +9,10 @@ module.exports = async function (app) {
       target: "https://essethr-backend-staging.herokuapp.com",
       changeOrigin: true,
       onProxyReq: (proxyReq, req, res) => {
-        console.log("Proxying request to:", req.originalUrl);
+        // console.log("Proxying request to:", req.originalUrl);
       },
       onProxyRes: (proxyRes, req, res) => {
-        console.log("Proxying response to:", req.originalUrl);
+        // console.log("Proxying response to:", req.originalUrl);
       },
     })
   );

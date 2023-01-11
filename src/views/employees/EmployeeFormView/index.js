@@ -212,9 +212,8 @@ const EmployeeFormView = ({ employeeId }) => {
       <Paper
         elevation={3}
         style={{
-          padding: "1rem",
-          borderRadius: "0.5rem",
-          backgroundColor: "#f5f5f5",
+          padding: 16,
+          borderRadius: 8,
         }}
       >
         <Container maxWidth="lg" style={{ padding: 0 }} disableGutters>

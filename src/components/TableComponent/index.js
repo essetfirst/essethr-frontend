@@ -15,12 +15,13 @@ import {
   Slide,
   Switch,
   Typography,
+  colors,
 } from "@material-ui/core";
 
 import { Ballot as EmptyTableIcon } from "@material-ui/icons";
 // import EmptyTableIcon from "../../icons/EmptyTable";
+import { ThreeDots } from "react-loading-icons";
 
-import LoadingComponent from "../LoadingComponent";
 import ErrorBoxComponent from "../ErrorBoxComponent";
 
 import Head from "./Head";
@@ -217,7 +218,12 @@ const TableComponent = ({
                         display="flex"
                         justifyContent="center"
                       >
-                        <LoadingComponent />
+                        <ThreeDots
+                          fill="#009688"
+                          stroke={colors.common.white}
+                          width="50"
+                          height="50"
+                        />
                       </Box>
                     </TableCell>
                   </TableRow>

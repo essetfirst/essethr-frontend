@@ -20,14 +20,15 @@ import {
   DashboardOutlined as DashboardIcon,
   ApartmentOutlined as OrganizationIcon,
 } from "@material-ui/icons";
-import ContactlessIcon from "@material-ui/icons/Contactless";
-import GroupIcon from "@material-ui/icons/Group";
-import TimerIcon from "@material-ui/icons/Timer";
-import AssessmentIcon from "@material-ui/icons/Assessment";
-import SettingsIcon from "@material-ui/icons/Settings";
-import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+
+import ContactlessIconOutlined from "@material-ui/icons/ContactlessOutlined";
+import GroupIconOutlined from "@material-ui/icons/GroupOutlined";
+import TimerIconOutlined from "@material-ui/icons/TimerOutlined";
+import AssessmentIconOutlined from "@material-ui/icons/AssessmentOutlined";
+import SettingsIconOutlined from "@material-ui/icons/SettingsOutlined";
+import VerifiedUserIconOutlined from "@material-ui/icons/VerifiedUserOutlined";
 import NavItem from "./NavItem";
-import RecentActorsIcon from "@material-ui/icons/RecentActors";
+import RecentActorsIconOutlined from "@material-ui/icons/RecentActorsOutlined";
 import useAuth from "../../../providers/auth";
 import MenuIcon from "@material-ui/icons/Menu";
 
@@ -39,17 +40,17 @@ const navItems = [
   },
   {
     href: "/app/org",
-    icon: VerifiedUserIcon,
+    icon: VerifiedUserIconOutlined,
     title: "Admin",
   },
   {
     href: "/app/employees",
-    icon: GroupIcon,
+    icon: GroupIconOutlined,
     title: "Employees",
   },
   {
     href: "/app/attendance",
-    icon: TimerIcon,
+    icon: TimerIconOutlined,
     title: "Attendance",
   },
   {
@@ -64,13 +65,13 @@ const navItems = [
   },
   {
     href: "/app/reports",
-    icon: AssessmentIcon,
+    icon: AssessmentIconOutlined,
     title: "Reports",
   },
 
   {
     href: "/app/settings",
-    icon: SettingsIcon,
+    icon: SettingsIconOutlined,
     title: "Settings",
   },
 ];
@@ -83,7 +84,7 @@ const adminNavItems = [
   },
   {
     href: "/app/users",
-    icon: RecentActorsIcon,
+    icon: RecentActorsIconOutlined,
     title: "Users",
   },
 ];
@@ -384,7 +385,7 @@ const NavBar = ({
               variant="contained"
               color="primary"
               className={classes.button}
-              startIcon={<ContactlessIcon size="large" />}
+              startIcon={<ContactlessIconOutlined size="large" />}
               onClick={() => {
                 window.open(
                   "https://essethr-fron-dev-kch2mcb4lukj4.herokuapp.com/home",

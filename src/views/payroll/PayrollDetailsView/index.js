@@ -52,8 +52,6 @@ const PayrollDetailsView = () => {
               type: types.REQUEST_ERROR,
               error: "Payroll does not exists.",
             });
-        console.log(payroll);
-
         error && console.error(error);
       })
       .catch((error) => {

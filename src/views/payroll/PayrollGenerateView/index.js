@@ -14,7 +14,6 @@ import {
   ButtonGroup,
   Card,
   CardContent,
-  CircularProgress,
   Divider,
   Grid,
   makeStyles,
@@ -25,13 +24,13 @@ import {
 } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { Repeat as RetryIcon } from "@material-ui/icons";
+import { ThreeDots } from "react-loading-icons";
+import moment from "moment";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-const startOfMonth = new Date(
-  new Date().getFullYear(),
-  new Date().getMonth() - 1,
-  2
-);
-const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
+const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
+const currentDay = moment().format("YYYY-MM-DD");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,22 +92,18 @@ const PayrollGenerateView = () => {
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const generatePayroll = (payrollInfo) => {
+  const generatePayroll = async (payrollInfo) => {
     dispatch({ type: types.REQUESTING });
-    API.payroll
-      .generate(payrollInfo)
-      .then(({ success, payroll, error }) => {
-        if (success) {
-          dispatch({ type: types.REQUEST_SUCCESS, payload: payroll });
-        } else {
-          console.error(error);
-          dispatch({ type: types.REQUEST_ERROR, error });
-        }
-      })
-      .catch((e) => {
-        console.error(e.message);
-        dispatch({ type: types.REQUEST_ERROR, error: "Something went wrong." });
+    try {
+      const response = await API.payroll.generate(payrollInfo);
+      dispatch({
+        type: response.success ? types.REQUEST_SUCCESS : types.REQUEST_ERROR,
+        payload: response.success ? response.payroll : response.error,
       });
+    } catch (e) {
+      // Something went wrong
+      dispatch({ type: types.REQUEST_ERROR, payload: "Something went wrong." });
+    }
   };
 
   const [requestDialog, setRequestDialog] = React.useState(false);
@@ -117,9 +112,6 @@ const PayrollGenerateView = () => {
   let handleRetry;
 
   const handleGenerateClick = (payrollInfo) => {
-    handleRetry = () => {
-      generatePayroll(payrollInfo);
-    };
     setRequestDialog(true);
     generatePayroll(payrollInfo);
   };
@@ -135,14 +127,8 @@ const PayrollGenerateView = () => {
   };
 
   const handleRetryClick = () => {
-    console.log("Type of retryAction: ", typeof retryAction);
     typeof handleRetry == "function" && handleRetry();
   };
-
-  // useEffect for org.employee list update
-  React.useEffect(() => {
-    console.log("Org: ", org);
-  }, [org]);
 
   return (
     <PageView title="Generate payroll" backPath={"/app/payroll"}>
@@ -151,56 +137,43 @@ const PayrollGenerateView = () => {
         open={requestDialog}
         onClick={handleRequestDialogClose}
       >
-        <Card className={classes.processStateCard}>
-          <CardContent>
-            {state.requesting ? (
-              //state is requesting show backgrond blur and show loading icon
-              <Box
-                minWidth={800}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                height="100%"
-              >
-                <CircularProgress size={84} />
-                <Typography
-                  variant="h4"
-                  style={{
-                    marginTop: "16px",
-                    fontFamily: "Poppins",
-                    fontWeight: "bold",
-                    fontSize: "1.5rem",
-                  }}
-                >
-                  Generating payroll...
-                </Typography>
-              </Box>
-            ) : state.error ? (
-              <Box
-                minWidth={800}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                height="100%"
-              >
-                <Typography color="error" variant="subtitle1">
-                  {state.error}
-                </Typography>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={handleRetryClick}
-                  aria-label="retry"
-                  startIcon={<RetryIcon />}
-                  style={{ margin: "16px" }}
-                >
-                  Retry
-                </Button>
-              </Box>
-            ) : (
-              //when state is success show success message and buttons to navigate to payroll details view or cancel
+        {state.requesting ? (
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <ThreeDots
+              stroke="#7bd0e0"
+              fill="#7bd0e0"
+              style={{
+                width: 58,
+                height: 58,
+              }}
+            />
+          </Box>
+        ) : state.error ? (
+          <Box
+            minWidth={800}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="100%"
+          >
+            <Typography color="error" variant="subtitle1">
+              {state.error}
+            </Typography>
+            <Button
+              color="primary"
+              variant="outlined"
+              onClick={handleRetryClick}
+              aria-label="retry"
+              startIcon={<RetryIcon />}
+              style={{ margin: "16px" }}
+            >
+              Retry
+            </Button>
+          </Box>
+        ) : (
+          <Card className={classes.processStateCard}>
+            <CardContent>
               <Box
                 display="flex"
                 flexDirection="column"
@@ -211,11 +184,9 @@ const PayrollGenerateView = () => {
                 <Typography
                   variant="h4"
                   style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "bold",
                     fontSize: "1.5rem",
+                    marginBottom: "16px",
                   }}
-                  gutterBottom
                 >
                   Payroll generated successfully
                 </Typography>
@@ -229,22 +200,30 @@ const PayrollGenerateView = () => {
                       }}
                     />
                   }
-                  gutterBottom
                 >
-                  View
+                  <Typography
+                    variant="h5"
+                    style={{
+                      fontFamily: "Poppins",
+                      fontSize: "1rem",
+                    }}
+                    color="secondary"
+                  >
+                    <i>See details</i>
+                  </Typography>
                 </Button>
               </Box>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </Backdrop>
 
       <Formik
         initialValues={{
           title: "",
-          fromDate: startOfMonth.toISOString().slice(0, 10),
-          toDate: endOfMonth.toISOString().slice(0, 10),
-          payDate: endOfMonth.toISOString().slice(0, 10),
+          fromDate: startOfMonth,
+          toDate: endOfMonth,
+          payDate: currentDay,
           payType: "daily",
           employees:
             org && org.employees
@@ -271,7 +250,6 @@ const PayrollGenerateView = () => {
           salesData: Yup.array().default([]),
         })}
         onSubmit={(values) => {
-          console.log(values);
           const { employees, ...data } = values;
           handleGenerateClick({
             ...data,
@@ -485,22 +463,24 @@ const PayrollGenerateView = () => {
               <Grid item xs={12} sm={12} md={6}>
                 <Paper
                   elevation={0}
-                  style={{ height: "90%", overflow: "auto" }}
+                  style={{ height: "99%", overflow: "auto" }}
                 >
-                  <Box p={2}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      Employees in payroll
-                    </Typography>
-                    <Divider />
-                    <EmployeeSelect
-                      employees={values.employees}
-                      onSelectionChange={(selection) =>
-                        handleChange({
-                          target: { name: "emloyees", value: selection },
-                        })
-                      }
-                    />
-                  </Box>
+                  <PerfectScrollbar>
+                    <Box p={2}>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Employees in payroll
+                      </Typography>
+                      <Divider />
+                      <EmployeeSelect
+                        employees={values.employees}
+                        onSelectionChange={(selection) =>
+                          handleChange({
+                            target: { name: "employees", value: selection },
+                          })
+                        }
+                      />
+                    </Box>
+                  </PerfectScrollbar>
                 </Paper>
               </Grid>
 
@@ -512,15 +492,21 @@ const PayrollGenerateView = () => {
                     color="primary"
                     aria-label="contained primary button group"
                   >
-                    <Button type="submit" onClick={handleCancelClick}>
+                    <Button
+                      type="submit"
+                      onClick={handleCancelClick}
+                      variant="contained"
+                      color="secondary"
+                    >
                       Cancel
                     </Button>
                     <Button
                       type="submit"
                       startIcon={<GetAppIcon />}
                       onClick={handleGenerateClick}
+                      variant="contained"
                     >
-                      Generate
+                      {"Generate"}
                     </Button>
                   </ButtonGroup>
                 </Box>

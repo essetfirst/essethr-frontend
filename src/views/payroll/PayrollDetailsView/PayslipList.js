@@ -39,7 +39,6 @@ const PayslipList = ({ payslips }) => {
           field: "employeeName",
           label: "Employee",
           renderCell: ({ employeeId }) => {
-            console.log(employeesMap);
             const { firstName, lastName } = employeesMap[employeeId] || {};
             const name = `${firstName} ${lastName}`;
             return <Typography variant="h6">{name}</Typography>;

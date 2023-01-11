@@ -32,7 +32,6 @@ import Paystubs from "./Paystubs";
 import Leaves from "./Leaves";
 import Attendance from "./Attendance";
 import EmployeePrintableIDCard from "./EmployeeCard";
-import LoadingComponent from "../../../components/LoadingComponent";
 import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStation";
 import PrintIcon from "@material-ui/icons/Print";
 import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
@@ -41,6 +40,7 @@ import FemaleNoprofileImage from "../../../assets/images/female_no_profile.png";
 import MaleNoprofileImage from "../../../assets/images/male_no_profile.png";
 import EmployeeBranchTransferDialog from "./EmployeeBranchTransferDialog";
 import sort from "../../../helpers/sort";
+import { ThreeDots } from "react-loading-icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -179,16 +179,20 @@ const EmployeeProfileView = () => {
 
   return (
     <React.Fragment>
-      <PageView className={classes.root}>
-        {state.isFetching ? (
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <LoadingComponent />
-          </Box>
-        ) : state.error ? (
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <h1>Employee not found!</h1>
-          </Box>
-        ) : (
+      {state.isFetching ? (
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <ThreeDots
+            stroke="#009688"
+            fill="#009688"
+            style={{ width: 58, height: 58, marginTop: 100, marginRight: 200 }}
+          />
+        </Box>
+      ) : state.error ? (
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <h1>Employee not found!</h1>
+        </Box>
+      ) : (
+        <PageView className={classes.root}>
           <Container maxWidth="md">
             <Box mb={4} display="flex" alignItems="center">
               <Box flexGrow={1}>
@@ -367,28 +371,28 @@ const EmployeeProfileView = () => {
               ]}
             />
           </Container>
-        )}
-        <Box style={{ display: "none" }}>
-          <EmployeePrintableIDCard
-            ref={employeePrintableCardRef}
-            employee={{
-              id: state.employee ? state.employee.employeeId : params.id,
-              org: org.name,
-              name: `${state.employee ? `${name}` : "Employee "}`,
-              image:
-                (state.employee && state.employee.gender === "Male"
-                  ? MaleNoprofileImage
-                  : FemaleNoprofileImage) || MaleNoprofileImage,
-              department: state.employee
-                ? state.employee.departmentDetails.name
-                : "Department",
-              jobTitle: state.employee
-                ? state.employee.positionDetails.title
-                : "Job Title",
-            }}
-          />
-        </Box>
-      </PageView>
+          <Box style={{ display: "none" }}>
+            <EmployeePrintableIDCard
+              ref={employeePrintableCardRef}
+              employee={{
+                id: state.employee ? state.employee.employeeId : params.id,
+                org: org.name,
+                name: `${state.employee ? `${name}` : "Employee "}`,
+                image:
+                  (state.employee && state.employee.gender === "Male"
+                    ? MaleNoprofileImage
+                    : FemaleNoprofileImage) || MaleNoprofileImage,
+                department: state.employee
+                  ? state.employee.departmentDetails.name
+                  : "Department",
+                jobTitle: state.employee
+                  ? state.employee.positionDetails.title
+                  : "Job Title",
+              }}
+            />
+          </Box>
+        </PageView>
+      )}
     </React.Fragment>
   );
 };

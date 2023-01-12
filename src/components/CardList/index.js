@@ -27,11 +27,11 @@ const CardList = ({ cards }) => {
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText
                 primary={title}
-                primaryTypographyProps={{ variant: "h5", color: "primary" }}
+                primaryTypographyProps={{ variant: "h5", color: "inherit" }}
                 secondary={description}
               />
               <ListItemSecondaryAction>
-                <IconButton onClick={handleLinkClick(link)} color="primary">
+                <IconButton onClick={handleLinkClick(link)} color="inherit">
                   <GoToIcon fontSize="large" size={8} />
                 </IconButton>
               </ListItemSecondaryAction>

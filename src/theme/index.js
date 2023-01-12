@@ -21,7 +21,7 @@ export const lightTheme = createMuiTheme({
       secondary: colors.blueGrey[600],
     },
 
-    divider: colors.grey[200],
+    divider: colors.grey[300],
   },
   shape: {
     borderRadius: 8,

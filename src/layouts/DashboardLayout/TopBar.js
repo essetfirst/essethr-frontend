@@ -27,7 +27,7 @@ import {
   TextField,
 } from "@material-ui/core";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
 
   text: {
@@ -37,6 +37,16 @@ const useStyles = makeStyles(() => ({
   },
   avatar: {
     borderRadius: 50,
+  },
+
+  //cretae animation for material ui icon
+  icon: {
+    animation: `$myEffect 1000ms ${theme.transitions.easing.easeInOut}`,
+  },
+  "@keyframes myEffect": {
+    "100%": {
+      transform: "rotate(360deg)",
+    },
   },
 }));
 
@@ -129,7 +139,11 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
               toggleDarkMode();
             }}
           >
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            {darkMode ? (
+              <Brightness7Icon className={classes.icon} />
+            ) : (
+              <Brightness4Icon className={classes.icon} />
+            )}
           </IconButton>
         </Box>
         <Box>

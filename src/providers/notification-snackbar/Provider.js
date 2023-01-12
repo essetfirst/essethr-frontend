@@ -22,9 +22,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Provider = ({ children }) => {
   const classes = useStyles();
-
-  // Todo: showNotification
-
   const notificationSnackbar =
     (enqueueSnackbar, closeSnackbar) =>
     ({ success, message, error, severe, retry }) => {

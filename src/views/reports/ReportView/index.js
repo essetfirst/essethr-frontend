@@ -14,8 +14,8 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 const StandardReportsPanel = () => {
   return (
     <>
-      <Grid container spacing={2} direction="row" alignItems="flex-start">
-        <Grid item sm={12} md={12} lg={12}>
+      <Grid container spacing={2} direction="row">
+        <Grid item sm={12} md={12} lg={8}>
           <CardList
             cards={[
               {
@@ -48,11 +48,7 @@ const ReportView = () => {
   return (
     <PageView
       title="Reports"
-      icon={
-        <span verticalAlign="middle">
-          <BarChart fontSize="large" />
-        </span>
-      }
+      icon={<BarChart fontSize="large" />}
       backPath="/app/dashboard"
     >
       <TabbedComponent

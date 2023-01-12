@@ -1,9 +1,6 @@
 import React from "react";
 import { Box, Chip, TextField } from "@material-ui/core";
-import {
-  Payment as PayrollHoursIcon,
-  CheckCircleOutlineOutlined as CheckIcon,
-} from "@material-ui/icons";
+import { Payment as PayrollHoursIcon } from "@material-ui/icons";
 import { Download as ExportIcon } from "react-feather";
 import { getTableDataForExport, makeExcel } from "../../../helpers/export";
 
@@ -15,10 +12,12 @@ import ErrorBoxComponent from "../../../components/ErrorBoxComponent";
 import Searchbar from "../../../components/common/Searchbar";
 import moment from "moment";
 import TableComponent from "../../../components/TableComponent";
+import sort from "../../../helpers/sort";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
+  console.log(filters);
   return (
-    <Box display="flex" alignItems={"center"}>
+    <Box display="flex" alignItems={"center"} justifyContent={"space-between"}>
       <TextField
         fullWidth
         variant="outlined"
@@ -26,7 +25,7 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
         type="date"
         name="from"
         onChange={onFilterFieldChange}
-        value={filters.from}
+        value={filters.fromDate || moment().format("YYYY-MM-DD")}
         style={{ marginRight: "8px" }}
       />
       <TextField
@@ -36,17 +35,19 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
         type="date"
         name="to"
         onChange={onFilterFieldChange}
-        value={filters.to}
+        value={filters.toDate || moment().format("YYYY-MM-DD")}
+        style={{ marginRight: "8px" }}
       />
     </Box>
   );
 };
 
 const PayrollHoursFilterbar = ({ filters, onFilterChange }) => {
+  console.log(filters);
   return (
     <Searchbar
       onSearchTermChange={onFilterChange}
-      searchTerm={filters.searchTerm}
+      searchTerm={filters}
       searchbarElements={
         <FilterFields filters={filters} onFilterFieldChange={onFilterChange} />
       }
@@ -54,7 +55,7 @@ const PayrollHoursFilterbar = ({ filters, onFilterChange }) => {
   );
 };
 
-const PayrollHoursTable = ({ data }) => {
+const PayrollHoursTable = ({ data, filters }) => {
   const columns = [
     {
       label: "Employee",
@@ -87,7 +88,6 @@ const PayrollHoursTable = ({ data }) => {
       field: "status",
       renderCell: ({ status }) => (
         <Chip
-          icon={<CheckIcon />}
           label={status}
           color={status === "approved" ? "primary" : "secondary"}
         />
@@ -95,7 +95,51 @@ const PayrollHoursTable = ({ data }) => {
     },
   ];
 
-  return <TableComponent columns={columns} data={data || []} />;
+  const [sortParamss, setSortParamss] = React.useState("_id");
+  const [orderDir, setOrdirDir] = React.useState("asc");
+
+  const getSortedList = React.useCallback(
+    (employees = [], sortBy, sortOrder) => {
+      return sort(employees, sortBy, sortOrder);
+    },
+    []
+  );
+
+  const [datas, setDatas] = React.useState(data);
+
+  const onSortParamsChange = (sortParams, orderDir) => {
+    setSortParamss(sortParams);
+    setOrdirDir(orderDir);
+
+    const sortedEmployees = getSortedList(datas, sortParams, orderDir);
+    setDatas(sortedEmployees);
+    return sortedEmployees;
+  };
+
+  const handleSortRequest = (sortParams) => {
+    const isAsc = sortParamss === sortParams && orderDir === "asc";
+    onSortParamsChange(sortParams, isAsc ? "desc" : "asc");
+  };
+  return (
+    <TableComponent
+      key={data.employeeId}
+      columns={columns}
+      data={(datas || []).filter((item) => {
+        try {
+          return String(
+            item.employeeName
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+          ).includes(filters);
+        } catch (error) {
+          console.log(error);
+        }
+      })}
+      selectionEnabled={true}
+      onSortParamsChange={handleSortRequest}
+    />
+  );
 };
 
 const types = {
@@ -211,8 +255,8 @@ const PayrollHoursView = () => {
   }, []);
 
   React.useEffect(() => {
-    fetchPayrollHours(filters.from, filters.to);
-  }, [fetchPayrollHours, filters.from, filters.to]);
+    fetchPayrollHours();
+  }, [fetchPayrollHours]);
 
   return (
     <PageView
@@ -253,20 +297,8 @@ const PayrollHoursView = () => {
       ) : (
         state.payrollHours && (
           <PayrollHoursTable
-            // eslint-disable-next-line array-callback-return
-            data={(state.payrollHours || []).filter((payrollHour) => {
-              try {
-                const { employeeName } = payrollHour;
-
-                const isEmployeeNameMatched = employeeName
-                  .toLowerCase()
-                  .includes(filters.toLowerCase());
-
-                return isEmployeeNameMatched;
-              } catch (error) {
-                console.error(error);
-              }
-            })}
+            data={state.payrollHours || []}
+            filters={filters}
           />
         )
       )}

@@ -231,8 +231,8 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
   );
 
   if (daysOfWeek.length > 7) {
-    daysOfWeek.splice(0, 1);
-    daysOfWeekInEnglish.splice(0, 1);
+    daysOfWeek.splice(0, daysOfWeek.length - 7);
+    daysOfWeekInEnglish.splice(0, daysOfWeekInEnglish.length - 7);
   }
 
   const presentCount = daysOfWeek.map((day) => {

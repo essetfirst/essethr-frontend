@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Chip, TextField } from "@material-ui/core";
+import { Box, Chip, TextField, Typography } from "@material-ui/core";
 import { Payment as PayrollHoursIcon } from "@material-ui/icons";
 import { Download as ExportIcon } from "react-feather";
 import { getTableDataForExport, makeExcel } from "../../../helpers/export";
@@ -13,9 +13,9 @@ import Searchbar from "../../../components/common/Searchbar";
 import moment from "moment";
 import TableComponent from "../../../components/TableComponent";
 import sort from "../../../helpers/sort";
+import CircularProgressWithLabel from "../../../components/CircularProgressWithLabel";
 
 const FilterFields = ({ filters, onFilterFieldChange }) => {
-  console.log(filters);
   return (
     <Box display="flex" alignItems={"center"} justifyContent={"space-between"}>
       <TextField
@@ -25,7 +25,9 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
         type="date"
         name="from"
         onChange={onFilterFieldChange}
-        value={filters.fromDate || moment().format("YYYY-MM-DD")}
+        value={
+          filters.fromDate || moment().startOf("month").format("YYYY-MM-DD")
+        }
         style={{ marginRight: "8px" }}
       />
       <TextField
@@ -35,7 +37,7 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
         type="date"
         name="to"
         onChange={onFilterFieldChange}
-        value={filters.toDate || moment().format("YYYY-MM-DD")}
+        value={filters.toDate || moment().endOf("month").format("YYYY-MM-DD")}
         style={{ marginRight: "8px" }}
       />
     </Box>
@@ -43,7 +45,6 @@ const FilterFields = ({ filters, onFilterFieldChange }) => {
 };
 
 const PayrollHoursFilterbar = ({ filters, onFilterChange }) => {
-  console.log(filters);
   return (
     <Searchbar
       onSearchTermChange={onFilterChange}
@@ -74,14 +75,39 @@ const PayrollHoursTable = ({ data, filters }) => {
     {
       label: "Regular",
       field: "regular",
+      renderCell: ({ regular }) => (
+        <Typography variant="body2">
+          {regular} {regular > 0 ? "hours" : "hour"}
+        </Typography>
+      ),
     },
     {
       label: "Overtime",
       field: "overtime",
+      renderCell: ({ overtime }) => (
+        <Typography variant="body2">
+          {overtime} {overtime > 0 ? "hours" : "hour"}
+        </Typography>
+      ),
     },
     {
       label: "Paid Leave",
       field: "leave",
+      renderCell: ({ leave }) => (
+        <>
+          {leave > 0 ? (
+            <CircularProgressWithLabel
+              value={leave}
+              color={leave > 0 ? "primary" : "secondary"}
+              thickness={4}
+              disableShrink
+              caption={"hrs"}
+            />
+          ) : (
+            <Typography variant="body2">0 hour</Typography>
+          )}
+        </>
+      ),
     },
     {
       label: "Status",
@@ -124,6 +150,7 @@ const PayrollHoursTable = ({ data, filters }) => {
     <TableComponent
       key={data.employeeId}
       columns={columns}
+      // eslint-disable-next-line array-callback-return
       data={(datas || []).filter((item) => {
         try {
           return String(
@@ -296,10 +323,12 @@ const PayrollHoursView = () => {
         />
       ) : (
         state.payrollHours && (
-          <PayrollHoursTable
-            data={state.payrollHours || []}
-            filters={filters}
-          />
+          <>
+            <PayrollHoursTable
+              data={state.payrollHours || []}
+              filters={filters}
+            />
+          </>
         )
       )}
     </PageView>

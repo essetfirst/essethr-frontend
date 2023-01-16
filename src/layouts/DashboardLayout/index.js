@@ -62,12 +62,21 @@ const DashboardLayout = () => {
 
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
 
+  const [openMinimize, setOpenMinimize] = useState(false);
+  console.log(openMinimize);
+
   return (
     <>
-      <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
+      <TopBar
+        onMobileNavOpen={() => setMobileNavOpen(true)}
+        openMinimize={openMinimize}
+        setOpenMinimize={setOpenMinimize}
+      />
+
       <NavBar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
+        openMinimize={openMinimize}
       />
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>

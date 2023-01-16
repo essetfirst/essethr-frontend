@@ -1,11 +1,14 @@
 import React from "react";
 
-import { Box, Chip } from "@material-ui/core";
+import { Box, Chip, Typography } from "@material-ui/core";
 
 import TableComponent from "../../../components/TableComponent";
 import moment from "moment";
-
+import useOrg from "../../../providers/org";
+import arrayToMap from "../../../utils/arrayToMap";
 const Leaves = ({ leaves = [] }) => {
+  const { org } = useOrg();
+  const leaveTypeMap = arrayToMap(org.leaveTypes || [], "_id");
   return (
     <Box>
       <TableComponent
@@ -14,7 +17,13 @@ const Leaves = ({ leaves = [] }) => {
           {
             label: "Leave Type",
             field: "leaveType",
-            renderCell: ({ leaveType }) => leaveType.toUpperCase(),
+            renderCell: ({ leaveType }) => {
+              return (
+                <Typography variant="body2">
+                  {leaveTypeMap[leaveType]?.name}
+                </Typography>
+              );
+            },
           },
           {
             label: "Start Date",

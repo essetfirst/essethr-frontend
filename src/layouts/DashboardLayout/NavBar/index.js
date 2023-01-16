@@ -30,7 +30,6 @@ import VerifiedUserIconOutlined from "@material-ui/icons/VerifiedUserOutlined";
 import NavItem from "./NavItem";
 import RecentActorsIconOutlined from "@material-ui/icons/RecentActorsOutlined";
 import useAuth from "../../../providers/auth";
-import MenuIcon from "@material-ui/icons/Menu";
 
 const navItems = [
   {
@@ -97,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
     width: 246,
     top: 64,
     height: "calc(100% - 64px)",
+    borderRight: "none",
   },
   avatar: {
     cursor: "pointer",
@@ -109,58 +109,26 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Poppins",
     fontWeight: 200,
   },
-  minimize: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-  },
   contactUsButton: {
     cursor: "pointer",
-    fontFamily: "Poppins",
   },
-  minimizedDrawer: {
-    width: 50,
+
+  min: {
+    width: 70,
     top: 64,
     height: "calc(100% - 64px)",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "fixed",
-    msOverflowStyle: "none",
-    scrollbarWidth: "none",
-    scrollbarHeight: "none",
-    scrollBehavior: "smooth",
-    scrollbarColor: "transparent transparent",
-  },
-  menuIcon: {
-    cursor: "pointer",
-    position: "absolute",
-    left: 220,
-    top: 1,
+    overflow: "hidden",
+    animation: "slideIn 5.5s ease-in-out",
   },
 }));
 
-const NavBar = ({
-  onMobileClose,
-  openMobile,
-  onMinimize,
-  minimized,
-  onLogout,
-}) => {
+const NavBar = ({ onMobileClose, openMobile, openMinimize }) => {
   const classes = useStyles();
   const location = useLocation();
   const { auth } = useAuth();
 
-  const [minimize, setMinimize] = React.useState(false);
-
-  const handleMinimize = () => {
-    setMinimize(!minimize);
-  };
+  const content = itemsNav();
+  const min = itemsMin();
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -168,21 +136,6 @@ const NavBar = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
-
-  useEffect(() => {
-    if (minimized) {
-      setMinimize(true);
-    }
-  }, [minimized]);
-
-  const minContent = (
-    <Hidden mdDown>
-      <div onClick={handleMinimize}>
-        <MenuIcon className={classes.menuIcon} />
-      </div>
-    </Hidden>
-  );
-  const content = itemsNav();
 
   return (
     <>
@@ -197,80 +150,22 @@ const NavBar = ({
           <PerfectScrollbar>{content}</PerfectScrollbar>
         </Drawer>
       </Hidden>
-      {!minimize && (
-        <Hidden mdDown>
-          <Drawer
-            anchor={minimize ? "bottom" : "top"}
-            classes={{ paper: classes.desktopDrawer }}
-            open
-            variant="persistent"
-          >
-            <PerfectScrollbar>{content}</PerfectScrollbar>
-          </Drawer>
-        </Hidden>
-      )}
       <Hidden mdDown>
         <Drawer
-          anchor={minimize ? "bottom" : "bottom"}
-          classes={{
-            paper: classes.minimizedDrawer,
-          }}
-          open={minimize}
+          anchor="left"
+          classes={
+            openMinimize
+              ? { paper: classes.min }
+              : { paper: classes.desktopDrawer }
+          }
+          open
           variant="persistent"
         >
-          <PerfectScrollbar>
-            <List>
-              <Box
-                onClick={handleMinimize}
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <MenuIcon />
-              </Box>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                component={RouterLink}
-                to="/app/account"
-                mt={2}
-                mb={10}
-              >
-                <Box>
-                  <Avatar
-                    variant="rounded"
-                    src={require("../../../assets/images/hope.jpg")}
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-
-                      border: "1px solid #fff",
-                      borderRadius: "50%",
-                    }}
-                    alt="Person"
-                  />
-                </Box>
-              </Box>
-
-              {navItems.map((item) => (
-                <NavItem
-                  href={item.href}
-                  key={item.title}
-                  // title={item.title}
-                  icon={item.icon}
-                />
-              ))}
-            </List>
-          </PerfectScrollbar>
+          {openMinimize ? (
+            <>{min}</>
+          ) : (
+            <PerfectScrollbar>{content}</PerfectScrollbar>
+          )}
         </Drawer>
       </Hidden>
     </>
@@ -279,8 +174,6 @@ const NavBar = ({
   function itemsNav() {
     return (
       <Box height="100%" display="flex" flexDirection="column">
-        {minContent}
-
         {auth.isAuth && (
           <>
             <Box
@@ -372,6 +265,21 @@ const NavBar = ({
             mt={1}
             mb={2}
           >
+            <Button
+              variant="outlined"
+              color="primary"
+              className={classes.contactUsButton}
+              startIcon={<ContactlessIconOutlined size="small" />}
+              onClick={() => {
+                window.open(
+                  "https://essethr-fron-dev-kch2mcb4lukj4.herokuapp.com/home",
+                  "_blank"
+                );
+              }}
+            >
+              Contact Us
+            </Button>
+            <Box mt={1} />
             <Typography
               color="textSecondary"
               variant="body2"
@@ -380,30 +288,70 @@ const NavBar = ({
               Powered by
               <strong> Esset HR</strong>
             </Typography>
-            <Box mt={1} />
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              startIcon={<ContactlessIconOutlined size="large" />}
-              onClick={() => {
-                window.open(
-                  "https://essethr-fron-dev-kch2mcb4lukj4.herokuapp.com/home",
-                  "_blank"
-                );
-              }}
-              style={{
-                backgroundColor: "#648dae",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#f50057",
-                },
-              }}
-            >
-              Contact Us
-            </Button>
           </Box>
         </Hidden>
+      </Box>
+    );
+  }
+
+  function itemsMin() {
+    return (
+      <Box height="100%" display="flex" flexDirection="column" mt={1}>
+        {auth.isAuth && (
+          <>
+            <Box
+              display="inline-block"
+              alignItems="center"
+              justifyContent="center"
+              p={1}
+              mr={1}
+              ml={1}
+              component={RouterLink}
+              to="/app/account"
+              mt={1}
+            >
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                mt={1}
+              >
+                <Avatar
+                  variant="rounded"
+                  width="50px"
+                  height="50px"
+                  src={require("../../../assets/images/hope.jpg")}
+                  alt="Person"
+                />
+              </Box>
+            </Box>
+            <Box p={1} mr={1} ml={1} mt={10} />
+            <Divider />
+            <Box height="100%" p={1}>
+              <List>
+                {navItems.map((item) => (
+                  <NavItem href={item.href} key={item.title} icon={item.icon} />
+                ))}
+              </List>
+            </Box>
+            <Divider />
+            {auth && auth.user && auth.user.role === "ADMIN" && (
+              <Box height="100%" p={1} pb={1} mt={15}>
+                <List>
+                  {adminNavItems.map((item) => (
+                    <NavItem
+                      href={item.href}
+                      key={item.title}
+                      icon={item.icon}
+                    />
+                  ))}
+                </List>
+              </Box>
+            )}
+            <Divider />
+          </>
+        )}
       </Box>
     );
   }

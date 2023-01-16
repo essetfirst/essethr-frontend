@@ -38,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     borderRadius: 50,
   },
-
-  //cretae animation for material ui icon
   icon: {
     animation: `$myEffect 1000ms ${theme.transitions.easing.easeInOut}`,
   },
@@ -50,7 +48,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
+const TopBar = ({
+  className,
+  onMobileNavOpen,
+  setOpenMinimize,
+  openMinimize,
+  ...rest
+}) => {
   const classes = useStyles();
   const { darkMode, toggleDarkMode } = useTheme();
   const { auth, logout } = useAuth();
@@ -102,6 +106,19 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             aria-label="open drawer"
             edge="start"
             title="menu"
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
+        <Hidden mdDown>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            title="menu"
+            onClick={() => {
+              setOpenMinimize(!openMinimize);
+            }}
           >
             <MenuIcon />
           </IconButton>

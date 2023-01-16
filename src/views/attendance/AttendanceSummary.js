@@ -237,9 +237,15 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
 
   const presentCount = daysOfWeek.map((day) => {
     const dayAttendance = weeklyAttendanceByRemark[day];
-    return (
-      dayAttendance?.filter((item) => item.remark === "present").length || 0
+    if (!dayAttendance) {
+      return 0;
+    }
+
+    const presentItems = dayAttendance.filter(
+      (item) => item.remark === "present"
     );
+
+    return presentItems.length;
   });
 
   const lateCount = daysOfWeek.map((day) => {
@@ -257,13 +263,14 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
   const absentCount = daysOfWeek.map((day) => {
     const attendance = weeklyAttendanceByRemark[day];
     if (!attendance) {
-      return totalEmployees;
+      return 0;
     }
-    return (
-      totalEmployees -
-      attendance.filter((item) => item.remark === "present").length -
-      attendance.filter((item) => item.remark === "late").length
+
+    const absentItems = attendance.filter(
+      (item) => item.remark !== "present" && item.remark !== "late"
     );
+
+    return absentItems.length;
   });
 
   return (

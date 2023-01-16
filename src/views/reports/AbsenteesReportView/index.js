@@ -72,14 +72,16 @@ const AbsenteesReportTable = ({ data }) => {
       label: "Late",
       field: "late",
       align: "center",
-      renderCell: ({ late }) => <Typography variant="h6">{late}</Typography>,
+      renderCell: ({ late }) => (
+        <Typography variant="h6">{late || 0}</Typography>
+      ),
     },
     {
       label: "Present",
       field: "present",
       align: "center",
       renderCell: ({ present }) => (
-        <Typography variant="h6">{present}</Typography>
+        <Typography variant="h6">{present || 0}</Typography>
       ),
     },
     {

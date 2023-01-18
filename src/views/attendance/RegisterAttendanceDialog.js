@@ -15,14 +15,26 @@ import {
   Typography,
   Divider,
   CircularProgress,
+  makeStyles,
 } from "@material-ui/core";
-
-// import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-// import DateFnsUtils from "@date-io/date-fns";
 
 import API from "../../api/attendance";
 
 const { reducer, initialState, types } = stateMgnt();
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& .MuiTextField-root": {
+      margin: theme.spacing(1),
+      width: "25ch",
+    },
+  },
+
+  dialog: {
+    backdropFilter: "blur(5px)",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+  },
+}));
 
 const RegisterAttendanceDialog = ({
   employees,
@@ -32,6 +44,7 @@ const RegisterAttendanceDialog = ({
   notify,
 }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  const classes = useStyles();
 
   const { handleCheckIn, handleCheckOut } = checkFunc();
 
@@ -45,7 +58,7 @@ const RegisterAttendanceDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} className={classes.dialog}>
       <DialogContent>
         <Box height="100%" p={2} justifyContent="center">
           <Typography

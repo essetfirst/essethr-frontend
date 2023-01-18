@@ -1,10 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
-import CheckIcon from "@material-ui/icons/Check";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Page from "../../components/Page";
 import API from "../../api/auth";
@@ -28,8 +27,12 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        essetHR
+      <Link
+        color="inherit"
+        href="https://essethr-frontend-staging.herokuapp.com/home/"
+        target="_blank"
+      >
+        esset HR
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -39,11 +42,14 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "75vh",
+
+    padding: theme.spacing(3),
+    borderRadius: 10,
+    height: "100%",
   },
   avatar: {
     margin: theme.spacing(2),
@@ -144,10 +150,10 @@ const SignUp = () => {
             <Box mt={3}>
               <Alert
                 variant={"outlined"}
-                color={state.error ? "error" : "success"}
-                severity={state.error ? "error" : "success"}
+                color={state.error ? "error" : "info"}
+                severity={state.error ? "error" : "info"}
                 onClose={() => {
-                  navigate("/signup/success");
+                  dispatch({ type: types.REQUEST_SUCCESS, payload: "" });
                 }}
               >
                 {state.message || state.error}
@@ -156,10 +162,12 @@ const SignUp = () => {
           )}
           <Formik
             initialValues={{
+              //Organization
               org_name: "",
               org_email: "",
               org_phone: "",
               org_address: "",
+              //User
               firstName: "",
               lastName: "",
               user_email: "",
@@ -196,12 +204,12 @@ const SignUp = () => {
                 .oneOf([Yup.ref("password"), null], "Passwords must match")
                 .required("Confirm password is required"),
             })}
-            onSubmit={(values) => {
+            onSubmit={(values, { resetForm }) => {
               const signupInfo = {
                 org: {
                   name: values.org_name,
                   phone: values.org_phone,
-                  email: values.org_email,
+                  orgEmail: values.org_email,
                   address: values.org_address,
                 },
                 user: {
@@ -209,10 +217,11 @@ const SignUp = () => {
                   lastName: values.lastName,
                   email: values.user_email,
                   password: values.password,
-                  c_password: values.c_password,
                 },
               };
+
               handleSignup(signupInfo);
+              resetForm();
             }}
           >
             {({
@@ -450,20 +459,21 @@ const SignUp = () => {
                       disabled={state.requesting}
                     >
                       {state.requesting ? (
-                        <CircularProgress color="inherit" />
-                      ) : state.message ? (
-                        <CheckIcon color="inherit" />
+                        <CircularProgress size={18} color="secondary" />
                       ) : (
-                        "Register"
+                        "Sign Up"
                       )}
                     </Button>
                   </Grid>
                 </Grid>
                 <Grid container xl={12} justify="center">
                   <Grid item>
-                    <Link href="/login" variant="body2">
-                      Already have an account? Sign in
-                    </Link>
+                    <Typography variant="body2" color="textSecondary">
+                      Already have an account?{" "}
+                      <Link component={RouterLink} to="/login">
+                        Sign in
+                      </Link>
+                    </Typography>
                   </Grid>
                 </Grid>
                 <Grid container xl={12} justify="flex-end">

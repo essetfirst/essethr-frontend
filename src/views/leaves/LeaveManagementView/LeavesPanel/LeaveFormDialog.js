@@ -20,7 +20,6 @@ const LeaveFormDialog = ({
   onSubmit,
   employees,
   leaveTypes,
-  durations,
 }) => {
   const employeeOptions = [
     { label: "Choose employee", value: -1 },
@@ -31,10 +30,10 @@ const LeaveFormDialog = ({
     ...leaveTypes,
   ];
 
-  const durationOptions = [
-    { label: "Choose duration", value: -1 },
-    ...durations,
-  ];
+  // const durationOptions = [
+  //   { label: "Choose duration", value: -1 },
+  //   ...durations,
+  // ];
 
   const handleDialogClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -53,10 +52,13 @@ const LeaveFormDialog = ({
     <Dialog open={open} onClose={handleDialogClose}>
       <DialogContent>
         <Box height="100%" p={2} justifyContent="center">
-          <Typography variant="h4" align="center" gutterBottom>
-            {!action || action === "register"
-              ? "Register Leave"
-              : "Update Leave"}
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            style={{ fontFamily: "Poppins" }}
+          >
+            {action === "register" ? "Register Leave" : "Update Leave"}
           </Typography>
           <Divider />
           <FormikFormFields
@@ -64,39 +66,30 @@ const LeaveFormDialog = ({
             formFields={leaveFormFields({
               employeeOptions,
               leaveTypeOptions,
-              durationOptions,
             })}
             submitActionButtonLabel={
               state.isLoading ? (
-                <CircularProgress />
+                <CircularProgress size={24} />
               ) : action === "register" ? (
                 "Register Leave"
               ) : (
                 "Update Leave"
               )
             }
-            onSubmit={(values) => {
+            onSubmit={(values, { resetForm }) => {
               if (action === "register") {
                 onSubmit({
                   ...values,
-                  duration: computeDateDiff(
-                    values.startDate,
-                    values.endDate
-                  ).toString(),
+                  duration: computeDateDiff(values.startDate, values.endDate),
                 });
               } else {
                 onSubmit({
                   ...values,
-                  duration: computeDateDiff(
-                    values.startDate,
-                    values.endDate
-                  ).toString(),
+                  duration: computeDateDiff(values.startDate, values.endDate),
                 });
               }
-
-              console.log(action);
-
               handleDialogClose();
+              resetForm();
             }}
             onCancel={handleDialogClose}
           />
@@ -116,6 +109,7 @@ LeaveFormDialog.propTypes = {
   leaveTypes: PropTypes.array,
   durations: PropTypes.array,
   onSubmit: PropTypes.func,
+  submitActionButtonLabel: PropTypes.string,
 };
 
 export default LeaveFormDialog;

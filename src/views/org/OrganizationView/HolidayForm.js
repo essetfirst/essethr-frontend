@@ -16,14 +16,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-const HolidayForm = ({
-  holiday,
-  title,
-  submitLabel = "Add",
-  onCancel,
-  onSubmit,
-}) => {
-  console.log("[HolidayForm]: Line 26 -> Initial holiday object: ", holiday);
+const HolidayForm = ({ holiday, title, onCancel, onSubmit }) => {
   const formTitle =
     title || (holiday ? "Edit holiday details" : "Add new holiday");
   return (
@@ -44,16 +37,16 @@ const HolidayForm = ({
         initialValues={
           holiday || {
             name: "",
-            date: "",
+            date: new Date(),
             halfDay: false,
-            inPayroll: true,
+            inPayroll: false,
           }
         }
         validationSchema={Yup.object({
           name: Yup.string().required("'Name' is required"),
           date: Yup.date().default(new Date()),
           halfDay: Yup.boolean().default(false),
-          inPayroll: Yup.boolean().default(true),
+          inPayroll: Yup.boolean().default(false),
         })}
         onSubmit={(values) => {
           console.log(values);
@@ -86,7 +79,6 @@ const HolidayForm = ({
 
             <TextField
               fullWidth
-              label="Date"
               error={Boolean(touched.date && errors.date)}
               helperText={touched.date && errors.date}
               name="date"
@@ -117,7 +109,7 @@ const HolidayForm = ({
                   onChange={handleChange}
                 />
               }
-              label="Included in Payroll?"
+              label="Included in payroll?"
             />
 
             <Box display="flex" justifyContent="flex-end" mt={2}>
@@ -135,7 +127,7 @@ const HolidayForm = ({
                   onClick={handleSubmit}
                   aria-label="submit"
                 >
-                  {submitLabel}
+                  {holiday ? "Update" : "Add"}
                 </Button>
               </ButtonGroup>
             </Box>

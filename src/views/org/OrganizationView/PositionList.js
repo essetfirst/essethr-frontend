@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     width: "35ch",
     background: theme.palette.background.paper,
   },
+  dialog: {
+    backdropFilter: "blur(5px)",
+  },
 }));
 
 const PositionList = ({
@@ -108,7 +111,12 @@ const PositionList = ({
             Create
           </Button>
         </ButtonGroup>
-        <Dialog open={formDialogOpen} onClose={handleDialogClose}>
+        <Dialog
+          open={formDialogOpen}
+          onClose={handleDialogClose}
+          fullWidth
+          className={classes.dialog}
+        >
           <DialogContent>
             <PositionForm
               positionId={selectedId}

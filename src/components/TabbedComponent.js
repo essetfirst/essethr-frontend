@@ -38,11 +38,7 @@ TabPanel.propTypes = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    // flexGrow: 1,
-    // width: "100%",
-    // backgroundColor: theme.palette.background.paper,
-  },
+  root: {},
 }));
 
 const TabbedComponent = ({ title, tabs, variant, appBarProps, tabsProps }) => {
@@ -86,22 +82,24 @@ const TabbedComponent = ({ title, tabs, variant, appBarProps, tabsProps }) => {
   );
 
   return (
-    <Box className={classes.root}>
-      {title && <Typography>{title}</Typography>}
-      {variant === undefined || !variant ? (
-        <Box>
-          {tabHeaderList}
-          <Divider />
-        </Box>
-      ) : variant === "appBar" ? (
-        <AppBar position="static" color="primary" {...appBarProps}>
-          {tabHeaderList}
-        </AppBar>
-      ) : (
-        <Paper square>{tabHeaderList}</Paper>
-      )}
-      {panelList}
-    </Box>
+    <>
+      <Box className={classes.root}>
+        {title && <Typography variant="h5">{title}</Typography>}
+        {variant === undefined || !variant ? (
+          <Box>
+            {tabHeaderList}
+            <Divider />
+          </Box>
+        ) : variant === "appBar" ? (
+          <AppBar position="static" color="primary" {...appBarProps}>
+            {tabHeaderList}
+          </AppBar>
+        ) : (
+          <Paper square>{tabHeaderList}</Paper>
+        )}
+        {panelList}
+      </Box>
+    </>
   );
 };
 

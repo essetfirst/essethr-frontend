@@ -16,7 +16,7 @@ const DepartmentForm = ({
   departmentId,
   departmentsMap,
   title,
-  submitLabel = "Submit",
+  submitLabel,
   onCancel,
   onSubmit,
 }) => {
@@ -131,7 +131,9 @@ const DepartmentForm = ({
                   onClick={handleSubmit}
                   aria-label="submit"
                 >
-                  {submitLabel}
+                  {departmentId
+                    ? submitLabel || "Update "
+                    : submitLabel || "Create "}
                 </Button>
               </ButtonGroup>
             </Box>

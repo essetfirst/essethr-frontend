@@ -25,10 +25,6 @@ import AttendanceTable from "./AttendanceTable";
 import EditAttendanceDialog from "./EditAttendanceDialog";
 import RegisterAttendanceDialog from "./RegisterAttendanceDialog";
 
-const getDateString = (date) => {
-  return new Date(date ? date : new Date()).toISOString().slice(0, 10);
-};
-
 const AttendancePanel = () => {
   const navigate = useNavigate();
 
@@ -88,18 +84,36 @@ const AttendancePanel = () => {
     [comparisonFns]
   );
 
-  const initialSortParamsValue = { sortBy: "_id", sortOrder: "asc" };
-  const [sortParams, setSortParams] = React.useState(initialSortParamsValue);
-
-  const handleSortParamsChange = (newSortParams) =>
-    setSortParams({ ...newSortParams });
-
   const getSortedAttendanceList = React.useCallback(
     (attendance, sortBy, sortOrder) => {
       return sort(attendance || [], sortBy, sortOrder);
     },
     []
   );
+
+  const [sortBy, setSortBy] = React.useState("_id");
+  const [sortOrder, setSortOrder] = React.useState("desc");
+
+  const [sorteddata, setSortedAttendanceList] = React.useState(
+    state.attendanceByDate[attendanceDate] || []
+  );
+
+  const onSortParamsChangeFn = (newSortBy, newSortOrder) => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+
+    const sortedAttendanceList = getSortedAttendanceList(
+      state.attendanceByDate[attendanceDate] || [],
+      newSortBy,
+      newSortOrder
+    );
+    setSortedAttendanceList(sortedAttendanceList);
+  };
+
+  const handleSortRequest = (sortParams) => {
+    const isAsc = sortBy === sortParams && sortOrder === "asc";
+    onSortParamsChangeFn(sortParams, isAsc ? "desc" : "asc");
+  };
 
   const [registerAction, setRegisterAction] = React.useState("checkin");
   const [registerDialogOpen, setRegisterDialogOpen] = React.useState(false);
@@ -189,13 +203,14 @@ const AttendancePanel = () => {
 
   const handleApproveClick = (attendanceIds) => () => {
     if (attendanceIds.length === 0) {
+      notify("Please select at least one attendance", "error");
       return;
     }
 
     if (!state.attendanceByDate || !state.attendanceByDate[attendanceDate]) {
+      notify("No attendance found", "error");
       return;
     }
-
     const employees = state.attendanceByDate[attendanceDate]
       .filter((a) => attendanceIds.includes(a._id))
       .map((a) => a.employeeId);
@@ -211,10 +226,15 @@ const AttendancePanel = () => {
     fetchAttendance(null, null, attendanceDate);
   }, [attendanceDate, fetchAttendance]);
 
+  React.useEffect(() => {
+    onSortParamsChangeFn(sortBy, sortOrder);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.attendanceByDate, attendanceDate]);
+
   return (
-    <div>
+    <React.Fragment>
       <Box display="flex" justifyContent="space-between">
-        <ButtonGroup>
+        <ButtonGroup size="small" aria-label="small outlined button group">
           <Button
             variant="contained"
             color="primary"
@@ -236,7 +256,7 @@ const AttendancePanel = () => {
             Clock out
           </Button>
         </ButtonGroup>
-        <ButtonGroup>
+        <ButtonGroup size="small" aria-label="small outlined button group">
           <Button
             variant="outlined"
             color="primary"
@@ -253,7 +273,6 @@ const AttendancePanel = () => {
           >
             Import
           </Button>
-          {/* <Divider orientation="vertical"  /> */}
           <Button
             variant="outlined"
             color="primary"
@@ -272,7 +291,6 @@ const AttendancePanel = () => {
           </Button>
         </ButtonGroup>
       </Box>
-      <Box mb={2} />
       <RegisterAttendanceDialog
         employees={(org.employees || []).map(
           ({ _id, employeeId, firstName, surName }) => ({
@@ -298,14 +316,9 @@ const AttendancePanel = () => {
         employeesMap={employeesMap}
         requestState={{ ...state, onRetry: handleRefreshClick }}
         attendance={getSortedAttendanceList(
-          getFilteredAttendanceList(
-            state.attendanceByDate[getDateString(attendanceDate)],
-            filters
-          ),
-          sortParams.sortBy,
-          sortParams.sortOrder
+          getFilteredAttendanceList(sorteddata, filters)
         )}
-        onSortParamsChange={handleSortParamsChange}
+        onSortParamsChange={handleSortRequest}
         onEditClicked={handleEditClick}
         onApproveClicked={handleApproveClick}
         onViewEmployeeClicked={handleViewEmployeeClick}
@@ -324,7 +337,7 @@ const AttendancePanel = () => {
           }
         />
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

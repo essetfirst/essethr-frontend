@@ -6,6 +6,7 @@ import useNotificationSnackbar from "../../../providers/notification-snackbar";
 import { useSnackbar } from "notistack";
 import sort from "../../../helpers/sort";
 import {
+  Backdrop,
   Box,
   Card,
   Container,
@@ -37,6 +38,7 @@ import HolidayList from "./HolidayList";
 import VerifiedUserRoundedIcon from "@material-ui/icons/VerifiedUserRounded";
 import DialogDelete from "./DialogDelete";
 import { useTheme } from "../../../providers/theme";
+import ThreeDots from "react-loading-icons/dist/esm/components/three-dots";
 
 const types = {
   REQUESTING: "REQUESTING",
@@ -59,14 +61,41 @@ const reducer = (state, action) => {
 };
 const useStyles = makeStyles((theme) => ({
   card: {
-    padding: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-    width: "100%",
-    borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+
+    "& .MuiCardContent-root": {
+      padding: 0,
+
+      "& .MuiGrid-container": {
+        padding: theme.spacing(2),
+
+        "& .MuiGrid-item": {
+          "&:first-child": {
+            paddingRight: theme.spacing(2),
+
+            "& .MuiTypography-root": {
+              fontWeight: 600,
+
+              "& .MuiSvgIcon-root": {
+                marginRight: theme.spacing(1),
+              },
+            },
+          },
+        },
+      },
+    },
   },
+
   divider: {
     margin: theme.spacing(2, 0),
+  },
+
+  backdrop: {
+    backdropFilter: "blur(5px)",
+    backgroundColor: "#ffffff",
   },
 }));
 
@@ -110,19 +139,26 @@ const OrganizationView = ({ id }) => {
   const orgId = id || params.id || currentOrg;
 
   const fetchOrg = React.useCallback((orgId) => {
+    // start the request
     dispatch({ type: types.REQUESTING });
+
+    // make the API call
     API.orgs
       .getById(orgId)
       .then(({ success, org, error }) => {
-        success
-          ? dispatch({ type: types.REQUEST_SUCCESS, payload: org })
-          : dispatch({ type: types.REQUEST_ERROR, error });
+        if (success) {
+          // handle the success
+          dispatch({ type: types.REQUEST_SUCCESS, payload: org });
+        } else {
+          // handle the error
+          dispatch({ type: types.REQUEST_ERROR, error });
+        }
       })
       .catch((e) => {
-        console.error(e.message);
+        // handle the error
         dispatch({
           type: types.REQUEST_ERROR,
-          error: "Something went wrong.",
+          error: e.message,
         });
       });
   }, []);
@@ -136,10 +172,6 @@ const OrganizationView = ({ id }) => {
       fetchOrg(orgId);
     }
   }, [orgId, org, fetchOrg]);
-
-  // const handleEditOrgClick = () => {
-  //   navigate("/app/orgs/edit", orgId);
-  // };
 
   const { departmentsMap, positionsMap, leaveTypesMap, holidaysMap } =
     mapper(state);
@@ -179,108 +211,121 @@ const OrganizationView = ({ id }) => {
     []
   );
   return (
-    <PageView
-      className={classes.root}
-      title={`${state.org.name}`}
-      icon={
-        <span style={{ verticalAlign: "middle", marginLeft: "16px" }}>
-          <VerifiedUserRoundedIcon fontSize="large" />
-        </span>
-      }
-    >
-      <Container>
-        {state.error && (
-          <ErrorBoxComponent error={state.error} onRetry={() => fetchOrg()} />
-        )}
-        {state.org && Object.keys(state.org).length > 0 && (
-          <Grid container>
-            <DialogDelete
-              open={deleteDialog.open}
-              onClose={handleDeleteDialogClose}
-              onDelete={handleDeleteDialogConfirm}
-            />
-            <Card className={classes.card}>
-              <Box
-                display="flex"
-                alignItems="center"
-                mr={1}
-                style={{ width: "100%", overflowX: "auto" }}
-              >
-                {[
-                  {
-                    label: state.org.phone,
-                    icon: <PhoneIcon fontSize="small" />,
-                    color: colors.deepOrange[400],
-                  },
-                  {
-                    label: state.org.email,
-                    icon: <MailIcon fontSize="small" />,
-                    color: colors.deepPurple[400],
-                  },
-                  {
-                    label: state.org.address,
-                    icon: <AddressIcon fontSize="small" />,
-                    color: colors.green[400],
-                  },
-                  {
-                    label: "Total Employees:" + state.org.employees.length,
-                    icon: <PeopleIcon fontSize="small" />,
-                    color: colors.blue[400],
-                  },
-                ].map(({ icon, label, color }, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginRight: "8rem",
-                      marginBottom: "1rem",
-                    }}
+    <>
+      {state.org && Object.keys(state.org).length === 0 ? (
+        <Box display="flex" justifyContent="center">
+          <Backdrop open className={classes.backdrop}>
+            <ThreeDots width={100} fill="#009688" />
+          </Backdrop>
+        </Box>
+      ) : (
+        <PageView
+          className={classes.root}
+          title={`${state.org.name}`}
+          icon={
+            <span style={{ verticalAlign: "middle", marginLeft: "16px" }}>
+              <VerifiedUserRoundedIcon fontSize="large" />
+            </span>
+          }
+        >
+          <Container>
+            {state.error && (
+              <ErrorBoxComponent
+                error={state.error}
+                onRetry={() => fetchOrg()}
+              />
+            )}
+            {state.org && Object.keys(state.org).length > 0 && (
+              <Grid container>
+                <DialogDelete
+                  open={deleteDialog.open}
+                  onClose={handleDeleteDialogClose}
+                  onDelete={handleDeleteDialogConfirm}
+                />
+                <Card className={classes.card}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    mr={1}
+                    style={{ width: "100%", overflowX: "auto" }}
                   >
-                    <Typography
-                      variant="subtitle1"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography
-                        component="span"
+                    {[
+                      {
+                        label: state.org.phone,
+                        icon: <PhoneIcon fontSize="small" />,
+                        color: colors.deepOrange[400],
+                      },
+                      {
+                        label: state.org.email,
+                        icon: <MailIcon fontSize="small" />,
+                        color: colors.deepPurple[400],
+                      },
+                      {
+                        label: state.org.address,
+                        icon: <AddressIcon fontSize="small" />,
+                        color: colors.green[400],
+                      },
+                      {
+                        label: "Total Employees:" + state.org.employees.length,
+                        icon: <PeopleIcon fontSize="small" />,
+                        color: colors.blue[400],
+                      },
+                    ].map(({ icon, label, color }, index) => (
+                      <div
+                        key={index}
                         style={{
                           display: "flex",
+                          justifyContent: "center",
                           alignItems: "center",
-                          marginRight: "0.5rem",
-                          color,
+                          marginRight: "8rem",
+                          marginBottom: "1rem",
                         }}
                       >
-                        {icon}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        className={classes.root}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          fontSize: "0.8rem",
-                        }}
-                      >
-                        {label}
-                      </Typography>
-                    </Typography>
-                  </div>
-                ))}
-              </Box>
-              <Grid item sm={12}>
-                <Divider />
-                {currentOrg === orgId && tabFunc()}
+                        <Typography
+                          variant="subtitle1"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography
+                            component="span"
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginRight: "0.5rem",
+                              color,
+                            }}
+                          >
+                            {icon}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            component="span"
+                            className={classes.root}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              fontSize: "0.8rem",
+                            }}
+                          >
+                            {label}
+                          </Typography>
+                        </Typography>
+                      </div>
+                    ))}
+                  </Box>
+                  <Grid item sm={12}>
+                    <Divider />
+                    {currentOrg === orgId && tabFunc()}
+                  </Grid>
+                </Card>
               </Grid>
-            </Card>
-          </Grid>
-        )}
-      </Container>
-    </PageView>
+            )}
+          </Container>
+        </PageView>
+      )}
+    </>
   );
 
   function tabFunc() {

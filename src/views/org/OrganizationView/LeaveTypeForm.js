@@ -18,13 +18,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-const LeaveTypeForm = ({
-  title,
-  leaveType,
-  submitLabel = "Submit",
-  onCancel,
-  onSubmit,
-}) => {
+const LeaveTypeForm = ({ title, leaveType, onCancel, onSubmit }) => {
   const formTitle =
     title || (leaveType ? "Edit leave type" : "Create leave type");
   return (
@@ -164,7 +158,7 @@ const LeaveTypeForm = ({
                   onClick={handleSubmit}
                   aria-label="submit"
                 >
-                  {submitLabel}
+                  {leaveType ? "Update" : "Create"}
                 </Button>
               </ButtonGroup>
             </Box>

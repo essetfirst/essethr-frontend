@@ -23,11 +23,21 @@ import TableComponent from "../../../components/TableComponent";
 import DepartmentForm from "./DepartmentForm";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
-  paper: {},
+  root: {
+    padding: theme.spacing(0),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+  },
   textField: {
     width: "35ch",
     background: theme.palette.background.paper,
+  },
+  dialog: {
+    backdropFilter: "blur(5px)",
   },
 }));
 
@@ -115,7 +125,11 @@ const DepartmentList = ({
             Create
           </Button>
         </ButtonGroup>
-        <Dialog open={formDialogOpen} onClose={handleDialogClose}>
+        <Dialog
+          open={formDialogOpen}
+          onClose={handleDialogClose}
+          className={classes.dialog}
+        >
           <DialogContent>
             <DepartmentForm
               departmentId={selectedId}
@@ -141,10 +155,15 @@ const DepartmentList = ({
             },
           },
         ]}
+        // eslint-disable-next-line array-callback-return
         data={(departments || []).filter((d) => {
-          const { name, location } = d;
-          const names = `${name || ""} ${location || ""}`;
-          return names.toLowerCase().includes(searchTerm.toLowerCase());
+          try {
+            const { name, location } = d;
+            const names = `${name || ""} ${location || ""}`;
+            return names.toLowerCase().includes(searchTerm.toLowerCase());
+          } catch (error) {
+            console.log(error);
+          }
         })}
         selectionEnabled
         onSortParamsChange={onSortParamsChange}

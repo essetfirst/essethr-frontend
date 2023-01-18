@@ -9,13 +9,14 @@ import {
   Button,
 } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
+
 const DialogDelete = ({ open, onClose, onDelete }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
         id="alert-dialog-title"
         style={{
-          backgroundColor: "#f44336",
+          backgroundColor: "#f7665e",
           color: "#fff",
 
           display: "flex",
@@ -25,8 +26,6 @@ const DialogDelete = ({ open, onClose, onDelete }) => {
       >
         <Typography
           style={{
-            color: "#fff",
-            fontFamily: "Poppins",
             fontSize: "1.2rem",
           }}
         >
@@ -39,14 +38,14 @@ const DialogDelete = ({ open, onClose, onDelete }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={onClose} color="inherit">
           Cancel
         </Button>
         <Button
           onClick={onDelete}
           color="primary"
           style={{
-            backgroundColor: "#f44336",
+            backgroundColor: "#f7665e",
             color: "#fff",
           }}
         >

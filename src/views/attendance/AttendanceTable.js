@@ -145,26 +145,42 @@ const AttendanceTable = ({
         // },
         {
           label: "Approve",
-          handler: ({ _id, status }) => {
+          handler: ({ _id, status, checkin, checkout }) => {
             if (status === "approved") {
               return notify({
                 message: "Attendance already approved",
                 variant: "warning",
               });
+            } else if (status === "rejected") {
+              return notify({
+                message: "Attendance already rejected",
+                variant: "warning",
+              });
+            } else if (checkin && !checkout) {
+              return notify({
+                message: "Employee has not checked out yet",
+                variant: "warning",
+              });
+            } else {
+              onApproveClicked([_id])();
+              return notify({
+                message: "Attendance approved",
+                variant: "success",
+              });
             }
-            onApproveClicked(_id);
           },
           icon: <CheckIcon size="small" />,
           variant: "outlined",
           size: "small",
         },
       ]}
-      selectionEnabled
+      selectionEnabled={true}
       selectionActions={[
         {
           icon: <CheckIcon />,
           label: "Approve all",
           handler: (selected) => onApproveClicked(selected),
+
           variant: "outlined",
           size: "small",
         },

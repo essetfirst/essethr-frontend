@@ -72,6 +72,10 @@ const TopBar = ({
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    logout(() => navigate("/login"));
+  };
+
   const fetchOrganizations = React.useCallback(() => {
     API.orgs
       .getAll({ query: { createdBy: auth && auth.user && auth.user.email } })
@@ -193,7 +197,7 @@ const TopBar = ({
                   </Typography>
                 </IconButton>
               </MenuItem>
-              <MenuItem onClick={logout}>
+              <MenuItem onClick={handleLogout}>
                 <IconButton color="inherit" title="logout">
                   <ExitToAppIcon style={{ marginRight: "5px" }} />
                   <Typography color="inherit" variant="body2">

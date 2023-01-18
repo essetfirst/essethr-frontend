@@ -5,6 +5,7 @@ import { DashboardOutlined as DashboardIcon } from "@material-ui/icons";
 import moment from "moment";
 import useOrg from "../../../providers/org";
 import PageView from "../../../components/PageView";
+import useLeave from "../../../providers/leave";
 
 import TotalEmployees from "./TotalEmployees";
 import TotalAttendance from "./TotalAttendance";
@@ -29,13 +30,20 @@ const DashboardView = () => {
   const { org } = useOrg();
   const { employees } = org;
   const { state, fetchAttendance } = useAttendance();
+  const { state: leavesState, fetchLeaves } = useLeave();
 
   //get current month attendance summary
   const today = moment(new Date()).format("YYYY-MM-DD");
 
   React.useEffect(() => {
     fetchAttendance();
-  }, [fetchAttendance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    fetchLeaves();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <PageView
@@ -92,7 +100,18 @@ const DashboardView = () => {
           />
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <TotalLeaves />
+          <TotalLeaves
+            totalLeaves={leavesState.fetchLeaves.leaves.length || 0}
+            calculatePercentage={
+              (employees || []).length
+                ? (
+                    ((leavesState.fetchLeaves.leaves.length || 0) /
+                      (employees || []).length) *
+                    100
+                  ).toFixed(0)
+                : 0
+            }
+          />
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
           <InactiveEmployee

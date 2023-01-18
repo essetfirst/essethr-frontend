@@ -41,7 +41,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
+const TotalLeaves = ({
+  totalLeaves,
+  calculatePercentage,
+  className,
+  ...rest
+}) => {
   const classes = useStyles();
 
   return (
@@ -62,7 +67,7 @@ const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
               variant="h2"
               style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 35 }}
             >
-              <span>{employeeOnLeaveCount || 1}</span>
+              <span>{totalLeaves || 0}</span>
             </Typography>
           </Grid>
           <Grid item>
@@ -73,10 +78,10 @@ const TotalLeaves = ({ employeeOnLeaveCount = 0, className, ...rest }) => {
         </Grid>
         <Box mt={2} display="flex" alignItems="center">
           <Typography className={classes.differenceValue} color="textSecondary">
-            16%
+            {calculatePercentage}%
           </Typography>
           <Typography color="textSecondary" variant="caption">
-            Since last month
+            of total employees on leave
           </Typography>
         </Box>
       </CardContent>

@@ -40,7 +40,6 @@ import Chart from "react-apexcharts";
 // };
 
 const DailyAttendanceSummaryByRemark = ({
-  remarks,
   totalEmployees,
   dailyAttendanceByRemark,
 }) => {
@@ -194,19 +193,20 @@ const DailyAttendanceSummaryByRemark = ({
                   {
                     name: "count",
                     data: [
+                      //Present Count
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "present"
                       ).length || 0,
+
+                      //Late Count
                       dailyAttendanceByRemark.filter(
                         (item) => item.remark === "late"
                       ).length || 0,
-                      totalEmployees -
-                        dailyAttendanceByRemark.filter(
-                          (item) => item.remark === "present"
-                        ).length -
-                        dailyAttendanceByRemark.filter(
-                          (item) => item.remark === "late"
-                        ).length,
+
+                      //Absent Count
+                      dailyAttendanceByRemark.filter(
+                        (item) => item.remark === "absent"
+                      ).length || 0,
                     ],
                   },
                 ]}
@@ -260,15 +260,15 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
     return lateItems.length;
   });
 
+  //absent count total - present count - late count
   const absentCount = daysOfWeek.map((day) => {
-    const attendance = weeklyAttendanceByRemark[day];
-    if (!attendance) {
+    const dayData = weeklyAttendanceByRemark[day];
+
+    if (!dayData) {
       return 0;
     }
 
-    const absentItems = attendance.filter(
-      (item) => item.remark !== "present" && item.remark !== "late"
-    );
+    const absentItems = dayData.filter((item) => item.remark === "absent");
 
     return absentItems.length;
   });

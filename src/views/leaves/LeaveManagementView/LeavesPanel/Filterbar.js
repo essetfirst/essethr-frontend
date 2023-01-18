@@ -184,7 +184,7 @@ FilterBar.propTypes = {
   /**
    * An object containing the filters
    */
-  filters: PropTypes.object,
+  filters: PropTypes.string,
   /**
    * A handler for listening change in filter parameters.
    */

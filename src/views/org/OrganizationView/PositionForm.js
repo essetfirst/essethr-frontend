@@ -19,7 +19,7 @@ const PositionForm = ({
   positionsMap,
   departments,
   title,
-  submitLabel = "Submit",
+  submitLabel,
   onCancel,
   onSubmit,
 }) => {
@@ -198,7 +198,7 @@ const PositionForm = ({
                   onClick={handleSubmit}
                   aria-label="submit"
                 >
-                  {submitLabel}
+                  {positionId ? "Update" : "Create"}
                 </Button>
               </ButtonGroup>
             </Box>

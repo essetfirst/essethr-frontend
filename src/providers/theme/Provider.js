@@ -10,21 +10,30 @@ const Provider = ({ children }) => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   // Check if the user has already set a preference in localStorage
   React.useEffect(() => {
-    if (localStorage.getItem("theme") === "dark") {
+    const lastTheme = localStorage.getItem("theme");
+    const isDarkMode = prefersDarkMode;
+    if (lastTheme === "dark") {
       setDarkMode(true);
-    } else if (localStorage.getItem("theme") === "light") {
+    } else if (lastTheme === "light") {
       setDarkMode(false);
+    } else if (isDarkMode) {
+      setDarkMode(true);
     } else {
-      setDarkMode(prefersDarkMode);
+      setDarkMode(false);
     }
   }, [prefersDarkMode]);
 
   // When the user clicks the dark mode toggle, set the theme to dark or light
   const toggleDarkMode = () => {
-    if (darkMode) {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light") {
+      localStorage.setItem("theme", "dark");
+      setDarkMode(true);
+    } else if (theme === "dark") {
       localStorage.setItem("theme", "light");
       setDarkMode(false);
     } else {
+      // If the theme is not light or dark, set it to dark by default.
       localStorage.setItem("theme", "dark");
       setDarkMode(true);
     }

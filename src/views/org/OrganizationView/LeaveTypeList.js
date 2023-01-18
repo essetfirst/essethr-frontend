@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     width: "35ch",
     background: theme.palette.background.paper,
   },
+  dialog: {
+    backdropFilter: "blur(5px)",
+  },
 }));
 
 const LeaveTypeList = ({
@@ -113,7 +116,13 @@ const LeaveTypeList = ({
           </Button>
         </ButtonGroup>
 
-        <Dialog open={formDialogOpen} onClose={handleDialogClose}>
+        <Dialog
+          open={formDialogOpen}
+          onClose={handleDialogClose}
+          fullWidth
+          maxWidth="sm"
+          className={classes.dialog}
+        >
           <DialogContent>
             <LeaveTypeForm
               leaveType={leaveTypesMap[selectedId]}

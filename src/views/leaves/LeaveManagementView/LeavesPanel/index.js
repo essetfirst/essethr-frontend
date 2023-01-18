@@ -195,29 +195,25 @@ const LeavesPanel = ({
     }
   });
 
-  React.useEffect(() => {
-    fetchLeaves();
-  }, [fetchLeaves]);
-
   // const getSortedList = React.useCallback((list = [], sortBy, sortOrder) => {
   //   return sort(list, sortBy, sortOrder);
   // }, []);
 
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("employeeId");
+  // const [order, setOrder] = React.useState("asc");
+  // const [orderBy, setOrderBy] = React.useState("employeeId");
 
-  const onSortParamChange = (sortParam, sortDirection) => {
-    console.log("sortParam", sortParam);
-    console.log("sortDirection", sortDirection);
-    setOrder(sortDirection);
-    setOrderBy(sortParam);
-  };
+  // const onSortParamChange = (sortParam, sortDirection) => {
+  //   console.log("sortParam", sortParam);
+  //   console.log("sortDirection", sortDirection);
+  //   setOrder(sortDirection);
+  //   setOrderBy(sortParam);
+  // };
 
-  const handleRequestSort = (event, property) => {
-    console.log("property", property);
-    const isAsc = orderBy === property && order === "asc";
-    onSortParamChange(property, isAsc ? "desc" : "asc");
-  };
+  // const handleRequestSort = (event, property) => {
+  //   console.log("property", property);
+  //   const isAsc = orderBy === property && order === "asc";
+  //   onSortParamChange(property, isAsc ? "desc" : "asc");
+  // };
 
   const [deleteLeaveDialogOpen, setDeleteLeaveDialogOpen] =
     React.useState(false);
@@ -232,6 +228,13 @@ const LeavesPanel = ({
   const handleDeleteLeaveDialogClose = () => {
     setDeleteLeaveDialogOpen(false);
   };
+
+  React.useEffect(() => {
+    fetchLeaves(
+      new Date(filters.fromDate || weekDays[0]).toISOString().slice(0, 10)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.fromDate, filters.toDate]);
 
   return (
     <div>
@@ -302,16 +305,15 @@ const LeavesPanel = ({
       <List
         employeesMap={employeesMap}
         leaveTypeMap={leaveTypeMap}
-        leaves={
-          state.fetchLeaves.leaves || []
-          //   .filter((d) => {
-          //   return (
-          //     String(
-          //       (employeesMap[d.employeeId] || {}).firstName.toLowerCase()
-          //     ).includes(filters) || {}
-          //   );
-          // })
-        }
+        // eslint-disable-next-line array-callback-return
+        leaves={(state.fetchLeaves.leaves || []).filter((d) => {
+          try {
+            const name = `${employeesMap[d.employeeId].firstName} ${
+              employeesMap[d.employeeId].surName
+            }`;
+            return name.toLowerCase().includes(filters);
+          } catch (error) {}
+        })}
         requesting={state.fetchLeaves.isLoading}
         error={state.fetchLeaves.error}
         onRetry={() => {
@@ -321,7 +323,7 @@ const LeavesPanel = ({
         onEditLeaveClicked={handleEditLeaveClick}
         onDeleteLeaveClicked={handleDeleteLeaveDialogOpen}
         requestState={state.registerLeave}
-        onSortParamChange={handleRequestSort}
+        // onSortParamChange={handleRequestSort}
       />
     </div>
   );

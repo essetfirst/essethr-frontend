@@ -169,6 +169,7 @@ const Provider = ({ children }) => {
       .getAll()
       .then(({ success, leaves, error }) => {
         if (success) {
+          console.log(leaves);
           dispatch({
             type: types.FETCH_LEAVES_SUCCESS,
             payload: leaves,

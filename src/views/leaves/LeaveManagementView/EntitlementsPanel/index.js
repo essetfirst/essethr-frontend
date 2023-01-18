@@ -9,7 +9,6 @@ import {
   ButtonGroup,
   Dialog,
   DialogContent,
-  Divider,
   Grid,
   MenuItem,
   TextField,
@@ -22,42 +21,58 @@ import useOrg from "../../../../providers/org";
 
 import arrayToMap from "../../../../utils/arrayToMap";
 import TableComponent from "../../../../components/TableComponent";
+import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 
-const AllocateAllowanceDialog = ({
-  open,
-  onClose,
-  employees,
-  leaveTypes,
-  onSubmit,
-}) => {
+const AllocateAllowanceDialog = ({ open, onClose, employees, onSubmit }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogContent>
         <Box p={2}>
-          <Typography variant="h3" align="center" gutterBottom>
-            Allocate leave balance
+          <Typography
+            variant="h3"
+            align="center"
+            style={{ fontFamily: "Poppins" }}
+          >
+            Allocate Allowance
           </Typography>
-          <Divider />
         </Box>
 
         <Formik
           initialValues={{
             employeeId: -1,
-            leaveType: -1,
-            days: 0,
+            // leaveType: -1,
+            // days: 0,
           }}
           validationSchema={Yup.object().shape({
             employeeId: Yup.string()
               .required("'Employee id' is required")
               .notOneOf([-1], "'Employee id' is required"),
-            leaveType: Yup.string()
-              .required("'Leave type' is required")
-              .notOneOf([-1], "'Employee id' is required"),
+            // leaveType: Yup.string()
+            //   .required("'Leave type' is required")
+            //   .notOneOf([-1], "'Employee id' is required"),
             // days: Yup.number().positive(
             //   "'Balance in days' can not be negative"
             // ),
           })}
-          onSubmit={onSubmit}
+          onSubmit={async (
+            values,
+            { setSubmitting, setErrors, setStatus, resetForm }
+          ) => {
+            try {
+              await onSubmit(values);
+              resetForm();
+              onClose();
+            } catch (err) {
+              console.log(err);
+              setStatus({ success: false });
+
+              if (err.response) {
+                setErrors({ submit: err.response.data.message });
+              } else {
+                setErrors({ submit: err.message });
+              }
+            }
+          }}
         >
           {({
             errors,
@@ -71,7 +86,7 @@ const AllocateAllowanceDialog = ({
               <form onSubmit={handleSubmit}>
                 <Box p={2}>
                   <Grid container spacing={2}>
-                    <Grid item sm={12} lg={6}>
+                    <Grid item sm={12} lg={12}>
                       <TextField
                         fullWidth
                         select
@@ -92,27 +107,6 @@ const AllocateAllowanceDialog = ({
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid item sm={12} lg={6}>
-                      <TextField
-                        fullWidth
-                        select
-                        error={Boolean(touched.leaveType && errors.leaveType)}
-                        helperText={touched.leaveType && errors.leaveType}
-                        label="Employee"
-                        name="leaveType"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.leaveType}
-                        variant="outlined"
-                      >
-                        <MenuItem value={-1}>Choose leave type</MenuItem>
-                        {leaveTypes.map(({ name }) => (
-                          <MenuItem value={name} key={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
                     <Grid item sm={12}>
                       <Box mt={1}>
                         <Button
@@ -120,9 +114,7 @@ const AllocateAllowanceDialog = ({
                           variant="contained"
                           color="primary"
                           onClick={handleSubmit}
-                          disabled={
-                            values.employeeId === -1 || values.leaveType === -1
-                          }
+                          disabled={values.employeeId === -1}
                           style={{ marginBottom: "16px" }}
                         >
                           Allocate
@@ -146,8 +138,6 @@ const AllocateAllowanceDialog = ({
 const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   const { org } = useOrg();
 
-  console.log("[EntitlementsPanel]: Line 185 -> state: ", state);
-
   const employeesMap = arrayToMap(org.employees || [], "_id");
 
   const [allocateDialogOpen, setAllocateDialogOpen] = React.useState(false);
@@ -156,7 +146,6 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
     setAllocateDialogOpen(true);
   };
   const handleAllocateAllowance = async (allowanceInfo) => {
-    console.log("Allowance info: ", allowanceInfo);
     const { employeeId } = allowanceInfo;
     try {
       const { success, error } = await API.leaves.allowances.allocate({
@@ -170,7 +159,6 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   };
 
   React.useEffect(() => {
-    // console.log("Allowances state: ", state);
     onFetchAllowances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -186,11 +174,11 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   //   { _id: 2, name: "Endalk Hussien" },
   // ];
 
-  const leaveTypes = [
-    { name: "Annual", key: "annual", duration: 16 },
-    { name: "Special", key: "special", duration: 3 },
-    { name: "Maternal", key: "maternal", duration: 30 },
-  ];
+  // const leaveTypes = [
+  //   { name: "Annual", key: "annual", duration: 16 },
+  //   { name: "Special", key: "special", duration: 3 },
+  //   { name: "Maternal", key: "maternal", duration: 30 },
+  // ];
 
   return (
     <div>
@@ -202,6 +190,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
             size="small"
             onClick={handleAllocateClick}
             aria-label="allocate leave balance"
+            startIcon={<AddCircleRoundedIcon />}
           >
             Allocate Balance
           </Button>
@@ -211,7 +200,6 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
         open={allocateDialogOpen}
         onClose={handleAllocateDialogClose}
         employees={employees}
-        leaveTypes={leaveTypes}
         onSubmit={handleAllocateAllowance}
       />
       {/* Summary usage and leave by type */}

@@ -85,6 +85,7 @@ const Provider = ({ children, persistKey = "auth" }) => {
           localStorage.clear();
           dispatch({ type: "LOGOUT_SUCCESS" });
         } else {
+          dispatch({ type: "LOGIN_ERROR", error: "Something went wrong" });
         }
       })
       .catch((e) => {

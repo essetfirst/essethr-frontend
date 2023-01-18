@@ -1,10 +1,6 @@
 import * as Yup from "yup";
 
-export const leaveFormFields = ({
-  employeeOptions,
-  leaveTypeOptions,
-  durationOptions,
-}) => [
+export const leaveFormFields = ({ employeeOptions, leaveTypeOptions }) => [
   {
     label: "Employee Id",
     name: "employeeId",
@@ -20,7 +16,7 @@ export const leaveFormFields = ({
       .required("Choose employee"),
     select: true,
     selectOptions: employeeOptions,
-    GridProps: { sm: 12 },
+    GridProps: { sm: 12, md: 6 },
   },
 
   {
@@ -39,24 +35,6 @@ export const leaveFormFields = ({
       .required("Choose a valid leave type"),
     select: true,
     selectOptions: leaveTypeOptions,
-    GridProps: { sm: 12, md: 6 },
-  },
-  {
-    label: "Duration",
-    name: "duration",
-    required: true,
-    defaultValue: -1,
-    validation: Yup.number()
-      .oneOf(
-        durationOptions
-          .filter((lt) => lt.value !== -1)
-          .map(({ value }) => value),
-        "Specify how long are you going to be out? "
-      )
-      // .notOneOf(-1, "Choose duration")
-      .required("Specify duration please"),
-    select: true,
-    selectOptions: durationOptions,
     GridProps: { sm: 12, md: 6 },
   },
   {

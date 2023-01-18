@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     width: "35ch",
     background: theme.palette.background.paper,
   },
+  dialog: {
+    backdropFilter: "blur(5px)",
+  },
 }));
 
 const HolidayList = ({
@@ -112,7 +115,13 @@ const HolidayList = ({
             Create
           </Button>
         </ButtonGroup>
-        <Dialog open={formDialogOpen} onClose={handleDialogClose}>
+        <Dialog
+          open={formDialogOpen}
+          onClose={handleDialogClose}
+          fullWidth
+          maxWidth="sm"
+          className={classes.dialog}
+        >
           <DialogContent>
             <HolidayForm
               holiday={holidaysMap[selectedHoliday]}

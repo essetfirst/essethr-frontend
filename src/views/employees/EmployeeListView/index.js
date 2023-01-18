@@ -42,7 +42,7 @@ const types = {
 
 const initialState = {
   employees: [],
-  isFetching: false,
+  isLoading: false,
   error: null,
 };
 
@@ -50,11 +50,11 @@ const reducer = (state, action) => {
   const { type, payload, error } = action;
   switch (type) {
     case types.FETCH_EMPLOYEES:
-      return { ...state, isFetching: true, error: null };
+      return { ...state, isLoading: true, error: null };
     case types.RECEIVE_EMPLOYEES:
-      return { ...state, employees: payload, isFetching: false, error: null };
+      return { ...state, employees: payload, isLoading: false, error: null };
     case types.FETCHING_ERROR:
-      return { ...state, isFetching: false, error };
+      return { ...state, isLoading: false, error };
     default:
       return state;
   }
@@ -319,7 +319,7 @@ const EmployeeListView = () => {
     dispatch({
       type: types.RECEIVE_EMPLOYEES,
       payload: sortedEmployees,
-      isFetching: false,
+      isLoading: false,
       error: null,
     });
   };
@@ -335,7 +335,7 @@ const EmployeeListView = () => {
       dispatch({
         type: types.RECEIVE_EMPLOYEES,
         payload: org.employees,
-        isFetching: false,
+        isLoading: false,
         error: null,
       });
   }, [org, org.employees]);
@@ -451,6 +451,7 @@ const EmployeeListView = () => {
           onTransferClicked={handleTransferClick}
           onDeleteClicked={handleDeleteClickDialog}
           onMultipleDeleteClicked={handleDeleteMultipleClick}
+          requestState={state}
         />
       ) : (
         <ResultsGrid

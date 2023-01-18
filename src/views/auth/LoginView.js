@@ -16,10 +16,11 @@ import {
   makeStyles,
   CircularProgress,
   IconButton,
+  Avatar,
 } from "@material-ui/core";
-
 import Collapse from "@material-ui/core/Collapse";
 import CloseIcon from "@material-ui/icons/Close";
+import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,11 +31,22 @@ const useStyles = makeStyles((theme) => ({
   },
   iconButton: {
     padding: theme.spacing(1),
-    backgroundColor: "transparent",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  card: {
+    maxWidth: 400,
+    margin: "auto",
+    marginTop: theme.spacing(9),
+    paddingBottom: theme.spacing(2),
+    borderRadius: "10px",
+  },
 
-    "&:hover": {
-      backgroundColor: "transparent",
-    },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -51,11 +63,13 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="/">
-        esset HR
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
+      <strong>
+        <Link color="inherit" href="/">
+          esset HR
+        </Link>{" "}
+        {new Date().getFullYear()}
+        {"."}
+      </strong>
     </Typography>
   );
 }
@@ -72,7 +86,7 @@ const LoginView = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        minHeight="70vh"
+        height="75%"
       >
         <Container maxWidth="sm">
           <Formik
@@ -87,7 +101,7 @@ const LoginView = () => {
             })}
             onSubmit={(values) => {
               login(values, () => {
-                navigate("/");
+                navigate("/app/dashboard", { replace: true });
               });
             }}
           >
@@ -100,9 +114,12 @@ const LoginView = () => {
               handleSubmit,
               setFieldValue,
             }) => (
-              <form onSubmit={handleSubmit}>
-                <Box mb={3}>
-                  <Typography color="textPrimary" variant="h1">
+              <form onSubmit={handleSubmit} className={classes.form}>
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon style={{ color: "#fff" }} />
+                  </Avatar>
+                  <Typography color="textPrimary" variant="h2">
                     Sign in
                   </Typography>
                   <Typography
@@ -131,7 +148,7 @@ const LoginView = () => {
                             </IconButton>
                           }
                         >
-                          Incorrect email or password
+                          {auth.error}
                         </Alert>
                       </Collapse>
                     </Box>

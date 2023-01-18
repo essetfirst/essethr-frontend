@@ -10,10 +10,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import PhoneIcon from "@material-ui/icons/Phone";
 import PrintIcon from "@material-ui/icons/Print";
-import LoadingComponent from "../../../components/LoadingComponent";
 
 const ResultsTable = ({
-  state,
   org,
   onSortParamsChange,
   employees = [],
@@ -46,9 +44,10 @@ const ResultsTable = ({
     });
   };
 
+  console.log("employees", org);
   return (
     <>
-      {employees.length === 0 && (
+      {/* {employees.length === 0 && (
         <Box
           display="flex"
           flexDirection="column"
@@ -62,147 +61,148 @@ const ResultsTable = ({
             </Box>
           </Typography>
         </Box>
-      )}
+      )} */}
 
-      {employees.length > 0 && (
-        <>
-          <TableComponent
-            size="small"
-            columns={[
-              {
-                label: "Full NAME",
-                field: "firstName",
-                renderCell: ({ _id, firstName, surName, phone }) => (
-                  <Box display="flex" alignItems="center">
-                    <CustomAvatar color="secondary" size="1">
-                      {`${firstName ? firstName.charAt(0) : ""}${
-                        surName ? surName.charAt(0) : ""
-                      }`}
-                    </CustomAvatar>
-                    <div>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        component={Link}
-                        onClick={() => onViewClicked(_id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {`${firstName} ${surName}`}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        <PhoneIcon
-                          fontSize="small"
-                          size="16"
-                          style={{ verticalAlign: "middle", marginRight: 5 }}
-                        />
-                        {phone}
-                      </Typography>
-                    </div>
-                  </Box>
-                ),
-              },
-              {
-                label: "Job Title",
-                field: "position",
-                renderCell: ({ position }) => (
-                  <Typography variant="h6">
-                    {(positionsMap[position] || {}).title || "N/A"}
-                  </Typography>
-                ),
-              },
-              {
-                label: "SALARY",
-                field: "salary",
-                sortable: false,
-                renderCell: ({ position }) => (
-                  <Typography variant="h6">
-                    {parseFloat(
-                      (positionsMap[position] || {}).salary || 0
-                    ).toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "ETB",
-                    })}
-                  </Typography>
-                ),
-              },
+      {/* {employees.length > 0 && ( */}
+      <>
+        <TableComponent
+          size="small"
+          columns={[
+            {
+              label: "Full NAME",
+              field: "firstName",
+              renderCell: ({ _id, firstName, surName, phone }) => (
+                <Box display="flex" alignItems="center">
+                  <CustomAvatar color="secondary" size="1">
+                    {`${firstName ? firstName.charAt(0) : ""}${
+                      surName ? surName.charAt(0) : ""
+                    }`}
+                  </CustomAvatar>
+                  <div>
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      component={Link}
+                      onClick={() => onViewClicked(_id)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {`${firstName} ${surName}`}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      <PhoneIcon
+                        fontSize="small"
+                        size="16"
+                        style={{ verticalAlign: "middle", marginRight: 5 }}
+                      />
+                      {phone}
+                    </Typography>
+                  </div>
+                </Box>
+              ),
+            },
+            {
+              label: "Job Title",
+              field: "position",
+              renderCell: ({ position }) => (
+                <Typography variant="h6">
+                  {(positionsMap[position] || {}).title || "N/A"}
+                </Typography>
+              ),
+            },
+            {
+              label: "SALARY",
+              field: "salary",
+              sortable: false,
+              renderCell: ({ position }) => (
+                <Typography variant="h6">
+                  {parseFloat(
+                    (positionsMap[position] || {}).salary || 0
+                  ).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "ETB",
+                  })}
+                </Typography>
+              ),
+            },
 
-              {
-                label: "Hired",
-                field: "hireDate",
-                renderCell: ({ hireDate }) => (
-                  <Typography variant="h6">
-                    {moment(hireDate).format("MMM DD,  Y")} (
-                    {moment(hireDate).fromNow()})
-                  </Typography>
-                ),
+            {
+              label: "Hired",
+              field: "hireDate",
+              renderCell: ({ hireDate }) => (
+                <Typography variant="h6">
+                  {moment(hireDate).format("MMM DD,  Y")} (
+                  {moment(hireDate).fromNow()})
+                </Typography>
+              ),
+            },
+            {
+              label: "STATUS",
+              renderCell: ({ status, endDate, hireDate }) => {
+                const eStatus =
+                  status ||
+                  (!hireDate
+                    ? "on probation"
+                    : endDate === undefined || !endDate
+                    ? "active"
+                    : "terminated");
+                return (
+                  <Chip
+                    size="small"
+                    color={
+                      eStatus === "on probation"
+                        ? "default"
+                        : eStatus === "terminated"
+                        ? "error"
+                        : eStatus === "active"
+                        ? "primary"
+                        : "secondary"
+                    }
+                    label={eStatus}
+                  />
+                );
               },
-              {
-                label: "STATUS",
-                renderCell: ({ status, endDate, hireDate }) => {
-                  const eStatus =
-                    status ||
-                    (!hireDate
-                      ? "on probation"
-                      : endDate === undefined || !endDate
-                      ? "active"
-                      : "terminated");
-                  return (
-                    <Chip
-                      size="small"
-                      color={
-                        eStatus === "on probation"
-                          ? "default"
-                          : eStatus === "terminated"
-                          ? "error"
-                          : eStatus === "active"
-                          ? "primary"
-                          : "secondary"
-                      }
-                      label={eStatus}
-                    />
-                  );
-                },
-              },
-            ]}
-            data={employees || []}
-            rowActions={[
-              {
-                icon: <VisibilityIcon fontSize="small" color="primary" />,
-                label: "View Details",
-                handler: ({ _id }) => onViewClicked(_id),
-              },
-              {
-                icon: <EditIcon fontSize="small" style={{ color: "orange" }} />,
-                label: "Edit Details",
-                handler: ({ _id }) => onEditClicked(_id),
-              },
+            },
+          ]}
+          data={employees || []}
+          rowActions={[
+            {
+              icon: <VisibilityIcon fontSize="small" color="primary" />,
+              label: "View Details",
+              handler: ({ _id }) => onViewClicked(_id),
+            },
+            {
+              icon: <EditIcon fontSize="small" style={{ color: "orange" }} />,
+              label: "Edit Details",
+              handler: ({ _id }) => onEditClicked(_id),
+            },
 
-              {
-                icon: <DeleteIcon fontSize="small" color="error" />,
-                label: "Delete Employee",
-                handler: ({ _id }) => onDeleteClicked(_id),
-              },
-            ]}
-            selectionEnabled={true}
-            selectionActions={[
-              {
-                label: "Print IDs",
-                handler: (selected) => handlePrintAll(selected),
-                icon: <PrintIcon />,
-                size: "small",
-              },
-              {
-                label: "Delete all",
-                handler: (selected) => handleDeleteAll(selected),
-                icon: <DeleteIcon />,
-                size: "small",
-              },
-            ]}
-            onSortParamsChange={onSortParamsChange}
-            {...rest}
-          />
-        </>
-      )}
+            {
+              icon: <DeleteIcon fontSize="small" color="error" />,
+              label: "Delete Employee",
+              handler: ({ _id }) => onDeleteClicked(_id),
+            },
+          ]}
+          selectionEnabled={true}
+          selectionActions={[
+            {
+              label: "Print IDs",
+              handler: (selected) => handlePrintAll(selected),
+              icon: <PrintIcon />,
+              size: "small",
+            },
+            {
+              label: "Delete all",
+              handler: (selected) => handleDeleteAll(selected),
+              icon: <DeleteIcon />,
+              size: "small",
+            },
+          ]}
+          onSortParamsChange={onSortParamsChange}
+          requestState={requestState}
+          {...rest}
+        />
+      </>
+      {/* )} */}
 
       <div style={{ display: "none" }}>
         <PrintableMultipleEmployeeIDCards

@@ -33,7 +33,7 @@ const List = ({
   onEditLeaveClicked,
   onApproveLeaveClicked,
   onDeleteLeaveClicked,
-  onSortParamChange,
+  // onSortParamChange,
 }) => {
   return (
     <>
@@ -122,7 +122,7 @@ const List = ({
         data={leaves || []}
         selectionEnabled={true}
         requestState={{ requesting, error, onRetry }}
-        onSortParamChange={onSortParamChange}
+        // onSortParamChange={onSortParamChange}
         rowActions={[
           {
             label: "Approve Leave",

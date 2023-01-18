@@ -105,17 +105,15 @@ const Provider = ({ children }) => {
     API.attendance
       .approveAttendance({ employees, date })
       .then(({ success, message, error }) => {
-        notify({ success, message, error });
-        fetchAttendance(date, date);
+        if (success) {
+          fetchAttendance();
+          notify({ message });
+        } else {
+          notify({ message: error });
+        }
       })
       .catch((e) => {
-        // console.error(e);
-        // Show notification of failure
-        notify({
-          severe: true,
-          error: categorizeError(e),
-          retry: () => approveAttendance(employees, date, notify),
-        });
+        notify({ message: e.error });
       });
   };
 

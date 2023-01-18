@@ -17,11 +17,9 @@ export const lightTheme = createMuiTheme({
     },
 
     text: {
-      primary: colors.blueGrey[900],
-      secondary: colors.blueGrey[600],
+      primary: colors.blueGrey[800],
+      secondary: colors.blueGrey[500],
     },
-
-    divider: colors.grey[300],
   },
   shape: {
     borderRadius: 8,
@@ -35,6 +33,7 @@ export const lightTheme = createMuiTheme({
         borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
       },
     },
+
     MuiOutlinedInput: {
       root: {
         "& $notchedOutline": {
@@ -66,14 +65,19 @@ export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     background: {
-      default: colors.blueGrey[900],
-      paper: colors.blueGrey[800],
+      default: "#171c24",
+      paper: "#222b36",
     },
     primary: {
-      main: colors.blueGrey[600],
+      main: colors.blueGrey[700],
     },
     secondary: {
-      main: colors.deepOrange[50],
+      main: colors.deepOrange[400],
+    },
+
+    text: {
+      primary: colors.blueGrey[200],
+      secondary: colors.blueGrey[200],
     },
   },
 
@@ -82,6 +86,7 @@ export const darkTheme = createMuiTheme({
   },
 
   responsiveFontSizes: true,
+
   overrides: {
     MuiTableCell: {
       root: {

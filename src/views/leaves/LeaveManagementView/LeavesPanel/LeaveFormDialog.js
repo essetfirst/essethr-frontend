@@ -109,7 +109,7 @@ LeaveFormDialog.propTypes = {
   leaveTypes: PropTypes.array,
   durations: PropTypes.array,
   onSubmit: PropTypes.func,
-  submitActionButtonLabel: PropTypes.string,
+  submitActionButtonLabel: PropTypes.object,
 };
 
 export default LeaveFormDialog;

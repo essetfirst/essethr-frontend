@@ -293,6 +293,7 @@ const LeavesPanel = ({
 
       {/* Filter bar */}
       <Filterbar
+        key={filters}
         filters={filters}
         onFilterChange={handleFilterChange}
         onReset={handleFiltersReset}

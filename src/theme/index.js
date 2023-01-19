@@ -65,9 +65,10 @@ export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     background: {
-      default: "#171c24",
-      paper: "#222b36",
+      default: colors.blueGrey[900],
+      paper: colors.blueGrey[800],
     },
+
     primary: {
       main: colors.blueGrey[700],
     },
@@ -76,7 +77,7 @@ export const darkTheme = createMuiTheme({
     },
 
     text: {
-      primary: colors.blueGrey[200],
+      primary: colors.blueGrey[100],
       secondary: colors.blueGrey[200],
     },
   },

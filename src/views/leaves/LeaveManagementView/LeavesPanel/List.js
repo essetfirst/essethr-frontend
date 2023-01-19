@@ -62,13 +62,7 @@ const List = ({
             field: "duration",
             label: "Duration",
             renderCell: ({ duration }) => (
-              <Typography>
-                {duration === 1
-                  ? "A day"
-                  : duration === 0.5
-                  ? "Half a day"
-                  : `${duration} days`}
-              </Typography>
+              <Typography variant="h6">{duration}</Typography>
             ),
           },
           {

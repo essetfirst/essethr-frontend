@@ -34,6 +34,10 @@ const LeaveBalancesReportView = () => {
   const employeeMap = arrayToMap(org.employees, "_id");
 
   React.useEffect(() => {
+    console.log(
+      "fetching leave allowances",
+      state.fetchLeaveAllowances.allowances[0]
+    );
     fetchLeaveAllowances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -56,9 +60,13 @@ const LeaveBalancesReportView = () => {
         label: "Maternity Used",
         field: "maternal",
       },
+      {
+        label: "Total Remaining",
+        field: "remaining",
+      },
     ];
 
-    const data = state.fetchLeaveAllowances.allowances.map((item) => {
+    const data = state.fetchLeaveAllowances.allowances[0].map((item) => {
       return {
         employeeId: `${employeeMap[item.employeeId].firstName} ${
           employeeMap[item.employeeId].lastName
@@ -66,6 +74,7 @@ const LeaveBalancesReportView = () => {
         annual: item.used.annual,
         special: item.used.special,
         maternal: item.used.maternal,
+        remaining: item.remaining,
       };
     });
     const tableData = getTableDataForExport(data, columns);
@@ -147,8 +156,19 @@ const LeaveBalancesReportView = () => {
               );
             },
           },
+          {
+            label: "Total Remaining",
+            field: "remaining",
+            renderCell: ({ remaining }) => {
+              return (
+                <Box display="flex" alignItems="center">
+                  <Typography variant="body2">{remaining}</Typography>
+                </Box>
+              );
+            },
+          },
         ]}
-        data={(state.fetchLeaveAllowances.allowances || []).filter(
+        data={(state.fetchLeaveAllowances.allowances[0] || []).filter(
           (item) =>
             `${employeeMap[item.employeeId]?.firstName} ${
               employeeMap[item.employeeId]?.lastName

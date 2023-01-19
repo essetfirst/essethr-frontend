@@ -159,6 +159,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   };
 
   React.useEffect(() => {
+    console.log("Fetching allowances", state.allowances[0]);
     onFetchAllowances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -169,16 +170,6 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
       name: `${firstName} ${surName} ${lastName}`,
     })
   );
-  // const employees = [
-  //   { _id: 1, name: "Abraham Gebrekidan" },
-  //   { _id: 2, name: "Endalk Hussien" },
-  // ];
-
-  // const leaveTypes = [
-  //   { name: "Annual", key: "annual", duration: 16 },
-  //   { name: "Special", key: "special", duration: 3 },
-  //   { name: "Maternal", key: "maternal", duration: 30 },
-  // ];
 
   return (
     <div>
@@ -233,31 +224,19 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
             label: "Allocated",
             align: "center",
             renderCell: ({ allocated }) => {
-              const allocatedTotal =
-                allocated.annual + allocated.maternal + allocated.special;
-              return <Typography variant="h6">{allocatedTotal}</Typography>;
+              const { annual, special, maternal } = allocated;
+              return (
+                <Typography variant="h6">
+                  {annual + special + maternal}
+                </Typography>
+              );
             },
           },
           {
             label: "Remaining",
             align: "center",
-            renderCell: ({ allocated, remaining }) => {
-              const remainingTotal =
-                allocated.annual + allocated.maternal + allocated.special
-                  ? allocated.annual +
-                    allocated.maternal +
-                    allocated.special -
-                    (allocated.annual
-                      ? allocated.annual
-                      : allocated.maternal
-                      ? allocated.maternal
-                      : allocated.special)
-                  : 0;
-              return (
-                <Typography variant="h6">
-                  {remaining ? remainingTotal : 0}
-                </Typography>
-              );
+            renderCell: ({ remaining }) => {
+              return <Typography variant="h6">{remaining}</Typography>;
             },
           },
           {
@@ -285,7 +264,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
             ),
           },
         ]}
-        data={state.allowances}
+        data={state.allowances[0] || []}
         selectionEnabled
       />
     </div>

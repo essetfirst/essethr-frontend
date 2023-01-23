@@ -26,7 +26,7 @@ import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { Repeat as RetryIcon } from "@material-ui/icons";
 import { ThreeDots } from "react-loading-icons";
 import moment from "moment";
-import PerfectScrollbar from "react-perfect-scrollbar";
+// import PerfectScrollbar from "react-perfect-scrollbar";
 
 const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
 const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
@@ -465,22 +465,20 @@ const PayrollGenerateView = () => {
                   elevation={0}
                   style={{ height: "99%", overflow: "auto" }}
                 >
-                  <PerfectScrollbar>
-                    <Box p={2}>
-                      <Typography variant="subtitle2" gutterBottom>
-                        Employees in payroll
-                      </Typography>
-                      <Divider />
-                      <EmployeeSelect
-                        employees={values.employees}
-                        onSelectionChange={(selection) =>
-                          handleChange({
-                            target: { name: "employees", value: selection },
-                          })
-                        }
-                      />
-                    </Box>
-                  </PerfectScrollbar>
+                  <Box p={2}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Employees in payroll
+                    </Typography>
+                    <Divider />
+                    <EmployeeSelect
+                      employees={values.employees}
+                      onSelectionChange={(selection) =>
+                        handleChange({
+                          target: { name: "employees", value: selection },
+                        })
+                      }
+                    />
+                  </Box>
                 </Paper>
               </Grid>
 

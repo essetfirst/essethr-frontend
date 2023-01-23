@@ -150,7 +150,6 @@ const EmployeeListView = () => {
 
   const handleDeleteClickDialog = (_id) => {
     const employee = employeesMap[_id];
-    console.log(employee._id);
     setSelectedEmployee(employee._id);
     handleDeleteDialogOpen();
   };

@@ -65,8 +65,14 @@ const Provider = ({ children, persistKey = "auth" }) => {
       .then(({ success, user, token, message, error }) => {
         if (success) {
           localStorage.setItem(persistKey, JSON.stringify({ user, token }));
-          dispatch({ type: "LOGIN_SUCCESS", payload: { user, token } });
+          dispatch({
+            type: "LOGIN_SUCCESS",
+            payload: { user, token },
+            message,
+          });
+          console.log("Login success: ", { user, token });
         } else {
+          console.error(error);
           dispatch({ type: "LOGIN_ERROR", error: error });
         }
       })
@@ -82,7 +88,8 @@ const Provider = ({ children, persistKey = "auth" }) => {
       .logout()
       .then(({ success }) => {
         if (success) {
-          localStorage.clear();
+          localStorage.removeItem(persistKey);
+          localStorage.removeItem("org");
           dispatch({ type: "LOGOUT_SUCCESS" });
         } else {
           dispatch({ type: "LOGIN_ERROR", error: "Something went wrong" });

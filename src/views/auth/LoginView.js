@@ -45,8 +45,11 @@ const useStyles = makeStyles((theme) => ({
   },
 
   form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
+    height: "60vh",
   },
 }));
 
@@ -82,12 +85,7 @@ const LoginView = () => {
 
   return (
     <Page className={classes.root} title="Login">
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="75%"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center">
         <Container maxWidth="sm">
           <Formik
             initialValues={{
@@ -216,17 +214,17 @@ const LoginView = () => {
                 <Box display="flex" justifyContent="center">
                   <Typography color="textSecondary" variant="body1">
                     Don&apos;t have an account?{" "}
-                    <Link component={RouterLink} to="/signup" variant="h5">
+                    <Link component={RouterLink} to="/signup" variant="h6">
                       Sign up
                     </Link>
                   </Typography>
                 </Box>
+                <Box mt={2}>
+                  <Copyright />
+                </Box>
               </form>
             )}
           </Formik>
-          <Box mt={2}>
-            <Copyright />
-          </Box>
         </Container>
       </Box>
     </Page>

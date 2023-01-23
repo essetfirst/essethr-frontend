@@ -38,7 +38,6 @@ const CreateOrgView = ({ org }) => {
   const navigate = useNavigate();
 
   const { auth } = useAuth();
-  console.log("[CreateOrgView]: Line 41 -> auth data: ", auth);
 
   const [response, setResponse] = React.useState("");
   const [error, setError] = React.useState(false);
@@ -120,7 +119,6 @@ const CreateOrgView = ({ org }) => {
               address: Yup.string().required("Address is required"),
             })}
             onSubmit={(values) => {
-              console.log(values);
               handleSubmit(values);
             }}
           >

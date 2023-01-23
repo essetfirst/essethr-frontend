@@ -76,7 +76,6 @@ const UserListView = () => {
   }
 
   React.useEffect(() => {
-    console.log("fetching users", auth);
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -243,7 +242,6 @@ const UserListView = () => {
           {
             label: "Edit",
             handler: ({ _id }) => {
-              console.log(`-> Line 260: Editing user ${_id}...`);
             },
             hide: ({ _id }) => userAttribute[_id],
             color: "primary",
@@ -252,7 +250,6 @@ const UserListView = () => {
           {
             label: "Cancel",
             handler: ({ _id }) => {
-              console.log(`-> Line 260: Cancelling changes on user ${_id}...`);
               setUserAttribute({});
             },
             hide: ({ _id }) => userAttribute[_id],
@@ -264,7 +261,6 @@ const UserListView = () => {
           {
             label: "Apply",
             handler: ({ _id }) => {
-              console.log(`-> Line 260: Applying changes on user ${_id}...`);
               handleApplyChanges(_id);
             },
             hide: ({ _id }) => userAttribute[_id],

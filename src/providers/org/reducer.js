@@ -41,7 +41,6 @@ export const reducer = (state, action) => {
 
     /******* Employees state ************************/
     case types.ADD_EMPLOYEE:
-      console.log("Employee payload: ", payload);
       return {
         ...state,
         org: { ...state.org, employees: [...state.org.employees, payload] },
@@ -49,9 +48,7 @@ export const reducer = (state, action) => {
         error: null,
       };
     case types.UPDATE_EMPLOYEE:
-      console.log("Employee payload: ", payload);
       var eIndex = state.org.employees.findIndex((v) => v._id === payload._id);
-      console.log("dIndex: ", eIndex);
       return {
         ...state,
         org: {
@@ -88,7 +85,6 @@ export const reducer = (state, action) => {
 
     /******* Departments state ************************/
     case types.ADD_DEPARTMENT:
-      console.log("Dept payload: ", payload);
       return {
         ...state,
         org: { ...state.org, departments: [...state.org.departments, payload] },
@@ -97,11 +93,9 @@ export const reducer = (state, action) => {
       };
 
     case types.UPDATE_DEPARTMENT:
-      console.log("payload: ", payload);
       var dIndex = state.org.departments.findIndex(
         (v) => v._id === payload._id
       );
-      console.log("dIndex: ", dIndex);
       return {
         ...state,
         org: {

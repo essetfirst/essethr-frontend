@@ -105,7 +105,6 @@ const OrgListView = () => {
   }, []);
 
   function deleteOrg(orgId) {
-    console.log(orgId);
     dispatch({ type: types.REQUESTING });
     API.orgs
       .deleteById(orgId)

@@ -10,7 +10,6 @@ const EmployeeDistributionByDepartment = ({
   employees = [],
   departmentsMap = {},
 }) => {
-  console.log("Departments map: ", departmentsMap);
 
   const defaultDistribution = Object.keys(departmentsMap).reduce(
     (prev, next) => ({ ...prev, [next]: 0 }),

@@ -55,7 +55,6 @@ const ImportDataFile = ({ acceptedFileTypes, onReadSelectedFile }) => {
   };
 
   const handleFileRead = async (files) => {
-    console.log("[ImportDataFile]: Line 60 -> files: ", files);
     setState({
       ...state,
       isImporting: true,
@@ -75,7 +74,6 @@ const ImportDataFile = ({ acceptedFileTypes, onReadSelectedFile }) => {
       message,
       selectedFile: files && files[0],
     });
-    console.log("[ImportDataFile]: Line 81 -> state: ", state);
   };
 
   return (

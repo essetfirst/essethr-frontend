@@ -63,7 +63,6 @@ const AllocateAllowanceDialog = ({ open, onClose, employees, onSubmit }) => {
               resetForm();
               onClose();
             } catch (err) {
-              console.log(err);
               setStatus({ success: false });
 
               if (err.response) {
@@ -159,7 +158,6 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   };
 
   React.useEffect(() => {
-    console.log("Fetching allowances", state.allowances[0]);
     onFetchAllowances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

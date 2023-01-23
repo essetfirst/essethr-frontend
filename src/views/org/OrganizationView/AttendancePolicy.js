@@ -123,7 +123,6 @@ const AttendancePolicy = ({
         if (success) {
           setEditMode(false);
           updateOrg({ attendancePolicy: policyState });
-          console.log({ policyState });
 
           notify({
             message: message,

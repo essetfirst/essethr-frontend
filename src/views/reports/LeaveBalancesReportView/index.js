@@ -27,17 +27,12 @@ const LeaveBalancesReportView = () => {
 
   const handleFilterChange = () => (e) => {
     const { value } = e.target;
-    console.log(value);
     setFilters(value);
   };
 
   const employeeMap = arrayToMap(org.employees, "_id");
 
   React.useEffect(() => {
-    console.log(
-      "fetching leave allowances",
-      state.fetchLeaveAllowances.allowances[0]
-    );
     fetchLeaveAllowances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

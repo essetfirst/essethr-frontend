@@ -92,7 +92,6 @@ const LeaveRequestFormView = ({ employees, onRequestSubmitted }) => {
           from: new Date(values.from._d).toISOString().slice(0, 10),
           to: new Date(values.to._d).toISOString().slice(0, 10),
         };
-        console.log(request);
         onRequestSubmitted(request);
       }}
     >
@@ -257,7 +256,6 @@ const LeaveRequestFormView = ({ employees, onRequestSubmitted }) => {
               endText="End date"
               value={dateRange}
               onChange={(newValue) => {
-                console.log(newValue);
                 setDateRange(newValue);
               }}
               renderInput={(startProps, endProps) => (

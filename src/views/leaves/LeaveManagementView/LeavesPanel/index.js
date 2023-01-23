@@ -162,7 +162,6 @@ const LeavesPanel = ({
   };
 
   const handleEditLeaveClick = (selected) => {
-    console.log("im about to edit", selected);
     setSelectedLeave(state.fetchLeaves.leaves.find((l) => l._id === selected));
     setDialogAction("update");
     handleRequestDialogOpen();
@@ -173,7 +172,6 @@ const LeavesPanel = ({
   };
 
   const handleDeleteLeaveClick = (selected) => {
-    console.log("im about to delete", selected._id);
     onDeleteLeave(selected._id);
   };
   const weekDays = getWeekDates(new Date(), 0);
@@ -219,7 +217,6 @@ const LeavesPanel = ({
     React.useState(false);
 
   const handleDeleteLeaveDialogOpen = (_id) => {
-    console.log("im about to delete", _id);
     setSelectedLeave(state.fetchLeaves.leaves.find((l) => l._id === _id));
 
     setDeleteLeaveDialogOpen(true);
@@ -283,7 +280,7 @@ const LeavesPanel = ({
         action={dialogAction}
         employees={employeeOptions}
         leaveTypes={leaveTypes}
-        durations={durationOptions}
+        // durations={durationOptions}
         leave={selectedLeave}
         onSubmit={dialogAction === "update" ? onUpdateLeave : onRegisterLeave}
       />

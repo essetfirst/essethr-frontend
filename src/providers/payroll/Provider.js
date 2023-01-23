@@ -38,7 +38,6 @@ const fetchPayrollsReducer = (state, action) => {
 
     case types.UPDATE_PAYROLL:
       let uIndex = state.payrolls.findIndex(({ _id }) => _id === payload._id);
-      console.log("Updated index: ", uIndex);
       if (uIndex === -1) {
         return state;
       }

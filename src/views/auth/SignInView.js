@@ -135,7 +135,6 @@ const SignIn = () => {
             password: Yup.string().required("Password is required"),
           })}
           onSubmit={(values) => {
-            console.log(values);
             login(values, () => {
               navigate("/");
             });

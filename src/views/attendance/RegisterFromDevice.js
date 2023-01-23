@@ -28,11 +28,9 @@ const RegisterFromDevice = ({ onRefresh }) => {
   const handleBarcodeScan = React.useCallback(
     (e) => {
       const employeeId = e.detail.code;
-      console.log("After dispatch: ", employeeId);
       const time = e.detail.time || Date.now();
       if (employeeId !== "Enter") {
         const employees = org ? org.employees : [];
-        console.log("Employees: ", employees);
         const stdEmployeeId = parseInt(String(employeeId).replace(/Enter/, ""));
         // if (
         //   !(
@@ -49,7 +47,6 @@ const RegisterFromDevice = ({ onRefresh }) => {
         //   });
         //   return;
         // }
-        console.log("\nEmployee Id: ", stdEmployeeId);
         const { firstName, surName } =
           employees.filter((e) => e.employeeId === stdEmployeeId)[0] || {};
         const register = () => {

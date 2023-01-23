@@ -61,7 +61,6 @@ const CustomReport = () => {
     API[reportType]
       .getReport({ query })
       .then((response) => {
-        console.log(response);
         const { success, report, error } = response;
         success
           ? dispatch({

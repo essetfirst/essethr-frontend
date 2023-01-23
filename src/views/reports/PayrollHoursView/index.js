@@ -160,7 +160,6 @@ const PayrollHoursTable = ({ data, filters }) => {
               .replace(/[\u0300-\u036f]/g, "")
           ).includes(filters);
         } catch (error) {
-          console.log(error);
         }
       })}
       selectionEnabled={true}

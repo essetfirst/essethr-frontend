@@ -51,7 +51,6 @@ const LeaveTypeForm = ({ title, leaveType, onCancel, onSubmit }) => {
           allowDaysFromPast: Yup.boolean(),
         })}
         onSubmit={(values) => {
-          console.log(values);
           onSubmit(values);
         }}
       >

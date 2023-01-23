@@ -67,7 +67,6 @@ const PayrollListView = () => {
               type: types.REQUEST_ERROR,
               error: "Payroll does not exists.",
             });
-        console.log(payrolls);
 
         error && console.error(error);
       })
@@ -89,7 +88,6 @@ const PayrollListView = () => {
 
   const handleFilterChange = () => (e) => {
     const { value } = e.target;
-    console.log(value);
     setFilters(value);
   };
 
@@ -106,7 +104,6 @@ const PayrollListView = () => {
   const handleRowClick = ({ _id }) => navigate("/app/payroll/" + _id);
 
   const handleDeletePayrolls = () => {
-    console.log(selectedPayrolls);
     selectedPayrolls.forEach((_id) => handleDeletePayroll(_id));
   };
   const handleApprovePayrolls = () => {

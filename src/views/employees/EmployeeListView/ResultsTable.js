@@ -44,7 +44,6 @@ const ResultsTable = ({
     });
   };
 
-  console.log("employees", org);
   return (
     <>
       {/* {employees.length === 0 && (

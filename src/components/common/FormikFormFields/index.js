@@ -38,8 +38,6 @@ const FormikFormFields = ({
 
   const defaultFormFieldValue = "";
 
-  console.log("Validation schema: ", validationSchema);
-
   const FormFields = (formikProps) =>
     formFields.map(
       (
@@ -97,13 +95,15 @@ const FormikFormFields = ({
       }
     );
 
-  console.log("Default validation schema: ", defaultValidationSchema);
-
   return (
     <Formik
       enableReinitialize
       initialValues={initialValues || defaultInitialValues}
-      validationSchema={validationSchema !== undefined && validationSchema ? validationSchema : Yup.object(defaultValidationSchema)}
+      validationSchema={
+        validationSchema !== undefined && validationSchema
+          ? validationSchema
+          : Yup.object(defaultValidationSchema)
+      }
       onSubmit={onSubmit}
     >
       {({ handleSubmit, ...rest }) => (

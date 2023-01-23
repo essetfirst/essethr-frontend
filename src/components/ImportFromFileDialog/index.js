@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import { Box, Dialog, DialogContent } from "@material-ui/core";
 
 import { DropzoneArea } from "material-ui-dropzone";
@@ -19,7 +18,6 @@ const ImportJSONFromTabularFileDialog = ({
   };
 
   const handleFileDropAreaChange = (files) => {
-    console.log("Files: ", files);
     if (Array(files).length === 0) {
       return;
     }

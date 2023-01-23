@@ -17,7 +17,12 @@ import useAttendance from "../../../providers/attendance";
 import { ThreeDots } from "react-loading-icons";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    backgroundColor: theme.palette.background.default,
+    minHeight: "100%",
+    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",

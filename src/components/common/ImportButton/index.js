@@ -11,10 +11,6 @@ const ImportButton = ({ onImportFinished, ButtonProps }) => {
   const handleDialogClose = () => { setDialogOpen(false)}
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    console.log(
-      "[ImportButton]: Line 7 -> File submission changed, file info: ",
-      file
-    );
 
     // Call onImportFinished somewhere
   };

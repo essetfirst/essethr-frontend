@@ -77,7 +77,6 @@ const GenerateForm = ({
   onGenerate,
   onCancel,
 }) => {
-  console.log(generateFilters);
   return (
     <Formik
       initialValues={{

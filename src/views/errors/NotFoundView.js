@@ -45,26 +45,25 @@ const NotFoundView = () => {
       >
         <Container maxWidth="md">
           <Box textAlign="center">
-            <div className="notfound">
-              <div className="notfound-404">
-                <Typography
-                  variant="h1"
-                  style={{ fontSize: "150px", color: "#002626" }}
-                >
-                  <span>4</span>
-                  <span>0</span>
-                  <span>4</span>
-                </Typography>
-                <h3>Oops! Page not found</h3>
-              </div>
-            </div>
+            <Typography variant="h1" color="textPrimary">
+              404: The page you are looking for isn’t here
+            </Typography>
+            <Typography variant="subtitle2" color="textSecondary">
+              You either tried some shady route or you came here by mistake.
+              Whichever it is, try using the navigation
+            </Typography>
+            <img
+              alt="Under development"
+              className={classes.image}
+              src={require("../../assets/icons/404.png")}
+            />
           </Box>
           <Box textAlign="center" marginTop={2}>
             <Button
               variant="contained"
               color="primary"
               startIcon={<ArrowBackIcon />}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/app/dashboard", { replace: true })}
             >
               Go Back
             </Button>

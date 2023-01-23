@@ -27,7 +27,7 @@ import EmployeeProfileView from "./views/employees/EmployeeProfileView";
 import AttendanceView from "./views/attendance";
 import LeaveManagementView from "./views/leaves/LeaveManagementView";
 import LeavesView from "./views/leaves/LeavesView";
-import LeaveListView from "./views/leaves/LeaveListView";
+// import LeaveListView from "./views/leaves/LeaveListView";
 import PayrollGenerateView from "./views/payroll/PayrollGenerateView";
 import PayrollDetailsView from "./views/payroll/PayrollDetailsView";
 import PayrollListView from "./views/payroll/PayrollListView";
@@ -114,7 +114,7 @@ const RoutesComponent = () => {
         >
           <Route path="/" element={<LeaveManagementView />} />
           <Route path="/old" element={<LeavesView />} />
-          <Route path="/list" element={<LeaveListView />} />
+          {/* <Route path="/list" element={<LeaveListView />} /> */}
         </PrivateRoute>
 
         <PrivateRoute

@@ -257,7 +257,6 @@ const RegisterAttendanceDialog = ({
             onClose();
           })
           .catch((e) => {
-            console.log(e);
             dispatch({ type: types.REGISTER_REQUEST_FAILURE, error: e });
             notify({
               message: e.error,

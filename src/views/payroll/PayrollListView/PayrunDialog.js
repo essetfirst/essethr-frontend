@@ -101,7 +101,6 @@ const PayrunDialog = ({ open, onClose, onSubmit }) => {
             employee: Yup.number(),
           })}
           onSubmit={(values) => {
-            console.log(values);
           }}
         >
           {({

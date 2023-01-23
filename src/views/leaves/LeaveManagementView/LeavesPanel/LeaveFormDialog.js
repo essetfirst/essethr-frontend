@@ -69,7 +69,7 @@ const LeaveFormDialog = ({
             })}
             submitActionButtonLabel={
               state.isLoading ? (
-                <CircularProgress size={24} />
+                <CircularProgress size={24} color="secondary" />
               ) : action === "register" ? (
                 "Register Leave"
               ) : (
@@ -88,7 +88,6 @@ const LeaveFormDialog = ({
                   duration: computeDateDiff(values.startDate, values.endDate),
                 });
               }
-              handleDialogClose();
               resetForm();
             }}
             onCancel={handleDialogClose}
@@ -109,7 +108,6 @@ LeaveFormDialog.propTypes = {
   leaveTypes: PropTypes.array,
   durations: PropTypes.array,
   onSubmit: PropTypes.func,
-  submitActionButtonLabel: PropTypes.object,
 };
 
 export default LeaveFormDialog;

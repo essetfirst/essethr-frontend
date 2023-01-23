@@ -71,8 +71,9 @@ export function readExcelFile(file) {
         const dataString = XLSX.utils.sheet_to_csv(ws, { header: 1 });
         const result = processTabularData(dataString);
         const { columns, data } = result;
-        console.log("File columns: ", columns);
-        console.log("File data: ", data);
+
+        console.log("columns", columns);
+        console.log("data", data);
         resolve(result);
       };
       reader.readAsBinaryString(file);

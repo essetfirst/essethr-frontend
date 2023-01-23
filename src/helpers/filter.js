@@ -1,7 +1,6 @@
 function filter(list = [], fields) {
   // cmpFn = (v1, v2) => v1 === v2
   return list.filter((element) => {
-    console.log(element);
     let isIncluded = fields.every((field) => {
       const { value, cmpFn } = field;
       let isTrue = false;

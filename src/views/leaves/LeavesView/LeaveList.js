@@ -30,7 +30,6 @@ const LeaveList = ({ leaves }) => {
 
   const handleChange = (event) => {
     const { value } = event.target;
-    console.log("Vhsvdhshdghsgdhsghshfghdghgeybnsbhcbusdghf", value);
     setSearchTerm(value);
   };
 
@@ -102,7 +101,6 @@ const LeaveList = ({ leaves }) => {
                       null.toLowerCase().includes(searchTerm.toLowerCase())
                     );
                   } catch (error) {
-                    console.log(error);
                   }
                 })}
             </TableBody>

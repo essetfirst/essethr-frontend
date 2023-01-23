@@ -205,7 +205,6 @@ const BranchList = () => {
       notify({ success: false, message: "You can not delete main branch." });
       return;
     }
-    console.log("[BranchList]: Line 201 -> We are inside deleteClick, b: ", b);
     // b.length > 0 && setSelectedBranch(b[0]);
     await handleDeleteBranch(_id);
   };

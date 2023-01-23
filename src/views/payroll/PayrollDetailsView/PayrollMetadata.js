@@ -3,6 +3,7 @@ import React from "react";
 import {
   Card,
   CardContent,
+  Chip,
   Grid,
   makeStyles,
   Typography,
@@ -16,10 +17,10 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {},
   textWithBorder: {
-    border: "5px solid #f4f6f8",
-    padding: theme.spacing(2),
-    borderRadius: "5px",
-    marginTop: "10px",
+    border: "1px  solid #e0e0e0",
+    padding: theme.spacing(1),
+    borderRadius: 5,
+    marginTop: "9px",
     fontFamily: "Poppins",
   },
 }));
@@ -34,7 +35,9 @@ const PayrollMetadata = ({ metadata }) => {
     payDate,
     employeesCount,
     totalPayment,
+    status,
   } = metadata;
+
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -63,25 +66,56 @@ const PayrollMetadata = ({ metadata }) => {
               {payDate}
             </Typography>
           </Grid>
-          <Grid item sm={6} align="center" style={{ marginTop: "4.3rem" }}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            align="right"
+            style={{ marginTop: "2.8rem", height: "100%" }}
+          >
             <Grid display="flex">
               <Typography
                 variant="h3"
                 align="right"
                 className={classes.textWithBorder}
               >
-                <strong>{employeesCount}</strong> E m p l o y e e s
+                <strong style={{ marginRight: "6px" }}>
+                  Total Employees :
+                </strong>
+                {employeesCount}
               </Typography>
               <Typography
-                variant="h1"
+                variant="h3"
+                color="inherit"
                 align="right"
                 className={classes.textWithBorder}
-                color="primary"
               >
-                {totalPayment.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "ETB",
-                })}
+                <strong style={{ marginRight: "0.5rem" }}>
+                  Total Payment :
+                </strong>
+                {totalPayment
+                  .toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "ETB",
+                  })
+                  .replace(/\$/g, "")}
+              </Typography>
+              {/* if status is approved, show green dot pill , if not show red dot pill */}
+              <Typography
+                variant="h3"
+                color="inherit"
+                align="right"
+                className={classes.textWithBorder}
+              >
+                <strong style={{ marginRight: "0.5rem" }}>Status :</strong>
+                {status === "approved" ? (
+                  <Chip label="Approved" color="primary" />
+                ) : status === "pending" ? (
+                  <Chip label="Pending" color="secondary" />
+                ) : (
+                  <Chip label="Rejected" color="default" />
+                )}
               </Typography>
             </Grid>
           </Grid>

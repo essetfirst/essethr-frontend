@@ -60,7 +60,6 @@ const PropertyList = ({ propertiesMap }) => {
 
 const GeneralDetails = ({ details }) => {
   const handleEditClick = () => {
-    console.log("Edit button clicked");
   };
 
   return (

@@ -95,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
 
   backdrop: {
     backdropFilter: "blur(5px)",
-    backgroundColor: "#ffffff",
   },
 }));
 
@@ -139,36 +138,29 @@ const OrganizationView = ({ id }) => {
   const orgId = id || params.id || currentOrg;
 
   const fetchOrg = React.useCallback((orgId) => {
-    // start the request
     dispatch({ type: types.REQUESTING });
-
-    // make the API call
     API.orgs
       .getById(orgId)
       .then(({ success, org, error }) => {
         if (success) {
-          // handle the success
           dispatch({ type: types.REQUEST_SUCCESS, payload: org });
         } else {
-          // handle the error
           dispatch({ type: types.REQUEST_ERROR, error });
         }
       })
       .catch((e) => {
-        // handle the error
-        dispatch({
-          type: types.REQUEST_ERROR,
-          error: e.message,
-        });
+        console.log(e);
       });
   }, []);
 
   React.useEffect(() => {
-    if (org) {
-      dispatch({ type: types.REQUEST_SUCCESS, payload: org });
+    if (!orgId) {
+      return;
     }
 
-    if (orgId) {
+    if (org) {
+      dispatch({ type: types.REQUEST_SUCCESS, payload: org });
+    } else {
       fetchOrg(orgId);
     }
   }, [orgId, org, fetchOrg]);
@@ -215,7 +207,7 @@ const OrganizationView = ({ id }) => {
       {state.org && Object.keys(state.org).length === 0 ? (
         <Box display="flex" justifyContent="center">
           <Backdrop open className={classes.backdrop}>
-            <ThreeDots width={100} fill="#009688" />
+            <ThreeDots width={60} fill="#fff" />
           </Backdrop>
         </Box>
       ) : (
@@ -413,7 +405,6 @@ const OrganizationView = ({ id }) => {
   function deleteDialogs() {
     const handleDeleteDialogOpen = (id) => {
       const tabLabel = document.querySelector(".Mui-selected").innerText;
-      console.log(tabLabel);
       setTabLabel(tabLabel);
       setDeleteDialog({
         open: true,
@@ -490,7 +481,6 @@ const OrganizationView = ({ id }) => {
     };
 
     const handleUpdateDepartment = (departmentInfo) => {
-      console.log(departmentInfo);
       API.orgs.departments
         .editById(currentOrg, departmentInfo._id, departmentInfo)
         .then(({ success, error }) => {
@@ -591,7 +581,6 @@ const OrganizationView = ({ id }) => {
     };
 
     const handleDeletePosition = (positionId) => {
-      console.log(positionId);
       API.orgs.positions
         .deleteById(currentOrg, positionId)
         .then(({ success, error }) => {
@@ -712,7 +701,6 @@ const OrganizationView = ({ id }) => {
     };
 
     const handleUpdateHoliday = (holidayInfo) => {
-      console.log(holidayInfo);
       API.orgs.holidays
         .editById(currentOrg, holidayInfo._id, holidayInfo)
         .then(({ success }) => {
@@ -737,7 +725,6 @@ const OrganizationView = ({ id }) => {
     };
 
     const handleDeleteHoliday = (holidayId) => {
-      console.log(holidayId);
       API.orgs.holidays
         .deleteById(currentOrg, holidayId)
         .then(({ success, message }) => {

@@ -53,10 +53,6 @@ const FileImportDialog = ({
   const [selectedFiles, setSelectedFiles] = React.useState(null);
 
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(
-      "[FileImportDialog]: Line 12 -> Dropped files: ",
-      acceptedFiles
-    );
     setSelectedFiles(acceptedFiles);
   });
   const {
@@ -85,7 +81,6 @@ const FileImportDialog = ({
   );
 
   const handleFileSelect = (e) => {
-    console.log("[FileImportDialog]: Line 82 -> File select event: ", e.target);
     setSelectedFiles(e.target.files);
   };
 

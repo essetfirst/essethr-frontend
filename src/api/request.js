@@ -12,7 +12,6 @@ const getOrg = () => {
 const getURLPath = (url) => `${apiURL}/${url}`;
 
 const makeRequest = async (url, method, params, data) => {
-  //CONFIG OF AXIOS TO MAKE Request
   const auth = getAuth();
   const org = getOrg();
   const headers = {
@@ -30,30 +29,21 @@ const makeRequest = async (url, method, params, data) => {
     data,
   };
 
-  //MAKE Request WItH AXIOS
   try {
     const response = await axios(config);
     console.log(
-      "%c Success: 👉",
-      "background: #2bb956; color: white",
+      "%c API SUCCESS: ",
+      "background: green; color: white; font-weight: bold; font-size: 12px",
       response.data
     );
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error(
-        "%c Error: 👉",
-        "background: #d46357; color: white",
-        error.response.data
-      );
-
-      const { status, data } = error.response;
-      if (status === 401) {
-        localStorage.clear();
-      }
-      throw data;
-    }
+    console.error(
+      "%c API ERROR: ",
+      "background: red; color: white; font-weight: bold; font-size: 12px",
+      error.response ? error.response.data : error
+    );
     throw error;
   }
 };

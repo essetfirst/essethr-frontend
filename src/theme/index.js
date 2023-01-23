@@ -1,6 +1,6 @@
 import { createMuiTheme, colors } from "@material-ui/core";
-import shadows from "./shadows";
 import typography from "./typography";
+import shadows from "./shadows";
 
 export const lightTheme = createMuiTheme({
   palette: {
@@ -30,7 +30,7 @@ export const lightTheme = createMuiTheme({
   overrides: {
     MuiTableCell: {
       root: {
-        borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
       },
     },
 
@@ -119,7 +119,6 @@ export const darkTheme = createMuiTheme({
     },
 
     MuiButton: {
-      //change outliend button color to white
       outlinedPrimary: {
         color: colors.blueGrey[100],
         borderColor: colors.blueGrey[400],

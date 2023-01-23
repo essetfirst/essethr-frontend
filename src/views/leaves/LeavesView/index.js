@@ -25,11 +25,7 @@ const LeavesView = () => {
   );
 
   const handleRequest = (values) => {
-    console.log(values); // Checking sanity of value
-
-    console.log(leaves); // before adding request
     setLeaves([...leaves, values]);
-    console.log(leaves); // After pushing back new request
   };
 
   // console.log([]);

@@ -63,7 +63,6 @@ const PositionForm = ({
           ),
         })}
         onSubmit={(values) => {
-          console.log(values);
           onSubmit(values);
         }}
       >

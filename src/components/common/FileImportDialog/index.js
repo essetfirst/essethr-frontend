@@ -49,7 +49,6 @@ const FileImportDialog = ({
       );
       if (success) {
         setLoading(true);
-        console.log(fileContent.data[i]);
         setLoading(false);
         onClose();
       } else {

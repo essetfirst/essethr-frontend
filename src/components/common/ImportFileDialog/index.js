@@ -49,7 +49,6 @@ const ImportFileDialog = ({ open, onClose, onFileChange, onFileImport }) => {
   const handleFileDrop = (e) => {};
 
   const handleFileSelection = (e) => {
-    console.log("Selected files", e.target.files);
     setState({ selectedFiles: e.target.files });
     typeof onFileChange === "function" && onFileChange(e.target.files);
   };
@@ -235,10 +234,6 @@ export const ImportFileDialogSimple = ({
 
   const handleFileSelectClick = (e) => {
     const files = e.target.files;
-    console.log(
-      "[ImportFileDialogSimple]: Line 237 -> Selected file: ",
-      e.target.files
-    );
     typeof onFileSelectionChanged === "function" &&
       files &&
       onFileSelectionChanged(files[0]);
@@ -250,10 +245,6 @@ export const ImportFileDialogSimple = ({
   const handleImportClick = async () => {
     if (fileSelected) {
       const data = await readExcelFile(fileSelected);
-      console.log(
-        "[ImportFileDialog]: Line 243 -> Data read from file: ",
-        data
-      );
       onFileRead(data);
     }
   };

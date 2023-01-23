@@ -76,7 +76,6 @@ const DepartmentList = ({
   };
 
   const handleDeleteClick = (_id) => {
-    console.log(_id);
     onDeleteDepartment(_id);
   };
 
@@ -162,7 +161,6 @@ const DepartmentList = ({
             const names = `${name || ""} ${location || ""}`;
             return names.toLowerCase().includes(searchTerm.toLowerCase());
           } catch (error) {
-            console.log(error);
           }
         })}
         selectionEnabled

@@ -90,7 +90,6 @@ const RequestForm = ({
           comment: Yup.string(),
         })}
         onSubmit={(values) => {
-          console.log("Are we in here?");
           let requestInfo = {
             ...values,
           };
@@ -101,7 +100,6 @@ const RequestForm = ({
           } else if (values.duration === 3) {
             // console.log('Duration === 3, requestInfo: ', requestInfo)
             requestInfo.duration = 1;
-            console.log("Duration === 3, requestInfo: ", requestInfo);
           } else {
             requestInfo.duration = computeDateDiff(values.from, values.to);
           }

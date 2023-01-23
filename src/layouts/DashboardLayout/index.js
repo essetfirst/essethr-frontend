@@ -63,7 +63,6 @@ const DashboardLayout = () => {
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
 
   const [openMinimize, setOpenMinimize] = useState(false);
-  console.log(openMinimize);
 
   return (
     <>

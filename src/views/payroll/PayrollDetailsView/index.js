@@ -65,7 +65,6 @@ const PayrollDetailsView = () => {
   }, [fetchPayroll]);
 
   const handleExportClick = async () => {
-    console.log("im about to export");
 
     const columns = [
       {

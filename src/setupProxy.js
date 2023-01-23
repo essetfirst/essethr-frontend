@@ -1,21 +1,18 @@
 // proxy.js
+// import the proxy middleware
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = async function (app) {
-  await app.use(
-    "/api",
-    createProxyMiddleware({
-      // proxy to the backend server
-      target: "https://essethr-backend-staging.herokuapp.com",
-      changeOrigin: true,
-      onProxyReq: (proxyReq, req, res) => {
-        // console.log("Proxying request to:", req.originalUrl);
-      },
-      onProxyRes: (proxyRes, req, res) => {
-        // console.log("Proxying response to:", req.originalUrl);
-      },
-    })
-  );
+  try {
+    await app.use(
+      "/api",
+      createProxyMiddleware({
+        // specify the port the API server is running on
+        target: "https://essethr-backend-staging.herokuapp.com",
+        changeOrigin: true,
+      })
+    );
+  } catch (error) {
+    console.error("Proxy error: ", error);
+  }
 };
-
-// https://essethr.herokuapp.com

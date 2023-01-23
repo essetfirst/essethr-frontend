@@ -32,7 +32,6 @@ const LeaveManagementView = () => {
   };
 
   const onDeleteLeaveBalanceClicked = (leaveBalanceId) => {
-    console.log(leaveBalanceId);
     deleteLeaveBalance(notify)(leaveBalanceId);
   };
 
@@ -46,12 +45,10 @@ const LeaveManagementView = () => {
   };
 
   const handleUpdateLeave = (leaveId, leaveUpdate) => {
-    console.log(leaveId, leaveUpdate);
     updateLeave(notify)(leaveId, leaveUpdate);
   };
 
   const handleDeleteLeave = (leaveId) => {
-    console.log(leaveId);
     deleteLeave(notify)(leaveId);
   };
 

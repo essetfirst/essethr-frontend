@@ -225,59 +225,45 @@ const WeeklyAttendanceSummaryByRemarkChart = ({
   totalEmployees,
   weeklyAttendanceByRemark = [],
 }) => {
-  const daysOfWeek = Object.keys(weeklyAttendanceByRemark);
-  const daysOfWeekInEnglish = daysOfWeek.map((day) =>
-    moment(day).format("ddd")
-  );
+  const daysInWeek = [
+    moment().startOf("week").format("ddd"),
+    moment().startOf("week").add(1, "days").format("ddd"),
+    moment().startOf("week").add(2, "days").format("ddd"),
+    moment().startOf("week").add(3, "days").format("ddd"),
+    moment().startOf("week").add(4, "days").format("ddd"),
+    moment().startOf("week").add(5, "days").format("ddd"),
+    moment().startOf("week").add(6, "days").format("ddd"),
+  ];
 
-  if (daysOfWeek.length > 7) {
-    daysOfWeek.splice(0, daysOfWeek.length - 7);
-    daysOfWeekInEnglish.splice(0, daysOfWeekInEnglish.length - 7);
-  }
-
-  const presentCount = daysOfWeek.map((day) => {
-    const dayAttendance = weeklyAttendanceByRemark[day];
-    if (!dayAttendance) {
-      return 0;
-    }
-
-    const presentItems = dayAttendance.filter(
+  const presentCount = daysInWeek.map((day) => {
+    const dayOfWeek = moment(day, "ddd").format("YYYY-MM-DD");
+    const present = weeklyAttendanceByRemark[dayOfWeek]?.filter(
       (item) => item.remark === "present"
-    );
-
-    return presentItems.length;
+    ).length;
+    return present || 0;
   });
 
-  const lateCount = daysOfWeek.map((day) => {
-    const dayData = weeklyAttendanceByRemark[day];
-
-    if (!dayData) {
-      return 0;
-    }
-
-    const lateItems = dayData.filter((item) => item.remark === "late");
-
-    return lateItems.length;
+  const lateCount = daysInWeek.map((day) => {
+    const dayOfWeek = moment(day, "ddd").format("YYYY-MM-DD");
+    const late = weeklyAttendanceByRemark[dayOfWeek]?.filter(
+      (item) => item.remark === "late"
+    ).length;
+    return late || 0;
   });
 
-  //absent count total - present count - late count
-  const absentCount = daysOfWeek.map((day) => {
-    const dayData = weeklyAttendanceByRemark[day];
-
-    if (!dayData) {
-      return 0;
-    }
-
-    const absentItems = dayData.filter((item) => item.remark === "absent");
-
-    return absentItems.length;
+  const absentCount = daysInWeek.map((day) => {
+    const dayOfWeek = moment(day, "ddd").format("YYYY-MM-DD");
+    const absent = weeklyAttendanceByRemark[dayOfWeek]?.filter(
+      (item) => item.remark === "absent"
+    ).length;
+    return absent || 0;
   });
 
   return (
     <BarGraphComponent
       step={5}
       height={400}
-      labels={daysOfWeekInEnglish}
+      labels={daysInWeek}
       displayLegend={true}
       bars={[
         {

@@ -49,7 +49,6 @@ const HolidayForm = ({ holiday, title, onCancel, onSubmit }) => {
           inPayroll: Yup.boolean().default(false),
         })}
         onSubmit={(values) => {
-          console.log(values);
           onSubmit(values);
         }}
       >

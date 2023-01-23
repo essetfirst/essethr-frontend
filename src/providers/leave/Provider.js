@@ -169,7 +169,6 @@ const Provider = ({ children }) => {
       .getAll()
       .then(({ success, leaves, error }) => {
         if (success) {
-          console.log(leaves);
           dispatch({
             type: types.FETCH_LEAVES_SUCCESS,
             payload: leaves,
@@ -216,6 +215,7 @@ const Provider = ({ children }) => {
       .then(({ success, message, error }) => {
         if (success) {
           dispatch({
+            ...state,
             type: types.REGISTER_LEAVE_SUCCESS,
             payload: message,
           });
@@ -227,8 +227,9 @@ const Provider = ({ children }) => {
         }
       })
       .catch((e) => {
+        console.log(e.response.data.error);
         dispatch({ type: types.REGISTER_LEAVE_FAILURE, error: String(e) });
-        notify({ success: false, error: categorizeError(e) });
+        notify({ success: false, error: e.response.data.error });
       });
   };
 
@@ -307,7 +308,6 @@ const Provider = ({ children }) => {
       .deleteById(leaveBalanceId)
       .then(({ success, message, error }) => {
         if (success) {
-          console.log("", message);
           dispatch({
             type: types.DELETE_LEAVE_ALLOWANCES_SUCCESS,
             payload: message,

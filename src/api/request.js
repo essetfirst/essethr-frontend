@@ -3,10 +3,13 @@ import axios from "axios";
 const apiURL = "/api/v1";
 
 const getAuth = () => {
-  return JSON.parse(localStorage.getItem("auth"));
+  const auth = localStorage.getItem("auth");
+  return auth ? JSON.parse(auth) : null;
 };
+
 const getOrg = () => {
-  return JSON.parse(localStorage.getItem("org"));
+  const org = localStorage.getItem("org");
+  return org ? JSON.parse(org) : null;
 };
 
 const getURLPath = (url) => `${apiURL}/${url}`;
@@ -49,25 +52,18 @@ const makeRequest = async (url, method, params, data) => {
 };
 
 //EXPORT FUNCTIONS TO USE IN HTTP REQUESTS
-export const postRequest = (url, data) => {
-  return makeRequest(url, "POST", null, data);
-};
+export const postRequest = (url, data) => makeRequest(url, "POST", null, data);
 
-export const getRequest = (url, params) => {
-  return makeRequest(url, "GET", params, null);
-};
+export const getRequest = (url, params) =>
+  makeRequest(url, "GET", params, null);
 
-export const putRequest = (url, data) => {
-  return makeRequest(url, "PUT", null, data);
-};
+export const putRequest = (url, data) => makeRequest(url, "PUT", null, data);
 
-export const deleteRequest = (url, data) => {
-  return makeRequest(url, "DELETE", null, data);
-};
+export const deleteRequest = (url, data) =>
+  makeRequest(url, "DELETE", null, data);
 
-export const patchRequest = (url, data) => {
-  return makeRequest(url, "PATCH", null, data);
-};
+export const patchRequest = (url, data) =>
+  makeRequest(url, "PATCH", null, data);
 
 export const getQueryParams = (search) => {
   const params = {};

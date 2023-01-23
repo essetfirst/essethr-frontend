@@ -63,12 +63,12 @@ const LeavesPanel = ({
     })),
   ];
 
-  const durationOptions = [
-    { label: "First half of the day", value: 1 },
-    { label: "Second half of the day", value: 2 },
-    { label: "Single day", value: 3 },
-    { label: "Several days", value: 4 },
-  ];
+  // const durationOptions = [
+  //   { label: "First half of the day", value: 1 },
+  //   { label: "Second half of the day", value: 2 },
+  //   { label: "Single day", value: 3 },
+  //   { label: "Several days", value: 4 },
+  // ];
   const statusOptions = [
     { label: "ALL", value: "ALL" },
     { label: "Pending", value: "pending" },

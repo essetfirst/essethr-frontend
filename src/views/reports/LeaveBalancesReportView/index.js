@@ -61,7 +61,7 @@ const LeaveBalancesReportView = () => {
       },
     ];
 
-    const data = state.fetchLeaveAllowances.allowances[0].map((item) => {
+    const data = state.fetchLeaveAllowances.allowances.map((item) => {
       return {
         employeeId: `${employeeMap[item.employeeId].firstName} ${
           employeeMap[item.employeeId].lastName
@@ -163,7 +163,7 @@ const LeaveBalancesReportView = () => {
             },
           },
         ]}
-        data={(state.fetchLeaveAllowances.allowances[0] || []).filter(
+        data={(state.fetchLeaveAllowances.allowances || []).filter(
           (item) =>
             `${employeeMap[item.employeeId]?.firstName} ${
               employeeMap[item.employeeId]?.lastName

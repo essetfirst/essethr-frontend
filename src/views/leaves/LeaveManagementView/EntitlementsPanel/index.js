@@ -262,7 +262,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
             ),
           },
         ]}
-        data={state.allowances[0] || []}
+        data={state.allowances || []}
         selectionEnabled
       />
     </div>

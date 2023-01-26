@@ -77,18 +77,21 @@ const LeaveFormDialog = ({
               )
             }
             onSubmit={(values, { resetForm }) => {
-              if (action === "register") {
-                onSubmit({
-                  ...values,
-                  duration: computeDateDiff(values.startDate, values.endDate),
-                });
-              } else {
-                onSubmit({
-                  ...values,
-                  duration: computeDateDiff(values.startDate, values.endDate),
-                });
+              try {
+                if (action === "register") {
+                  onSubmit({
+                    ...values,
+                    duration: computeDateDiff(values.startDate, values.endDate),
+                  });
+                } else {
+                  onSubmit({
+                    ...values,
+                    duration: computeDateDiff(values.startDate, values.endDate),
+                  });
+                }
+              } catch (error) {
+                console.error(error);
               }
-              resetForm();
             }}
             onCancel={handleDialogClose}
           />
@@ -108,6 +111,7 @@ LeaveFormDialog.propTypes = {
   leaveTypes: PropTypes.array,
   durations: PropTypes.array,
   onSubmit: PropTypes.func,
+  submitActionButtonLabel: PropTypes.string,
 };
 
 export default LeaveFormDialog;

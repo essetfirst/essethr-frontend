@@ -40,7 +40,7 @@ import FemaleNoprofileImage from "../../../assets/images/female_no_profile.png";
 import MaleNoprofileImage from "../../../assets/images/male_no_profile.png";
 import EmployeeBranchTransferDialog from "./EmployeeBranchTransferDialog";
 import sort from "../../../helpers/sort";
-import { ThreeDots } from "react-loading-icons";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +64,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: 84,
     height: 84,
+  },
+  progress: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
   },
 }));
 
@@ -180,12 +186,8 @@ const EmployeeProfileView = () => {
   return (
     <React.Fragment>
       {state.isFetching ? (
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <ThreeDots
-            stroke="#009688"
-            fill="#009688"
-            style={{ width: 58, height: 58, marginTop: 100, marginRight: 200 }}
-          />
+        <Box className={classes.progress}>
+          <LinearProgress color="secondary" />
         </Box>
       ) : state.error ? (
         <Box display="flex" justifyContent="center" alignItems="center">

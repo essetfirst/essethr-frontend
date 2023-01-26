@@ -87,10 +87,10 @@ const LeaveManagementView = () => {
                 onFetchAllowances={handleLoadAllowances}
                 notify={notify}
                 onDeleteLeaveBalanceClicked={onDeleteLeaveBalanceClicked}
+                requesting={state.fetchLeaveAllowances.isLoading}
               />
             ),
           },
-          // { label: "Calendar", panel: <div>Calendar</div> },
         ]}
       />
     </PageView>

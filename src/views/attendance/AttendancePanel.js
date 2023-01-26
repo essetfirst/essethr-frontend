@@ -29,6 +29,7 @@ const AttendancePanel = () => {
   const navigate = useNavigate();
 
   const { org } = useOrg();
+
   const employeesMap = arrayToMap(org.employees || [], "employeeId");
 
   const { state, fetchAttendance, approveAttendance } = useAttendance();

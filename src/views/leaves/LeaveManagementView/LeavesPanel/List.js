@@ -33,7 +33,6 @@ const List = ({
   onEditLeaveClicked,
   onApproveLeaveClicked,
   onDeleteLeaveClicked,
-  // onSortParamChange,
 }) => {
   return (
     <>
@@ -53,9 +52,14 @@ const List = ({
             field: "leaveType",
             label: "Leave Type",
             renderCell: ({ leaveType }) => {
-              const { name } = leaveTypeMap[leaveType] || {};
-              const values = `${name}`;
-              return <Typography variant="h6">{values}</Typography>;
+              const { name, color } = leaveTypeMap[leaveType] || {};
+              return (
+                <Chip
+                  size="small"
+                  style={{ backgroundColor: color, color: "white" }}
+                  label={name}
+                />
+              );
             },
           },
           {
@@ -116,7 +120,6 @@ const List = ({
         data={leaves || []}
         selectionEnabled={true}
         requestState={{ requesting, error, onRetry }}
-        // onSortParamChange={onSortParamChange}
         rowActions={[
           {
             label: "Approve Leave",

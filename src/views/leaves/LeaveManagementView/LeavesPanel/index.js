@@ -91,6 +91,7 @@ const LeavesPanel = ({
   };
 
   const [filters, setFilters] = React.useState("");
+
   const handleFilterChange = () => (e) => {
     const { value } = e.target;
     setFilters(value);
@@ -158,7 +159,9 @@ const LeavesPanel = ({
       };
     });
 
-    await makeExcel(getTableDataForExport(rows, columns));
+    const fileName = `Leaves-${new Date().toISOString().slice(0, 10)}`;
+
+    await makeExcel(getTableDataForExport(rows, columns), fileName);
   };
 
   const handleEditLeaveClick = (selected) => {
@@ -253,6 +256,7 @@ const LeavesPanel = ({
           <Button
             size="small"
             variant="outlined"
+            color="primary"
             onClick={handleExportClick}
             startIcon={<ExportIcon size="16px" />}
             aria-label="export leave data"
@@ -290,7 +294,6 @@ const LeavesPanel = ({
 
       {/* Filter bar */}
       <Filterbar
-        key={filters}
         filters={filters}
         onFilterChange={handleFilterChange}
         onReset={handleFiltersReset}
@@ -303,14 +306,15 @@ const LeavesPanel = ({
       <List
         employeesMap={employeesMap}
         leaveTypeMap={leaveTypeMap}
-        // eslint-disable-next-line array-callback-return
         leaves={(state.fetchLeaves.leaves || []).filter((d) => {
           try {
             const name = `${employeesMap[d.employeeId].firstName} ${
               employeesMap[d.employeeId].surName
             }`;
             return name.toLowerCase().includes(filters);
-          } catch (error) {}
+          } catch (error) {
+            return false;
+          }
         })}
         requesting={state.fetchLeaves.isLoading}
         error={state.fetchLeaves.error}

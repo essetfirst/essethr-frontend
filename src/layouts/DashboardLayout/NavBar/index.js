@@ -18,7 +18,7 @@ import {
   PaymentOutlined as PayrollIcon,
   TimeToLeaveOutlined as LeaveIcon,
   DashboardOutlined as DashboardIcon,
-  ApartmentOutlined as OrganizationIcon,
+  // ApartmentOutlined as OrganizationIcon,
 } from "@material-ui/icons";
 
 import ContactlessIconOutlined from "@material-ui/icons/ContactlessOutlined";
@@ -28,7 +28,7 @@ import AssessmentIconOutlined from "@material-ui/icons/AssessmentOutlined";
 import SettingsIconOutlined from "@material-ui/icons/SettingsOutlined";
 import VerifiedUserIconOutlined from "@material-ui/icons/VerifiedUserOutlined";
 import NavItem from "./NavItem";
-import RecentActorsIconOutlined from "@material-ui/icons/RecentActorsOutlined";
+// import RecentActorsIconOutlined from "@material-ui/icons/RecentActorsOutlined";
 import useAuth from "../../../providers/auth";
 
 const navItems = [
@@ -75,18 +75,20 @@ const navItems = [
   },
 ];
 
-const adminNavItems = [
-  {
-    href: "/app/orgs",
-    icon: OrganizationIcon,
-    title: "Organizations",
-  },
-  {
-    href: "/app/users",
-    icon: RecentActorsIconOutlined,
-    title: "Users",
-  },
-];
+// const adminNavItems = [
+//   {
+//     href: "/app/orgs",
+//     icon: OrganizationIcon,
+//     title: "Organizations",
+//   },
+//   {
+//     href: "/app/users",
+//     icon: RecentActorsIconOutlined,
+//     title: "Users",
+//   },
+// ];
+
+// console.log("navItems", adminNavItems);
 
 const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
@@ -241,7 +243,7 @@ const NavBar = ({ onMobileClose, openMobile, openMinimize }) => {
           </List>
         </Box>
         <Divider />
-        {auth && auth.user && auth.user.role === "ADMIN" && (
+        {/* {auth && auth.user && auth.user.role === "ADMIN" && (
           <Box height="100%" p={1} pb={1}>
             <List>
               {adminNavItems.map((item) => (
@@ -254,15 +256,15 @@ const NavBar = ({ onMobileClose, openMobile, openMinimize }) => {
               ))}
             </List>
           </Box>
-        )}
-        <Divider />
+        )} */}
+        {/* <Divider /> */}
         <Hidden mdDown>
           <Box
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            mt={1}
+            mt={25}
             mb={2}
           >
             <Button
@@ -336,7 +338,7 @@ const NavBar = ({ onMobileClose, openMobile, openMinimize }) => {
               </List>
             </Box>
             <Divider />
-            {auth && auth.user && auth.user.role === "ADMIN" && (
+            {/* {auth && auth.user && auth.user.role === "ADMIN" && (
               <Box height="100%" p={1} pb={1} mt={15}>
                 <List>
                   {adminNavItems.map((item) => (
@@ -349,7 +351,7 @@ const NavBar = ({ onMobileClose, openMobile, openMinimize }) => {
                 </List>
               </Box>
             )}
-            <Divider />
+            <Divider /> */}
           </>
         )}
       </Box>

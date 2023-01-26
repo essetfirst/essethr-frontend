@@ -9,7 +9,6 @@ function getInitialState(persistKey = "auth") {
   let auth;
   try {
     auth = JSON.parse(localStorage.getItem(persistKey));
-    // console.log("Auth initialization: ", auth);
   } catch (e) {
     console.warn(e);
   }
@@ -70,7 +69,6 @@ const Provider = ({ children, persistKey = "auth" }) => {
             payload: { user, token },
             message,
           });
-          console.log("Login success: ", { user, token });
         } else {
           console.error(error);
           dispatch({ type: "LOGIN_ERROR", error: error });

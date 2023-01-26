@@ -16,60 +16,60 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import API from "../../../api";
+// import API from "../../../api";
 
-import useAuth from "../../../providers/auth";
+// import useAuth from "../../../providers/auth";
 
 const BranchTransferDialog = ({ open, onClose, employee, onTransfer }) => {
-  const { auth } = useAuth();
+  // const { auth } = useAuth();
 
   let orgsMap = {};
   let departmentsMap = {};
   let positionsMap = {};
 
-  const [orgs, setOrgs] = React.useState([]);
+  const [orgs] = React.useState([]);
 
-  const fetchOrganizations = React.useCallback(async () => {
-    try {
-      const { success, orgs, error } = await API.orgs.getAll({
-        query: { createdBy: auth && auth.user && auth.user.email },
-      });
+  // const fetchOrganizations = React.useCallback(async () => {
+  //   try {
+  //     const { success, orgs, error } = await API.orgs.getAll({
+  //       query: { createdBy: auth && auth.user && auth.user.email },
+  //     });
 
-      if (success) {
-        if (Array.isArray(orgs) && orgs.length > 0) {
-          setOrgs(orgs);
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          orgsMap = (orgs || [])
-            .map((org) => {
-              // eslint-disable-next-line react-hooks/exhaustive-deps
-              departmentsMap = {
-                ...(org.departments || []).reduce(
-                  (o, d) => ({ ...o, [d._id]: { org: org._id, ...d } }),
-                  {}
-                ),
-              };
-              // eslint-disable-next-line react-hooks/exhaustive-deps
-              positionsMap = {
-                ...(org.positions || []).reduce(
-                  (o, p) => ({ ...o, [p._id]: { org: org._id, ...p } }),
-                  {}
-                ),
-              };
-              return { [org._id]: org };
-            })
-            .reduce((prev, n) => Object.assign({}, prev, n), {});
-        }
-      } else {
-        console.warn(error);
-      }
-    } catch (e) {
-      console.warn(e.message);
-    }
-  }, [auth]);
+  //     if (success) {
+  //       if (Array.isArray(orgs) && orgs.length > 0) {
+  //         setOrgs(orgs);
+  //         // eslint-disable-next-line react-hooks/exhaustive-deps
+  //         orgsMap = (orgs || [])
+  //           .map((org) => {
+  //             // eslint-disable-next-line react-hooks/exhaustive-deps
+  //             departmentsMap = {
+  //               ...(org.departments || []).reduce(
+  //                 (o, d) => ({ ...o, [d._id]: { org: org._id, ...d } }),
+  //                 {}
+  //               ),
+  //             };
+  //             // eslint-disable-next-line react-hooks/exhaustive-deps
+  //             positionsMap = {
+  //               ...(org.positions || []).reduce(
+  //                 (o, p) => ({ ...o, [p._id]: { org: org._id, ...p } }),
+  //                 {}
+  //               ),
+  //             };
+  //             return { [org._id]: org };
+  //           })
+  //           .reduce((prev, n) => Object.assign({}, prev, n), {});
+  //       }
+  //     } else {
+  //       console.warn(error);
+  //     }
+  //   } catch (e) {
+  //     console.warn(e.message);
+  //   }
+  // }, [auth]);
 
-  React.useEffect(() => {
-    fetchOrganizations();
-  }, [fetchOrganizations]);
+  // React.useEffect(() => {
+  //   fetchOrganizations();
+  // }, [fetchOrganizations]);
 
   return (
     <Dialog open={open} onClose={onClose}>

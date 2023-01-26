@@ -169,15 +169,21 @@ const AttendanceTable = ({
               });
             }
           },
-          icon: <CheckIcon size="small" />,
-          variant: "outlined",
-          size: "small",
+          icon: (
+            <CheckIcon
+              size="small"
+              style={{
+                color: "green",
+                fontSize: "1.5rem",
+              }}
+            />
+          ),
         },
       ]}
       selectionEnabled={true}
       selectionActions={[
         {
-          icon: <CheckIcon />,
+          icon: <CheckIcon size="small" />,
           label: "Approve all",
           handler: (selected) => onApproveClicked(selected),
 

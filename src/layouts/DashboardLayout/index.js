@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-
 import PerfectScrollbar from "react-perfect-scrollbar";
-
 import { makeStyles } from "@material-ui/core";
-
 import TopBar from "./TopBar";
 import NavBar from "./NavBar";
-
-// import RegisterFromDevice from "../../views/attendance/RegisterFromDevice";
-// import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   root: {

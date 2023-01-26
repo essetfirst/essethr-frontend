@@ -30,14 +30,6 @@ const App = ({ config: appConfig }) => {
     [darkMode]
   );
 
-  // write afunction to speed up the app and make it more efficient and faster
-  React.useEffect(() => {
-    const jssStyles = document.querySelector("#jss-server-side");
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-  }, []);
-
   return (
     <React.Fragment>
       <ThemeProvider theme={mode}>

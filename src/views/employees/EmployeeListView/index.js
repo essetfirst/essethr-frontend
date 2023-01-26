@@ -342,7 +342,7 @@ const EmployeeListView = () => {
   return (
     <PageView
       className={classes.root}
-      title="Employee Management"
+      title="Employee"
       icon={
         <span style={{ verticalAlign: "middle" }}>
           <GroupRoundedIcon fontSize="large" />
@@ -428,19 +428,24 @@ const EmployeeListView = () => {
       {viewType === "list" ? (
         <ResultsTable
           org={org}
+          // eslint-disable-next-line array-callback-return
           employees={(state.employees || []).filter((d) => {
-            return (
-              String(
-                d.firstName
-                  .toLowerCase()
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "")
-              ).includes(filters) ||
-              String(d.surName.toLowerCase()).includes(filters) ||
-              String(d.position).includes(filters) ||
-              String(d.department).includes(filters) ||
-              String(d.gender).includes(filters)
-            );
+            try {
+              return (
+                String(
+                  d.firstName
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                ).includes(filters) ||
+                String(d.surName.toLowerCase()).includes(filters) ||
+                String(d.position).includes(filters) ||
+                String(d.department).includes(filters) ||
+                String(d.gender).includes(filters)
+              );
+            } catch (error) {
+              console.log();
+            }
           })}
           departmentsMap={departmentsMap}
           onSortParamsChange={handleSortRequest}
@@ -450,23 +455,26 @@ const EmployeeListView = () => {
           onTransferClicked={handleTransferClick}
           onDeleteClicked={handleDeleteClickDialog}
           onMultipleDeleteClicked={handleDeleteMultipleClick}
-          requestState={state}
+          requesting={state}
         />
       ) : (
         <ResultsGrid
+          // eslint-disable-next-line array-callback-return
           employees={(state.employees || []).filter((d) => {
-            return (
-              String(
-                d.firstName
-                  .toLowerCase()
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "")
-              ).includes(filters) ||
-              String(d.surName.toLowerCase()).includes(filters) ||
-              String(d.position).includes(filters) ||
-              String(d.department).includes(filters) ||
-              String(d.gender).includes(filters)
-            );
+            try {
+              return (
+                String(
+                  d.firstName
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                ).includes(filters) ||
+                String(d.surName.toLowerCase()).includes(filters) ||
+                String(d.position).includes(filters) ||
+                String(d.department).includes(filters) ||
+                String(d.gender).includes(filters)
+              );
+            } catch (error) {}
           })}
           departmentsMap={departmentsMap}
           positionsMap={positionsMap}

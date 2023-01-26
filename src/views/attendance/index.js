@@ -9,12 +9,12 @@ const AttendanceView = () => {
   return (
     <PageView
       title="Attendance"
+      backPath="/app/dashboard"
       icon={
         <span style={{ verticalAlign: "middle" }}>
           <TimerIcon fontSize="large" />
         </span>
       }
-      backPath="/app/dashboard"
     >
       <AttendancePanel />
     </PageView>

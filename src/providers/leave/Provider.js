@@ -266,7 +266,7 @@ const Provider = ({ children }) => {
             type: types.UPDATE_LEAVE_SUCCESS,
             payload: message,
           });
-          // fetchLeaves();
+          fetchLeaves();
         } else {
           dispatch({ type: types.UPDATE_LEAVE_FAILURE, error });
         }

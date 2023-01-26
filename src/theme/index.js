@@ -6,14 +6,14 @@ export const lightTheme = createMuiTheme({
   palette: {
     type: "light",
     background: {
-      default: "#F4F6F8",
+      default: "#f4f6f8",
       paper: colors.common.white,
     },
     primary: {
       main: colors.teal[500],
     },
     secondary: {
-      main: colors.deepOrange[800],
+      main: colors.deepOrange[500],
     },
 
     text: {
@@ -73,21 +73,19 @@ export const darkTheme = createMuiTheme({
       main: colors.blueGrey[700],
     },
     secondary: {
-      main: colors.deepOrange[400],
+      main: colors.grey[200],
     },
 
     text: {
-      primary: colors.blueGrey[100],
-      secondary: colors.blueGrey[200],
+      primary: colors.grey[200],
+      secondary: colors.grey[300],
     },
   },
 
   shape: {
     borderRadius: 8,
   },
-
   responsiveFontSizes: true,
-
   overrides: {
     MuiTableCell: {
       root: {

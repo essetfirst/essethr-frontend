@@ -13,6 +13,7 @@ import {
   MenuItem,
   TextField,
   Typography,
+  makeStyles,
 } from "@material-ui/core";
 
 import API from "../../../../api";
@@ -23,9 +24,32 @@ import arrayToMap from "../../../../utils/arrayToMap";
 import TableComponent from "../../../../components/TableComponent";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 
-const AllocateAllowanceDialog = ({ open, onClose, employees, onSubmit }) => {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(3),
+  },
+  Dialog: {
+    padding: theme.spacing(3),
+    backdropFilter: "blur(3px)",
+  },
+}));
+
+const AllocateAllowanceDialog = ({
+  open,
+  onClose,
+  employees,
+  onSubmit,
+  isLoading,
+}) => {
+  const classes = useStyles();
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      className={classes.Dialog}
+    >
       <DialogContent>
         <Box p={2}>
           <Typography
@@ -40,37 +64,17 @@ const AllocateAllowanceDialog = ({ open, onClose, employees, onSubmit }) => {
         <Formik
           initialValues={{
             employeeId: -1,
-            // leaveType: -1,
-            // days: 0,
           }}
           validationSchema={Yup.object().shape({
             employeeId: Yup.string()
               .required("'Employee id' is required")
               .notOneOf([-1], "'Employee id' is required"),
-            // leaveType: Yup.string()
-            //   .required("'Leave type' is required")
-            //   .notOneOf([-1], "'Employee id' is required"),
-            // days: Yup.number().positive(
-            //   "'Balance in days' can not be negative"
-            // ),
           })}
-          onSubmit={async (
-            values,
-            { setSubmitting, setErrors, setStatus, resetForm }
-          ) => {
-            try {
-              await onSubmit(values);
-              resetForm();
-              onClose();
-            } catch (err) {
-              setStatus({ success: false });
-
-              if (err.response) {
-                setErrors({ submit: err.response.data.message });
-              } else {
-                setErrors({ submit: err.message });
-              }
-            }
+          onSubmit={async (values, { restForm }) => {
+            // 1. Call the onSubmit function from props
+            await onSubmit(values);
+            // 2. Reset the form
+            restForm();
           }}
         >
           {({
@@ -116,7 +120,7 @@ const AllocateAllowanceDialog = ({ open, onClose, employees, onSubmit }) => {
                           disabled={values.employeeId === -1}
                           style={{ marginBottom: "16px" }}
                         >
-                          Allocate
+                          {isLoading ? "Allocating..." : "Allocate"}
                         </Button>
                         <Button fullWidth variant="outlined" onClick={onClose}>
                           Cancel
@@ -134,8 +138,14 @@ const AllocateAllowanceDialog = ({ open, onClose, employees, onSubmit }) => {
   );
 };
 
-const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
+const EntitlementsPanel = ({
+  state,
+  notify,
+  onFetchAllowances,
+  requesting,
+}) => {
   const { org } = useOrg();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const employeesMap = arrayToMap(org.employees || [], "_id");
 
@@ -146,14 +156,27 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
   };
   const handleAllocateAllowance = async (allowanceInfo) => {
     const { employeeId } = allowanceInfo;
+
+    setIsLoading(true);
     try {
       const { success, error } = await API.leaves.allowances.allocate({
         employeeId,
       });
-      notify({ success, message: "Leave balance allocated.", error });
-    } catch (e) {
-      console.error(e.message);
-      notify({ success: false, error: "Something went wrong." });
+      if (success) {
+        notify({
+          message: "Allowance allocated successfully",
+          variant: "success",
+        });
+        setIsLoading(false);
+        onFetchAllowances();
+      }
+      if (error) {
+        notify({ message: error, variant: "error" });
+        setIsLoading(false);
+      }
+    } catch (err) {
+      notify({ message: err.message, variant: "error" });
+      setIsLoading(false);
     }
   };
 
@@ -190,6 +213,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
         onClose={handleAllocateDialogClose}
         employees={employees}
         onSubmit={handleAllocateAllowance}
+        isLoading={isLoading}
       />
       {/* Summary usage and leave by type */}
       <TableComponent
@@ -264,6 +288,7 @@ const EntitlementsPanel = ({ state, notify, onFetchAllowances }) => {
         ]}
         data={state.allowances || []}
         selectionEnabled
+        requestState={{ requesting }}
       />
     </div>
   );

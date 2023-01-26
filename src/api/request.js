@@ -34,9 +34,9 @@ const makeRequest = async (url, method, params, data) => {
 
   try {
     const response = await axios(config);
-    console.log(
+    console.table(
       "%c API SUCCESS: ",
-      "background: green; color: white; font-weight: bold; font-size: 12px",
+      "background: teal; color: white; font-weight: bold; font-size: 12px",
       response.data
     );
 
@@ -51,7 +51,6 @@ const makeRequest = async (url, method, params, data) => {
   }
 };
 
-//EXPORT FUNCTIONS TO USE IN HTTP REQUESTS
 export const postRequest = (url, data) => makeRequest(url, "POST", null, data);
 
 export const getRequest = (url, params) =>

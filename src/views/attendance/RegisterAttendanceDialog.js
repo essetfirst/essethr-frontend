@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     backdropFilter: "blur(5px)",
     backgroundColor: "rgba(255, 255, 255, 0.5)",
+
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
   },
 }));
 
@@ -58,7 +63,7 @@ const RegisterAttendanceDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} className={classes.dialog}>
+    <Dialog open={open} onClose={onClose} className={classes.dialog} fullWidth>
       <DialogContent>
         <Box height="100%" p={2} justifyContent="center">
           <Typography

@@ -22,6 +22,9 @@ import {
 } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SaveIcon from "@material-ui/icons/Save";
+import ArrowBackIos from "@material-ui/icons/ArrowBackIos";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -29,6 +32,13 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
+  progress: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+
   image: {
     marginTop: 50,
     display: "inline-block",
@@ -65,20 +75,25 @@ const EmployeeFormView = ({ employeeId }) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notify = notificationSnackbar(enqueueSnackbar, closeSnackbar);
   const [loading, setLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    const fetchEmployee = () => {
-      API.employees
+    const fetchEmployee = async () => {
+      setIsLoading(true);
+      await API.employees
         .getById(params.id || employeeId)
         .then(({ success, employee, error }) => {
           if (success) {
             setEmployee(employee);
+            setIsLoading(false);
           } else {
             console.error(error);
+            setIsLoading(false);
           }
         })
         .catch((e) => {
           console.error(e.message);
+          setIsLoading(false);
         });
     };
     (params.id || employeeId) && fetchEmployee();
@@ -97,20 +112,6 @@ const EmployeeFormView = ({ employeeId }) => {
     <Page className={classes.root} title={title}>
       <Box display="flex" flexDirection="column" height="100%">
         <Container maxWidth={true}>
-          <Box display="flex" justifyContent="center" mb={2}>
-            <Box display="flex">
-              <Typography
-                style={{
-                  fontSize: 24,
-                  lineHeight: 1.2,
-                  letterSpacing: 5.15,
-                }}
-              >
-                {title}
-              </Typography>
-            </Box>
-          </Box>
-
           <Formik
             enableReinitialize
             initialValues={iniValues()}
@@ -138,8 +139,6 @@ const EmployeeFormView = ({ employeeId }) => {
             }) => (
               <form onSubmit={handleSubmit} noValidate="off">
                 {formUi(handleChange, handleBlur, touched, errors, values)}
-                <Box mt={2} flexGrow={1} />
-                <Divider />
 
                 <Box mt={2} display="flex" justifyContent="flex-end">
                   <ButtonGroup>
@@ -161,7 +160,7 @@ const EmployeeFormView = ({ employeeId }) => {
                       ) : (
                         <Box display="flex" alignItems="center">
                           <Box mr={1}>Save</Box>
-                          <SaveIcon style={{ fontSize: 16 }} />
+                          <SaveIcon style={{ fontSize: 18 }} />
                         </Box>
                       )}
                     </Button>
@@ -210,213 +209,236 @@ const EmployeeFormView = ({ employeeId }) => {
   function formUi(handleChange, handleBlur, touched, errors, values) {
     return (
       <Paper
-        elevation={3}
         style={{
-          padding: 16,
+          padding: 12,
           borderRadius: 8,
         }}
       >
-        <Container maxWidth="lg" style={{ padding: 0 }} disableGutters>
-          <Grid container spacing={2}>
-            {[
-              {
-                label: "EmployeeID ex. 123456",
-                name: "employeeId",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                required: true,
-                GridProps: { sm: 12, md: 6, lg: 6 },
-              },
-              {
-                label: "Select contract type",
-                name: "contractType",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                select: true,
-                required: true,
-                selectOptions: [
-                  { value: "Permanent", label: "Permanent" },
-                  { value: "Temporary", label: "Temporary" },
-                  { value: "Internship", label: "Internship" },
-                ],
-                GridProps: { sm: 12, md: 6, lg: 6 },
-              },
-              {
-                label: "First name ex. John",
-                name: "firstName",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                required: true,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Middle name ex. Doe",
-                name: "surName",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                required: true,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Last name ex. Smith",
-                name: "lastName",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                required: true,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Date of Birth ex. 1990-01-01",
-                name: "birthDay",
-                type: "date",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                required: true,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Gender",
-                name: "gender",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                required: true,
-                select: true,
-                selectOptions: [
-                  { value: "Female", label: "Female" },
-                  { value: "Male", label: "Male" },
-                ],
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "National ID ex. 123456789",
-                name: "nationalID",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Phone number ex. 0712345678",
-                name: "phone",
-                required: true,
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Address ex. 1234 Main St",
-                name: "address",
-                required: true,
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Email (Optional)",
-                name: "email",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-              },
-              {
-                label: "Select department",
-                name: "department",
-                required: true,
-                select: true,
-                selectOptions: (org.departments || []).map(({ _id, name }) => ({
-                  label: name,
-                  value: _id,
-                })),
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 6 },
-              },
-              {
-                label: "Select position",
-                name: "position",
-                required: true,
-                select: true,
-                selectOptions: (org.positions || []).map(({ _id, title }) => ({
-                  label: title,
-                  value: _id,
-                })),
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 6 },
-              },
-              {
-                label: "Hire date ex. 2020-01-01",
-                name: "hireDate",
-                required: true,
-                type: "date",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-                error: values.hireDate < values.birthDay,
-              },
-              {
-                label: "Work start date ex. 2020-01-01",
-                name: "startDate",
-                required: true,
-                type: "date",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-                error: values.startDate < values.hireDate,
-              },
-              {
-                label: "Work end date ex. 2020-01-01",
-                name: "endDate",
-                type: "date",
-                onChange: handleChange,
-                onBlur: handleBlur,
-                GridProps: { sm: 12, md: 6, lg: 4 },
-                disabled: values.contractType === "Permanent",
-              },
-            ].map(
-              (
+        <Box display="flex" alignItems="center" mb={1}>
+          <Button onClick={() => navigate(-1)}>
+            <ArrowBackIos />
+          </Button>
+          <Box ml={1}>
+            <Typography variant="h3" color="textPrimary">
+              {title}
+            </Typography>
+          </Box>
+        </Box>
+        <Divider />
+        {/* if is edit form show loading until employee is fetched */}
+        {isLoading ? (
+          <div className={classes.progress}>
+            <LinearProgress />
+          </div>
+        ) : (
+          <Container maxWidth="lg">
+            <Grid container spacing={2}>
+              {[
                 {
-                  label,
-                  name,
-                  required = false,
-                  select = false,
-                  onBlur,
-                  onChange,
-                  selectOptions,
-                  GridProps,
-                  ...rest
+                  label: "EmployeeID ex. 123456",
+                  name: "employeeId",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  GridProps: { sm: 12, md: 6, lg: 6 },
                 },
-                index
-              ) => (
-                <Grid item key={index} {...GridProps}>
-                  <TextField
-                    required={required}
-                    select={select}
-                    error={Boolean(touched[name] && errors[name]) || rest.error}
-                    helperText={touched[name] && errors[name]}
-                    label={label}
-                    name={name}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    value={values[name]}
-                    fullWidth
-                    variant="outlined"
-                    size="small"
-                    margin="normal"
-                    {...rest}
-                  >
-                    {select
-                      ? selectOptions.map(({ value, label }, index) => (
-                          <MenuItem value={value} key={index}>
-                            {label}
-                          </MenuItem>
-                        ))
-                      : null}
-                  </TextField>
-                </Grid>
-              )
-            )}
-          </Grid>
-        </Container>
+                {
+                  label: "Select contract type",
+                  name: "contractType",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  select: true,
+                  required: true,
+                  selectOptions: [
+                    { value: "Permanent", label: "Permanent" },
+                    { value: "Temporary", label: "Temporary" },
+                    { value: "Internship", label: "Internship" },
+                  ],
+                  GridProps: { sm: 12, md: 6, lg: 6 },
+                },
+                {
+                  label: "First name ex. John",
+                  name: "firstName",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Middle name ex. Doe",
+                  name: "surName",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Last name ex. Smith",
+                  name: "lastName",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Date of Birth ex. 1990-01-01",
+                  name: "birthDay",
+                  type: "date",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Gender",
+                  name: "gender",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  select: true,
+                  selectOptions: [
+                    { value: "Female", label: "Female" },
+                    { value: "Male", label: "Male" },
+                  ],
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "National ID ex. 123456789",
+                  name: "nationalID",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Phone number ex. 0712345678",
+                  name: "phone",
+                  required: true,
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Address ex. 1234 Main St",
+                  name: "address",
+                  required: true,
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Email (Optional)",
+                  name: "email",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                },
+                {
+                  label: "Select department",
+                  name: "department",
+                  required: true,
+                  select: true,
+                  selectOptions: (org.departments || []).map(
+                    ({ _id, name }) => ({
+                      label: name,
+                      value: _id,
+                    })
+                  ),
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 6 },
+                },
+                {
+                  label: "Select position",
+                  name: "position",
+                  required: true,
+                  select: true,
+                  selectOptions: (org.positions || []).map(
+                    ({ _id, title }) => ({
+                      label: title,
+                      value: _id,
+                    })
+                  ),
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 6 },
+                },
+                {
+                  label: "Hire date ex. 2020-01-01",
+                  name: "hireDate",
+                  required: true,
+                  type: "date",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                  error: values.hireDate < values.birthDay,
+                },
+                {
+                  label: "Work start date ex. 2020-01-01",
+                  name: "startDate",
+                  required: true,
+                  type: "date",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                  error: values.startDate < values.hireDate,
+                },
+                {
+                  label: "Work end date ex. 2020-01-01",
+                  name: "endDate",
+                  type: "date",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  GridProps: { sm: 12, md: 6, lg: 4 },
+                  disabled: values.contractType === "Permanent",
+                },
+              ].map(
+                (
+                  {
+                    label,
+                    name,
+                    required = false,
+                    select = false,
+                    onBlur,
+                    onChange,
+                    selectOptions,
+                    GridProps,
+                    ...rest
+                  },
+                  index
+                ) => (
+                  <Grid item key={index} {...GridProps}>
+                    <TextField
+                      required={required}
+                      select={select}
+                      error={
+                        Boolean(touched[name] && errors[name]) || rest.error
+                      }
+                      helperText={touched[name] && errors[name]}
+                      label={label}
+                      name={name}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      value={values[name]}
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      margin="normal"
+                      {...rest}
+                    >
+                      {select
+                        ? selectOptions.map(({ value, label }, index) => (
+                            <MenuItem value={value} key={index}>
+                              {label}
+                            </MenuItem>
+                          ))
+                        : null}
+                    </TextField>
+                  </Grid>
+                )
+              )}
+            </Grid>
+          </Container>
+        )}
       </Paper>
     );
   }

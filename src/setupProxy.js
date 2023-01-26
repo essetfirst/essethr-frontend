@@ -3,14 +3,11 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = async function (app) {
   try {
     await app.use(
-      // redirect requests from /api to the backend server
       "/api",
       createProxyMiddleware({
-        target: "https://essethr-backend-staging.herokuapp.com",
+        target: `${process.env.REACT_APP_API_URL}`,
         changeOrigin: true,
       })
     );
-  } catch (err) {
-    console.error(err);
-  }
+  } catch (err) {}
 };

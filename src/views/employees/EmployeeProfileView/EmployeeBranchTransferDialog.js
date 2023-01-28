@@ -86,9 +86,9 @@ const EmployeeBranchTransferDialog = ({ open, onClose, employee }) => {
       });
   }, [auth]);
 
-  React.useEffect(() => {
-    fetchOrganizations();
-  }, [fetchOrganizations]);
+  // React.useEffect(() => {
+  //   fetchOrganizations();
+  // }, [fetchOrganizations]);
 
   //   React.useEffect(() => {}, []);
 

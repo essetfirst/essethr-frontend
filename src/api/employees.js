@@ -2,7 +2,9 @@ import {
   deleteRequest,
   getRequest,
   postRequest,
+  postRequestFileUpload,
   putRequest,
+  putRequestFileUpload,
   queryObjectToString,
 } from "./request";
 
@@ -24,7 +26,7 @@ function getDetails(id) {
 }
 
 function create(data) {
-  return postRequest(`${path}`, data);
+  return postRequestFileUpload(`${path}`, data);
 }
 
 function editById(id, data) {

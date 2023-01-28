@@ -16,6 +16,8 @@ import {
   ArrowBack as BackIcon,
   Edit as EditIcon,
   KeyboardArrowDown as ActionsIcon,
+  EditAttributesRounded,
+  EditAttributes,
 } from "@material-ui/icons";
 import { useReactToPrint } from "react-to-print";
 import PageView from "../../../components/PageView";
@@ -41,6 +43,7 @@ import MaleNoprofileImage from "../../../assets/images/male_no_profile.png";
 import EmployeeBranchTransferDialog from "./EmployeeBranchTransferDialog";
 import sort from "../../../helpers/sort";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { DownloadCloud, Edit, Edit3 } from "react-feather";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -217,21 +220,20 @@ const EmployeeProfileView = () => {
               </Box>
             </Box>
             <Box mb={1}>
-              <Grid container spacing={4}>
-                <Grid item sm={12} md={8}>
+              <Grid container spacing={12}>
+                <Grid item sm={12} md={6}>
                   <Box display="flex">
                     <CustomAvatar
                       size="2"
-                      src={
-                        state.employee && state.employee.gender === "Male"
-                          ? MaleNoprofileImage
-                          : FemaleNoprofileImage
-                      }
+                      src={`${process.env.REACT_APP_API_URL}/${
+                        state.employee?.image && state.employee?.image
+                      }`}
                       alt={`${name}`}
                       className={classes.avatar}
                     />
+
                     <Box ml={2}>
-                      <Typography variant="h1">{name} </Typography>
+                      <Typography variant="h1">{name}</Typography>
                       <Typography component={"span"} variant={"body2"}>
                         {state.employee
                           ? (state.employee.positionDetails || {}).title
@@ -262,18 +264,18 @@ const EmployeeProfileView = () => {
                     </Box>
                   </Box>
                 </Grid>
-                <Grid item md={4}>
-                  <Box display="flex" justifyContent="flex-end">
+                <Grid item md={6} sm={12}>
+                  <Box display="flex" justifyContent="flex-end" mt={2}>
                     <Button
                       variant="outlined"
                       color="primary"
                       onClick={handleEditProfileClick}
-                      endIcon={<EditIcon />}
+                      startIcon={<Edit3 />}
                     >
                       Edit
                     </Button>
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       color="primary"
                       onClick={handleProfileMenuClick}
                       endIcon={<ActionsIcon />}
@@ -281,11 +283,26 @@ const EmployeeProfileView = () => {
                     >
                       Actions
                     </Button>
+                    <a
+                      href={`${process.env.REACT_APP_API_URL}/${
+                        state.employee && state.employee.cv
+                      }`}
+                      title="Download CV"
+                      download
+                    >
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<DownloadCloud />}
+                        style={{ marginLeft: "8px" }}
+                      >
+                        Download Document
+                      </Button>
+                    </a>
                   </Box>
                 </Grid>
               </Grid>
             </Box>
-
             <Menu
               id="employee-profile-menu"
               anchorEl={profileMenuAnchorEl}

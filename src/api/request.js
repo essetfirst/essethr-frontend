@@ -50,6 +50,48 @@ const makeRequest = async (url, method, params, data) => {
     throw error;
   }
 };
+const makeRequestFileUpload = async (url, method, params, data) => {
+  const auth = getAuth();
+  const org = getOrg();
+  const headers = {
+    "Content-Type": "multipart/form-data",
+    Authorization: auth && auth.token ? `Bearer ${auth.token}` : "",
+  };
+  if (org) {
+    headers["X-Organization"] = org.id;
+  }
+  const config = {
+    method,
+    url: getURLPath(url),
+    headers,
+    params,
+    data,
+  };
+
+  try {
+    const response = await axios(config);
+    console.table(
+      "%c API SUCCESS: ",
+      "background: teal; color: white; font-weight: bold; font-size: 12px",
+      response.data
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "%c API ERROR: ",
+      "background: red; color: white; font-weight: bold; font-size: 12px",
+      error.response ? error.response.data : error
+    );
+    throw error;
+  }
+};
+
+export const postRequestFileUpload = (url, data) =>
+  makeRequestFileUpload(url, "POST", null, data);
+
+export const putRequestFileUpload = (url, data) =>
+  makeRequestFileUpload(url, "PUT", null, data);
 
 export const postRequest = (url, data) => makeRequest(url, "POST", null, data);
 

@@ -19,11 +19,20 @@ import {
   Container,
   MenuItem,
   ButtonGroup,
+  Checkbox,
+  // Avatar,
 } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowBackIos from "@material-ui/icons/ArrowBackIos";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import {
+  CloudCircleRounded,
+  PhotoCamera,
+  PictureAsPdf,
+} from "@material-ui/icons";
+// import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,22 +120,22 @@ const EmployeeFormView = ({ employeeId }) => {
   return (
     <Page className={classes.root} title={title}>
       <Box display="flex" flexDirection="column" height="100%">
-        <Container maxWidth={true}>
+        <Container>
           <Formik
             enableReinitialize
             initialValues={iniValues()}
             validationSchema={validationForm()}
-            onSubmit={(values, { resetForm }) => {
+            onSubmit={(values) => {
               handleSubmitForm({
                 ...values,
                 status:
-                  values.endDate &&
-                  new Date(values.startDate) <= new Date(values.endDate) &&
-                  new Date(values.endDate) <= new Date()
-                    ? "inactive"
-                    : "active",
+                  values.contractType === "permanent"
+                    ? "active"
+                    : values.contractType === "temporary" &&
+                      values.endDate > new Date()
+                    ? "active"
+                    : "inactive",
               });
-              resetForm();
             }}
           >
             {({
@@ -136,9 +145,17 @@ const EmployeeFormView = ({ employeeId }) => {
               handleBlur,
               handleChange,
               handleSubmit,
+              setFieldValue,
             }) => (
-              <form onSubmit={handleSubmit} noValidate="off">
-                {formUi(handleChange, handleBlur, touched, errors, values)}
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
+                {formUi(
+                  handleChange,
+                  handleBlur,
+                  touched,
+                  errors,
+                  values,
+                  setFieldValue
+                )}
 
                 <Box mt={2} display="flex" justifyContent="flex-end">
                   <ButtonGroup>
@@ -153,7 +170,7 @@ const EmployeeFormView = ({ employeeId }) => {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      disabled={Object.keys(errors).length > 0 || loading}
+                      disabled={Object.keys(errors).length > 0}
                     >
                       {loading ? (
                         <CircularProgress size={24} color="inherit" />
@@ -185,13 +202,13 @@ const EmployeeFormView = ({ employeeId }) => {
         .required("Gender is required"),
       birthDay: Yup.date().required("Birth date is required"),
       nationalID: Yup.string(),
-      image: Yup.string(),
       phone: Yup.string().required("Phone number is required"),
       phone2: Yup.string(),
       email: Yup.string().email("Must be a valid email").max(255),
       address: Yup.string().required("Main address is required"),
       address2: Yup.string(),
-
+      cv: Yup.mixed().required("CV is required"),
+      image: Yup.mixed(),
       department: Yup.string().required("Department is required"),
       position: Yup.string().required("Position is required"),
       salary: Yup.number().positive("Enter valid salary figure"),
@@ -203,15 +220,24 @@ const EmployeeFormView = ({ employeeId }) => {
       startDate: Yup.date().required("Start date is required"),
       hireDate: Yup.date().required("Hire date is required"),
       endDate: Yup.date(),
+      isAttendanceRequired: Yup.boolean(),
+      deductCostShare: Yup.boolean(),
     });
   }
 
-  function formUi(handleChange, handleBlur, touched, errors, values) {
+  function formUi(
+    handleChange,
+    handleBlur,
+    touched,
+    errors,
+    values,
+    setFieldValue
+  ) {
     return (
       <Paper
         style={{
-          padding: 12,
-          borderRadius: 8,
+          padding: 20,
+          borderRadius: 10,
         }}
       >
         <Box display="flex" alignItems="center" mb={1}>
@@ -225,14 +251,13 @@ const EmployeeFormView = ({ employeeId }) => {
           </Box>
         </Box>
         <Divider />
-        {/* if is edit form show loading until employee is fetched */}
         {isLoading ? (
           <div className={classes.progress}>
             <LinearProgress />
           </div>
         ) : (
-          <Container maxWidth="lg">
-            <Grid container spacing={2}>
+          <Container maxWidth={"lg"}>
+            <Grid container spacing={3}>
               {[
                 {
                   label: "EmployeeID ex. 123456",
@@ -391,6 +416,41 @@ const EmployeeFormView = ({ employeeId }) => {
                   GridProps: { sm: 12, md: 6, lg: 4 },
                   disabled: values.contractType === "Permanent",
                 },
+                {
+                  label: "isAttendanceRequired",
+                  name: "isAttendanceRequired",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  type: "checkbox",
+                  GridProps: { sm: 12, md: 6, lg: 2 },
+                },
+                {
+                  label: "isDeductCostShare",
+                  name: "deductCostShare",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  type: "checkbox",
+                  GridProps: { sm: 12, md: 6, lg: 10 },
+                },
+                {
+                  label: "Upload Employee Document",
+                  name: "cv",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  required: true,
+                  type: "file",
+                  GridProps: { sm: 12, md: 6, lg: 6 },
+                },
+                {
+                  label: "Upload Employee Photo (Optional)",
+                  name: "image",
+                  onChange: handleChange,
+                  onBlur: handleBlur,
+                  type: "file",
+                  GridProps: { sm: 12, md: 6, lg: 6 },
+                },
               ].map(
                 (
                   {
@@ -407,32 +467,122 @@ const EmployeeFormView = ({ employeeId }) => {
                   index
                 ) => (
                   <Grid item key={index} {...GridProps}>
-                    <TextField
-                      required={required}
-                      select={select}
-                      error={
-                        Boolean(touched[name] && errors[name]) || rest.error
-                      }
-                      helperText={touched[name] && errors[name]}
-                      label={label}
-                      name={name}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      value={values[name]}
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      margin="normal"
-                      {...rest}
-                    >
-                      {select
-                        ? selectOptions.map(({ value, label }, index) => (
-                            <MenuItem value={value} key={index}>
+                    {rest.type === "checkbox" ? (
+                      <>
+                        <Box
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                            flexDirection: "row",
+                          }}
+                        >
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={values[name] || false}
+                                onChange={onChange}
+                                name={name}
+                                color="primary"
+                                inputProps={{
+                                  "aria-label": "secondary checkbox",
+                                }}
+                              />
+                            }
+                            label={label}
+                          />
+                        </Box>
+                      </>
+                    ) : rest.type === "file" ? (
+                      <>
+                        <Container style={{ marginTop: "1rem" }}>
+                          <Box
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              flexDirection: "row",
+                            }}
+                          >
+                            <Typography
+                              style={{
+                                fontFamily: "Roboto",
+                                fontSize: "0.8rem",
+                              }}
+                            >
                               {label}
-                            </MenuItem>
-                          ))
-                        : null}
-                    </TextField>
+                            </Typography>
+
+                            <input
+                              accept={
+                                name === "cv" ? "application/pdf" : "image/*"
+                              }
+                              style={{ display: "none" }}
+                              id={name}
+                              type="file"
+                              name={name}
+                              label={label}
+                              onBlur={onBlur}
+                              onChange={(event) => {
+                                onChange({
+                                  target: {
+                                    name,
+                                    value: event.target.files[0],
+                                  },
+                                });
+                              }}
+                            />
+                            <label htmlFor={name}>
+                              <Button
+                                variant={
+                                  values[name] ? "contained" : "outlined"
+                                }
+                                color={values[name] ? "primary" : "default"}
+                                component="span"
+                                className={classes.button}
+                                startIcon={
+                                  name === "cv" ? (
+                                    <PictureAsPdf />
+                                  ) : (
+                                    <PhotoCamera />
+                                  )
+                                }
+                              >
+                                {values[name]
+                                  ? values[name]?.name
+                                  : "Upload Here"}
+                              </Button>
+                            </label>
+                          </Box>
+                        </Container>
+                      </>
+                    ) : (
+                      <TextField
+                        required={required}
+                        select={select}
+                        error={
+                          Boolean(touched[name] && errors[name]) || rest.error
+                        }
+                        helperText={touched[name] && errors[name]}
+                        label={label}
+                        name={name}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        value={values[name]}
+                        fullWidth
+                        variant="filled"
+                        size="small"
+                        margin="normal"
+                        {...rest}
+                      >
+                        {select
+                          ? selectOptions.map(({ value, label }, index) => (
+                              <MenuItem value={value} key={index}>
+                                {label}
+                              </MenuItem>
+                            ))
+                          : null}
+                      </TextField>
+                    )}
                   </Grid>
                 )
               )}
@@ -453,6 +603,7 @@ const EmployeeFormView = ({ employeeId }) => {
         gender: "",
         birthDay: new Date().toISOString().slice(0, 10),
         nationalID: "",
+        cv: "",
         image: "",
         phone: "",
         phone2: "",
@@ -464,7 +615,7 @@ const EmployeeFormView = ({ employeeId }) => {
         contractType: "",
         hireDate: new Date().toISOString().slice(0, 10),
         startDate: new Date().toISOString().slice(0, 10),
-        endDate: new Date().toISOString().slice(0, 10),
+        endDate: "",
       }
     );
   }
@@ -477,26 +628,21 @@ const EmployeeFormView = ({ employeeId }) => {
           await API.employees.create(employeeInfo);
         if (success) {
           addEmployee(employee);
-          notify({
-            message: message,
-            type: "success",
-          });
+          notify({ success, message: message });
           setLoading(false);
           navigate("/app/employees");
+          return true;
         } else {
-          notify({
-            message: error,
-            type: "error",
-          });
+          console.error(error);
+          notify({ error, message: error });
           setLoading(false);
+          return false;
         }
       } catch (e) {
-        console.error(e.message);
-        notify({
-          message: e.message,
-          type: "error",
-        });
+        console.error(e);
+        notify({ error: e.message });
         setLoading(false);
+        return false;
       }
     };
 

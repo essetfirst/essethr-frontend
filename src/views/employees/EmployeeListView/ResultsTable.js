@@ -73,12 +73,18 @@ const ResultsTable = ({
               {
                 label: "Full NAME",
                 field: "firstName",
-                renderCell: ({ _id, firstName, surName, phone }) => (
+                renderCell: ({ _id, firstName, surName, phone, image }) => (
                   <Box display="flex" alignItems="center">
                     <CustomAvatar color="secondary" size="1">
-                      {`${firstName ? firstName.charAt(0) : ""}${
-                        surName ? surName.charAt(0) : ""
-                      }`}
+                      {image ? (
+                        <img
+                          src={`${process.env.REACT_APP_API_URL}/${image}`}
+                          alt="avatar"
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      ) : (
+                        `${firstName?.charAt(0)}${surName?.charAt(0)}`
+                      )}
                     </CustomAvatar>
                     <div>
                       <Typography

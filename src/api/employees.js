@@ -30,7 +30,7 @@ function create(data) {
 }
 
 function editById(id, data) {
-  return putRequest(`${path}/${id}`, data);
+  return putRequestFileUpload(`${path}/${id}`, data);
 }
 
 function uploadImage(id, imageFile) {

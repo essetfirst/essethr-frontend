@@ -547,9 +547,10 @@ const EmployeeFormView = ({ employeeId }) => {
                                   )
                                 }
                               >
-                                {values[name]
-                                  ? values[name]?.name
-                                  : "Upload Here"}
+                                {isCreateForm
+                                  ? (values[name] && values[name].name) ||
+                                    "Upload"
+                                  : values[name]}
                               </Button>
                             </label>
                           </Box>

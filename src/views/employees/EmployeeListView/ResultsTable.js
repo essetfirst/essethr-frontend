@@ -55,6 +55,7 @@ const ResultsTable = ({
     },
   }));
 
+  console.log("employees", employees);
   const classes = useStyles();
 
   return (
@@ -64,6 +65,8 @@ const ResultsTable = ({
           <LinearProgress />
         </div>
       )}
+
+
 
       {employees.length > 0 && (
         <>
@@ -83,7 +86,10 @@ const ResultsTable = ({
                           style={{ width: "100%", height: "100%" }}
                         />
                       ) : (
-                        `${firstName?.charAt(0)}${surName?.charAt(0)}`
+                        <img src={`${process.env.REACT_APP_API_URL}/${image.name}`} 
+                        alt="avatar"
+                        style={{ width: "100%", height: "100%" }}
+                      />
                       )}
                     </CustomAvatar>
                     <div>

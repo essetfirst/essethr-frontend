@@ -220,7 +220,7 @@ const EmployeeProfileView = () => {
               </Box>
             </Box>
             <Box mb={1}>
-              <Grid container spacing={12}>
+              <Grid container spacing={2}>
                 <Grid item sm={12} md={6}>
                   <Box display="flex">
                     <CustomAvatar

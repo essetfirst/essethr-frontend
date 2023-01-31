@@ -421,18 +421,16 @@ const EmployeeFormView = ({ employeeId }) => {
                   name: "isAttendanceRequired",
                   onChange: handleChange,
                   onBlur: handleBlur,
-                  required: true,
                   type: "checkbox",
-                  GridProps: { sm: 12, md: 6, lg: 2 },
+                  GridProps: { sm: 12, md: 6, lg: 4 },
                 },
                 {
                   label: "isDeductCostShare",
                   name: "deductCostShare",
                   onChange: handleChange,
                   onBlur: handleBlur,
-                  required: true,
                   type: "checkbox",
-                  GridProps: { sm: 12, md: 6, lg: 10 },
+                  GridProps: { sm: 12, md: 6, lg: 8 },
                 },
                 {
                   label: "Upload Employee Document",
@@ -472,25 +470,23 @@ const EmployeeFormView = ({ employeeId }) => {
                         <Box
                           style={{
                             display: "flex",
-                            justifyContent: "flex-start",
+                            justifyContent: "space-between",
                             alignItems: "center",
                             flexDirection: "row",
                           }}
-                        >
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={values[name] || false}
-                                onChange={onChange}
-                                name={name}
-                                color="primary"
-                                inputProps={{
-                                  "aria-label": "secondary checkbox",
-                                }}
-                              />
-                            }
-                            label={label}
-                          />
+                          >
+                            {/* implimant checkbox for formik and material ui */}
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={values[name]}
+                                  onChange={handleChange}
+                                  name={name}
+                                  color="secondary"
+                                />
+                              }
+                              label={label}
+                            />
                         </Box>
                       </>
                     ) : rest.type === "file" ? (
@@ -499,6 +495,7 @@ const EmployeeFormView = ({ employeeId }) => {
                           <Box
                             style={{
                               display: "flex",
+                              justifyContent: "flex-start",
                               alignItems: "center",
                               flexDirection: "row",
                             }}
@@ -523,12 +520,10 @@ const EmployeeFormView = ({ employeeId }) => {
                               label={label}
                               onBlur={onBlur}
                               onChange={(event) => {
-                                onChange({
-                                  target: {
-                                    name,
-                                    value: event.target.files[0],
-                                  },
-                                });
+                                setFieldValue(
+                                  name,
+                                  event.currentTarget.files[0]
+                                );
                               }}
                             />
                             <label htmlFor={name}>
@@ -547,14 +542,17 @@ const EmployeeFormView = ({ employeeId }) => {
                                   )
                                 }
                               >
-                                {isCreateForm
-                                  ? (values[name] && values[name].name) ||
+                               {isCreateForm
+                                  ? (values[name] && values[name]?.name) ||
                                     "Upload"
-                                  : values[name]}
+                                  : values[name] && "Change"}
                               </Button>
                             </label>
                           </Box>
                         </Container>
+                        <Typography style={{ color: "red" }}>
+                          {touched[name] && errors[name]}
+                        </Typography>
                       </>
                     ) : (
                       <TextField
@@ -617,6 +615,8 @@ const EmployeeFormView = ({ employeeId }) => {
         hireDate: new Date().toISOString().slice(0, 10),
         startDate: new Date().toISOString().slice(0, 10),
         endDate: "",
+        isAttendanceRequired: false,
+        deductCostShare: false,
       }
     );
   }

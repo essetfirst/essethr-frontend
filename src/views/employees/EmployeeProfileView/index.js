@@ -15,9 +15,6 @@ import {
 import {
   ArrowBack as BackIcon,
   Edit as EditIcon,
-  KeyboardArrowDown as ActionsIcon,
-  EditAttributesRounded,
-  EditAttributes,
 } from "@material-ui/icons";
 import { useReactToPrint } from "react-to-print";
 import PageView from "../../../components/PageView";
@@ -221,13 +218,11 @@ const EmployeeProfileView = () => {
             </Box>
             <Box mb={1}>
               <Grid container spacing={2}>
-                <Grid item sm={12} md={6}>
+                <Grid item sm={12} md={8}>
                   <Box display="flex">
                     <CustomAvatar
                       size="2"
-                      src={`${process.env.REACT_APP_API_URL}/${
-                        state.employee?.image && state.employee?.image
-                      }`}
+                      src={state.employee ? state.employee.image : ""}
                       alt={`${name}`}
                       className={classes.avatar}
                     />
@@ -264,39 +259,40 @@ const EmployeeProfileView = () => {
                     </Box>
                   </Box>
                 </Grid>
-                <Grid item md={6} sm={12}>
-                  <Box display="flex" justifyContent="flex-end" mt={2}>
+                <Grid item md={4} sm={12}>
+                  <Box display="flex" justifyContent="space-between" flexWrap="wrap">
                     <Button
-                      variant="outlined"
-                      color="primary"
+                      variant="text"
+                      color="inherit"
                       onClick={handleEditProfileClick}
                       startIcon={<Edit3 />}
+                      size="small"
+                      style={{ padding: "1px 2px" , fontSize: "10px"}}
                     >
-                      Edit
+                      <span style={{ fontSize: "12px" }}>edit profile</span>
                     </Button>
-                    <Button
-                      variant="outlined"
+                    {/* <Button
+                      variant="text"
                       color="primary"
                       onClick={handleProfileMenuClick}
                       endIcon={<ActionsIcon />}
-                      style={{ marginLeft: "8px" }}
-                    >
-                      Actions
-                    </Button>
+                      style={{ padding: "1px 2px" , fontSize: "10px"}}
+                    /> */}
                     <a
-                      href={`${process.env.REACT_APP_API_URL}/${
-                        state.employee && state.employee.cv
-                      }`}
+                      href={state.employee ? state?.employee?.cv : ""}
                       title="Download CV"
-                      download
+                      target="_blank"
+                      download rel="noreferrer"
                     >
                       <Button
-                        variant="outlined"
-                        color="primary"
+                        variant="text"
+                        color="secondary"
+                        size="small"
                         startIcon={<DownloadCloud />}
-                        style={{ marginLeft: "8px" }}
+                        style={{ padding: "1px 2px" , fontSize: "10px"}}
+
                       >
-                        Download Document
+                        <span style={{ fontSize: "12px" }}>see details</span>
                       </Button>
                     </a>
                   </Box>

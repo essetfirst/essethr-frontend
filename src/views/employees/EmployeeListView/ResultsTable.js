@@ -55,7 +55,6 @@ const ResultsTable = ({
     },
   }));
 
-  console.log("employees", employees);
   const classes = useStyles();
 
   return (
@@ -79,18 +78,11 @@ const ResultsTable = ({
                 renderCell: ({ _id, firstName, surName, phone, image }) => (
                   <Box display="flex" alignItems="center">
                     <CustomAvatar color="secondary" size="1">
-                      {image ? (
-                        <img
-                          src={`${process.env.REACT_APP_API_URL}/${image}`}
-                          alt="avatar"
-                          style={{ width: "100%", height: "100%" }}
-                        />
-                      ) : (
-                        <img src={`${process.env.REACT_APP_API_URL}/${image.name}`} 
+                      <img 
+                        src={image}
                         alt="avatar"
-                        style={{ width: "100%", height: "100%" }}
+                        style={{ width: 50, height: 50 }}
                       />
-                      )}
                     </CustomAvatar>
                     <div>
                       <Typography

@@ -28,7 +28,6 @@ import ArrowBackIos from "@material-ui/icons/ArrowBackIos";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import {
-  CloudCircleRounded,
   PhotoCamera,
   PictureAsPdf,
 } from "@material-ui/icons";
@@ -235,17 +234,16 @@ const EmployeeFormView = ({ employeeId }) => {
   ) {
     return (
       <Paper
-        style={{
-          padding: 20,
-          borderRadius: 10,
-        }}
+        elevation={0}
+        variant="outlined"
+        style={{ padding: 20, marginBottom: 20 }}
       >
         <Box display="flex" alignItems="center" mb={1}>
           <Button onClick={() => navigate(-1)}>
             <ArrowBackIos />
           </Button>
           <Box ml={1}>
-            <Typography variant="h3" color="textPrimary">
+            <Typography variant="h5" color="textPrimary">
               {title}
             </Typography>
           </Box>
@@ -257,7 +255,7 @@ const EmployeeFormView = ({ employeeId }) => {
           </div>
         ) : (
           <Container maxWidth={"lg"}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {[
                 {
                   label: "EmployeeID ex. 123456",
@@ -430,24 +428,24 @@ const EmployeeFormView = ({ employeeId }) => {
                   onChange: handleChange,
                   onBlur: handleBlur,
                   type: "checkbox",
-                  GridProps: { sm: 12, md: 6, lg: 8 },
+                  GridProps: { sm: 12, md: 6, lg: 4 },
                 },
                 {
-                  label: "Upload Employee Document",
+                  label: "Employee Doc",
                   name: "cv",
                   onChange: handleChange,
                   onBlur: handleBlur,
                   required: true,
                   type: "file",
-                  GridProps: { sm: 12, md: 6, lg: 6 },
+                  GridProps: { sm: 12, md: 6, lg: 4 },
                 },
                 {
-                  label: "Upload Employee Photo (Optional)",
+                  label: "profile image",
                   name: "image",
                   onChange: handleChange,
                   onBlur: handleBlur,
                   type: "file",
-                  GridProps: { sm: 12, md: 6, lg: 6 },
+                  GridProps: { sm: 12, md: 6, lg: 12 },
                 },
               ].map(
                 (
@@ -465,47 +463,16 @@ const EmployeeFormView = ({ employeeId }) => {
                   index
                 ) => (
                   <Grid item key={index} {...GridProps}>
-                    {rest.type === "checkbox" ? (
+                    {rest.type === "file" ? (
                       <>
-                        <Box
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            flexDirection: "row",
-                          }}
-                          >
-                            {/* implimant checkbox for formik and material ui */}
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={values[name]}
-                                  onChange={handleChange}
-                                  name={name}
-                                  color="secondary"
-                                />
-                              }
-                              label={label}
-                            />
-                        </Box>
-                      </>
-                    ) : rest.type === "file" ? (
-                      <>
-                        <Container style={{ marginTop: "1rem" }}>
                           <Box
                             style={{
                               display: "flex",
                               justifyContent: "flex-start",
                               alignItems: "center",
-                              flexDirection: "row",
                             }}
                           >
-                            <Typography
-                              style={{
-                                fontFamily: "Roboto",
-                                fontSize: "0.8rem",
-                              }}
-                            >
+                            <Typography>
                               {label}
                             </Typography>
 
@@ -545,14 +512,34 @@ const EmployeeFormView = ({ employeeId }) => {
                                {isCreateForm
                                   ? (values[name] && values[name]?.name) ||
                                     "Upload"
-                                  : values[name] && "Change"}
+                                  : (values[name] && values[name]?.name) ||
+                                    "Change"}
                               </Button>
                             </label>
                           </Box>
-                        </Container>
-                        <Typography style={{ color: "red" }}>
-                          {touched[name] && errors[name]}
-                        </Typography>
+                      </>
+                    ): rest.type === "checkbox" ? (
+                      <>
+                        <Box
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                          }}
+                          >
+                            {/* implimant checkbox for formik and material ui */}
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={values[name]}
+                                  onChange={handleChange}
+                                  name={name}
+                                  color="secondary"
+                                />
+                              }
+                              label={label}
+                            />
+                        </Box>
                       </>
                     ) : (
                       <TextField
@@ -568,7 +555,7 @@ const EmployeeFormView = ({ employeeId }) => {
                         onChange={onChange}
                         value={values[name]}
                         fullWidth
-                        variant="filled"
+                        variant="outlined"
                         size="small"
                         margin="normal"
                         {...rest}

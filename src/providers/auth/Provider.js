@@ -6,16 +6,16 @@ import Context from "./Context";
 import API from "../../api";
 
 function getInitialState(persistKey = "auth") {
-  let auth;
+  let myAuth 
   try {
-    auth = JSON.parse(localStorage.getItem(persistKey));
+    myAuth = JSON.parse(localStorage.getItem(persistKey));
   } catch (e) {
     console.warn(e);
   }
 
   return {
-    ...auth,
-    isAuth: auth !== null,
+    ...myAuth,
+    isAuth:  myAuth !== null,
     loading: false,
     error: null,
   };
@@ -45,7 +45,7 @@ const reducer = (state, action) => {
         error: null,
       };
     case "LOGIN_ERROR":
-      return { ...state, loading: false, error };
+      return { ...state, loading: false, error , isAuth: false};
     default:
       return state;
   }
@@ -56,6 +56,7 @@ const Provider = ({ children, persistKey = "auth" }) => {
     reducer,
     getInitialState(persistKey)
   );
+
 
   const login = (payload, cb) => {
     dispatch({ type: "LOGIN_REQUEST" });

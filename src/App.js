@@ -50,6 +50,7 @@ const App = ({ config: appConfig }) => {
                           autoHideDuration={2000}
                           hideIconVariant={true}
                           maxSnack={3}
+                          preventDuplicate
                         >
                           <NotificationSnackbarProvider>
                             <RoutesComponent />

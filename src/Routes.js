@@ -48,7 +48,7 @@ import LeaveBalancesReportView from "./views/reports/LeaveBalancesReportView";
 const RoutesComponent = () => {
   const { auth } = useAuth();
   const { org } = useOrg();
-  const isAuth = auth.isAuth;
+  const isAuth = auth.isAuth
 
   const homePath = "/app/dashboard";
   const loginPath = "/login";

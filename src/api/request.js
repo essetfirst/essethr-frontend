@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Link, Navigate } from "react-router-dom";
 
 const apiURL = "/api/v1";
 
@@ -34,14 +35,21 @@ const makeRequest = async (url, method, params, data) => {
 
   try {
     const response = await axios(config);
-    console.table(
+    console.log(
       "%c API SUCCESS: ",
       "background: teal; color: white; font-weight: bold; font-size: 12px",
-      response.data
+      response.data.success
     );
 
     return response.data;
+
   } catch (error) {
+    if (error.response.status === 401) {
+      console.log(error?.response?.data?.error );
+      localStorage.removeItem("auth");
+      localStorage.removeItem("org");
+      window.location.href = "/login";
+    }
     console.error(
       "%c API ERROR: ",
       "background: red; color: white; font-weight: bold; font-size: 12px",
@@ -50,6 +58,7 @@ const makeRequest = async (url, method, params, data) => {
     throw error;
   }
 };
+
 const makeRequestFileUpload = async (url, method, params, data) => {
   const auth = getAuth();
   const org = getOrg();
@@ -70,7 +79,7 @@ const makeRequestFileUpload = async (url, method, params, data) => {
 
   try {
     const response = await axios(config);
-    console.table(
+    console.log(
       "%c API SUCCESS: ",
       "background: teal; color: white; font-weight: bold; font-size: 12px",
       response.data

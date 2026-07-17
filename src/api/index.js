@@ -1,10 +1,13 @@
-import authApi from "./auth";
-import employeesApi from "./employees";
-import attendanceApi from "./attendance";
-import leavesApi from "./leaves";
-import payrollApi from "./payroll";
-import orgApi from "./org";
-import usersApi from "./users";
+import authApi from "features/auth/api";
+import employeesApi from "features/employees/api";
+import attendanceApi from "features/attendance/api";
+import leavesApi from "features/leaves/api";
+import payrollApi from "features/payroll/api";
+import orgApi from "features/org/api";
+import usersApi from "features/users/api";
+import auditApi from "features/audit/api";
+import settingsApi from "features/settings/api";
+import documentsApi from "features/documents/api";
 
 const API = {
   auth: authApi,
@@ -15,6 +18,9 @@ const API = {
 
   orgs: orgApi,
   users: usersApi,
+  audit: auditApi,
+  settings: settingsApi,
+  documents: documentsApi,
 };
 
 export default API;

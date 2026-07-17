@@ -1,39 +1,36 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Typography, makeStyles, Button } from "@material-ui/core";
+import { Typography, Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-import { RefreshTwoTone as RetryIcon } from "@material-ui/icons";
+import { RefreshTwoTone as RetryIcon } from "@mui/icons-material";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100%",
+const StyledRoot = styled("div")(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: theme.spacing(2),
+  margin: theme.spacing(1),
+  fontFamily: "Poppins",
+  marginLeft: "-10rem",
+}));
 
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: theme.spacing(2),
-    margin: theme.spacing(1),
-    fontFamily: "Poppins",
-    marginLeft: "-10rem",
-  },
-  button: {
-    margin: theme.spacing(1),
-    padding: theme.spacing(1),
-  },
+const StyledButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
+  padding: theme.spacing(1),
 }));
 
 const ErrorBoxComponent = ({ error, onRetry }) => {
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <StyledRoot>
       <Typography variant="h2" color="error" align="left">
         {String(error)}
       </Typography>
 
-      <Button
-        className={classes.button}
+      <StyledButton
         variant="outlined"
         color="default"
         size="small"
@@ -41,8 +38,8 @@ const ErrorBoxComponent = ({ error, onRetry }) => {
         startIcon={<RetryIcon fontSize="small" />}
       >
         Retry
-      </Button>
-    </div>
+      </StyledButton>
+    </StyledRoot>
   );
 };
 

@@ -1,79 +1,80 @@
-// eslint-disable-next-line import/no-anonymous-default-export
+import { fontFamily } from "./tokens";
+
 export default {
+  fontFamily,
+  fontWeightLight: 300,
+  fontWeightRegular: 400,
+  fontWeightMedium: 500,
+  fontWeightSemiBold: 600,
+  fontWeightBold: 700,
   h1: {
-    fontWeight: 500,
-    fontSize: 35,
-    fontFamily: "Ubuntu",
+    fontWeight: 700,
+    fontSize: "1.75rem",
+    lineHeight: 1.25,
+    letterSpacing: "-0.02em",
   },
   h2: {
-    fontWeight: 500,
-    fontSize: 25,
-    fontFamily: "Ubuntu",
+    fontWeight: 600,
+    fontSize: "1.375rem",
+    lineHeight: 1.3,
+    letterSpacing: "-0.01em",
   },
   h3: {
-    fontWeight: 500,
-    fontSize: 20,
-    fontFamily: "Ubuntu",
+    fontWeight: 600,
+    fontSize: "1.125rem",
+    lineHeight: 1.35,
   },
   h4: {
-    fontWeight: 500,
-    fontSize: 18,
-    fontFamily: "Ubuntu",
+    fontWeight: 600,
+    fontSize: "1rem",
+    lineHeight: 1.4,
   },
   h5: {
-    fontWeight: 500,
-    fontSize: 16,
-    fontFamily: "Ubuntu",
+    fontWeight: 600,
+    fontSize: "0.875rem",
+    lineHeight: 1.45,
   },
   h6: {
-    fontWeight: 500,
-    fontSize: 14,
-    fontFamily: "Ubuntu",
-  },
-  body1: {
-    fontWeight: 500,
-    fontSize: 14,
-    fontFamily: "Ubuntu",
-  },
-  overline: {
-    fontWeight: 800,
-    fontSize: 12,
-    fontFamily: "Ubuntu",
+    fontWeight: 600,
+    fontSize: "0.8125rem",
+    lineHeight: 1.5,
   },
   subtitle1: {
     fontWeight: 500,
-    fontSize: 16,
-    fontFamily: "Ubuntu",
+    fontSize: "0.9375rem",
+    lineHeight: 1.5,
   },
   subtitle2: {
     fontWeight: 500,
-    fontSize: 14,
-    fontFamily: "Ubuntu",
+    fontSize: "0.8125rem",
+    lineHeight: 1.5,
   },
-  caption: {
-    fontWeight: 500,
-    fontSize: 12,
-    fontFamily: "Ubuntu",
+  body1: {
+    fontWeight: 400,
+    fontSize: "0.875rem",
+    lineHeight: 1.6,
   },
   body2: {
-    fontWeight: 500,
-    fontSize: 12,
-    fontFamily: "Ubuntu",
+    fontWeight: 400,
+    fontSize: "0.8125rem",
+    lineHeight: 1.55,
   },
-
-  textSecondary: {
-    fontWeight: 500,
-    color: "#6c757d",
-    fontFamily: "Ubuntu",
+  caption: {
+    fontWeight: 400,
+    fontSize: "0.75rem",
+    lineHeight: 1.5,
   },
-  textPrimary: {
-    color: "#212529",
-    fontFamily: "Ubuntu",
+  overline: {
+    fontWeight: 600,
+    fontSize: "0.6875rem",
+    lineHeight: 1.6,
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
   },
-
   button: {
-    fontWeight: 500,
-    fontSize: 12,
-    fontFamily: "Ubuntu",
+    fontWeight: 600,
+    fontSize: "0.8125rem",
+    lineHeight: 1.5,
+    textTransform: "none",
   },
 };

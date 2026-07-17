@@ -1,5 +1,5 @@
 import React from "react";
-import ExcelIconImage from "../assets/icons/excel_icon.png";
+import ExcelIconImage from "assets/icons/excel_icon.png";
 
 const ExcelFileIcon = () => {
   return (

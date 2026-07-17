@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MenuItem, TextField } from "@material-ui/core";
+import { MenuItem, TextField } from "@mui/material";
 
 const FormField = ({
   select,

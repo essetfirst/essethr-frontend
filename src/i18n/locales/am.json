@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "EsseHR",
+    "tagline": "የሰው ኃይል አስተዳደር"
+  },
+  "nav": {
+    "dashboard": "ዳሽቦርድ",
+    "manager": "ማኔጅር",
+    "employees": "ሰራተኞች",
+    "attendance": "አቴንዳንስ",
+    "leaves": "የፈቃድ ጊዜ",
+    "payroll": "ደመወዝ",
+    "approvals": "ማፅደቂያ",
+    "offboarding": "የመውጫ",
+    "onboarding": "የመግቢያ",
+    "settings": "ቅንብሮች",
+    "portal": "የኔ ፖርታል"
+  },
+  "auth": {
+    "login": "ግባ",
+    "logout": "ውጣ",
+    "email": "ኢሜይል",
+    "password": "የይለፍ ቃል",
+    "rememberMe": "አስታውሰኝ",
+    "welcomeBack": "እንኳን ደህና መጡ"
+  },
+  "manager": {
+    "title": "የማኔጅር ዳሽቦርድ",
+    "subtitle": "የቡድን ስራ፣ ተራ ፈቃዶች እና የሰው ኃይል ሁኔታ።"
+  },
+  "common": {
+    "save": "አስቀምጥ",
+    "cancel": "ሰርዝ",
+    "loading": "በመጫን ላይ…",
+    "error": "ስህተት ተከስቷል",
+    "language": "ቋንቋ",
+    "refresh": "አድስ",
+    "viewAll": "ሁሉንም ተመልከት"
+  }
+}

@@ -1,39 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  Box,
-  Typography,
-  Button,
-  // ListItem,
-  withStyles,
-  // List,
-  Dialog,
-  DialogContent,
-  ButtonGroup,
-  Divider,
-  DialogTitle,
-  DialogActions,
-  // Grid,
-  // IconButton,
-} from "@material-ui/core";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import { Box, Typography, Button, Dialog, DialogContent, ButtonGroup, Divider, DialogTitle, DialogActions } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import LinearProgress from "@mui/material/LinearProgress";
 import { File as FileIcon } from "react-feather";
-import { readExcelFile } from "../../../helpers/import";
+import { readExcelFile } from "helpers/import";
 
-const BorderLinearProgress = withStyles((theme) => ({
-  root: {
-    height: 15,
-    borderRadius: 5,
-  },
-  colorPrimary: {
-    backgroundColor: "#EEEEEE",
-  },
-  bar: {
+const BorderLinearProgress = styled(LinearProgress)({
+  height: 15,
+  borderRadius: 5,
+  backgroundColor: "#EEEEEE",
+  "& .MuiLinearProgress-bar": {
     borderRadius: 5,
     backgroundColor: "#1a90ff",
   },
-}))(LinearProgress);
+});
 
 const ImportFileDialog = ({ open, onClose, onFileChange, onFileImport }) => {
   const [state, setState] = React.useState({

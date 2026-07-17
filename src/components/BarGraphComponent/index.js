@@ -2,15 +2,25 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Bar } from "react-chartjs-2";
-import { Box, useTheme } from "@material-ui/core";
+import { Box, useTheme } from "@mui/material";
 
-const BarGraphComponent = ({ bars, labels, height, displayLegend }) => {
+const BarGraphComponent = ({
+  bars = [],
+  labels = [],
+  height,
+  displayLegend,
+}) => {
   const theme = useTheme();
 
   const datasets = bars.map(({ label, data, color }) => ({
     label,
     data,
     backgroundColor: color,
+    borderRadius: 8,
+    barThickness: 12,
+    maxBarThickness: 20,
+    categoryPercentage: 0.5,
+    barPercentage: 0.5,
   }));
 
   const barData = {
@@ -20,65 +30,51 @@ const BarGraphComponent = ({ bars, labels, height, displayLegend }) => {
 
   const options = {
     animation: false,
+    responsive: true,
+    maintainAspectRatio: false,
 
-    cornerRadius: 20,
-    layout: { padding: 0, margin: 10 },
-    legend: {
-      display: displayLegend,
-      position: "top",
-      labels: {
-        fontColor: theme.palette.text.secondary,
+    layout: { padding: 0 },
+    plugins: {
+      legend: {
+        display: displayLegend,
+        position: "top",
+        labels: {
+          color: theme.palette.text.secondary,
+        },
+      },
+      tooltip: {
+        intersect: false,
+        mode: "index",
+        backgroundColor: theme.palette.background.default,
+        titleColor: theme.palette.text.primary,
+        bodyColor: theme.palette.text.secondary,
+        footerColor: theme.palette.text.secondary,
+        borderColor: theme.palette.divider,
+        borderWidth: 1,
       },
     },
-
-    maintainAspectRatio: false,
-    responsive: true,
     scales: {
-      xAxes: [
-        {
-          barThickness: 12,
-          maxBarThickness: 20,
-          barPercentage: 0.5,
-          categoryPercentage: 0.5,
-          ticks: {
-            fontColor: theme.palette.text.secondary,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
+      x: {
+        ticks: {
+          color: theme.palette.text.secondary,
         },
-      ],
-      yAxes: [
-        {
-          ticks: {
-            fontColor: theme.palette.text.secondary,
-            beginAtZero: true,
-            min: 0,
-          },
-          gridLines: {
-            borderDash: [2],
-            borderDashOffset: [2],
-            color: theme.palette.divider,
-            drawBorder: false,
-            zeroLineBorderDash: [2],
-            zeroLineBorderDashOffset: [2],
-            zeroLineColor: theme.palette.divider,
-          },
+        grid: {
+          display: false,
+          drawBorder: false,
         },
-      ],
-    },
-
-    tooltips: {
-      backgroundColor: theme.palette.background.default,
-      bodyFontColor: theme.palette.text.secondary,
-      borderColor: theme.palette.divider,
-      borderWidth: 1,
-      enabled: true,
-      footerFontColor: theme.palette.text.secondary,
-      intersect: false,
-      mode: "index",
-      titleFontColor: theme.palette.text.primary,
+      },
+      y: {
+        beginAtZero: true,
+        min: 0,
+        ticks: {
+          color: theme.palette.text.secondary,
+        },
+        grid: {
+          borderDash: [2],
+          color: theme.palette.divider,
+          drawBorder: false,
+        },
+      },
     },
   };
 

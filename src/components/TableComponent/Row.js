@@ -13,9 +13,9 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { MoreVert as MoreVertIcon } from "@material-ui/icons";
+import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
 const Row = (rowProps) => {
   // console.log("Inside Row component: ", rowProps);
@@ -50,7 +50,7 @@ const Row = (rowProps) => {
         {renderCell && typeof renderCell === "function" ? (
           renderCell(rowProps)
         ) : (
-          <Typography variant="h6">{rowProps[field]}</Typography>
+          <Typography variant="body2">{rowProps[field]}</Typography>
         )}
       </TableCell>
     ));
@@ -85,32 +85,29 @@ const Row = (rowProps) => {
   //     });
 
   const rowActionsMenuList = (rowProps) =>
-    rowActions.map(
-      ({ hide, label, icon, handler = () => null, ...rest }, index) =>
-        !hide && (
-          <MenuItem key={index} onClick={() => handler(rowProps)}>
-            {icon ? (
-              React.isValidElement(icon) ? (
-                <ListItemIcon>{icon}</ListItemIcon>
-              ) : (
-                <ListItemIcon>{icon.node}</ListItemIcon>
-              )
-            ) : null}
-            <ListItemText>{label}</ListItemText>
-            {/* <Typography variant="body2" color="text.secondary">
-            ⌘X
-          </Typography> */}
-          </MenuItem>
-        )
-    );
+    rowActions
+      .filter(({ hide }) => {
+        if (typeof hide === "function") return !hide(rowProps);
+        return !hide;
+      })
+      .map(({ label, icon, handler = () => null }, index) => (
+        <MenuItem key={index} onClick={() => handler(rowProps)}>
+          {icon ? (
+            React.isValidElement(icon) ? (
+              <ListItemIcon>{icon}</ListItemIcon>
+            ) : (
+              <ListItemIcon>{icon.node}</ListItemIcon>
+            )
+          ) : null}
+          <ListItemText>{label}</ListItemText>
+        </MenuItem>
+      ));
 
   return (
     <TableRow
       hover
-      style={{
+      sx={{
         cursor: typeof onRowClicked === "function" ? "pointer" : "default",
-
-        transition: "all 0.5s ease",
       }}
       aria-checked={isItemSelected}
       tabIndex={-1}

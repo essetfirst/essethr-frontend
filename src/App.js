@@ -1,20 +1,20 @@
 import React from "react";
-import { ThemeProvider } from "@material-ui/core";
-import { LocalizationProvider } from "@material-ui/pickers";
-import MomentUtils from "@material-ui/pickers/adapter/moment";
+import { ThemeProvider } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { SnackbarProvider } from "notistack";
-import AuthProvider from "./providers/auth/Provider";
+import AuthProvider from "features/auth/providers/Provider";
 import ConfigProvider from "./providers/config/Provider";
-import OrgProvider from "./providers/org/Provider";
-import AttendanceProvider from "./providers/attendance/Provider";
-import LeaveProvider from "./providers/leave/Provider";
+import OrgProvider from "features/org/providers/Provider";
+import AttendanceProvider from "features/attendance/providers/Provider";
+import LeaveProvider from "features/leaves/providers/Provider";
 import NotificationSnackbarProvider from "./providers/notification-snackbar/Provider";
 import defaultConfig from "./config";
 import { lightTheme, darkTheme } from "./theme";
 import ErrorBoundary from "./components/ErrorBoundary";
 import RoutesComponent from "./Routes";
 import { useTheme } from "./providers/theme";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import CssBaseline from "@mui/material/CssBaseline";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
@@ -35,7 +35,7 @@ const App = ({ config: appConfig }) => {
       <ThemeProvider theme={mode}>
         <CssBaseline />
         <ErrorBoundary>
-          <LocalizationProvider dateAdapter={MomentUtils}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <ConfigProvider appConfig={config}>
               <AuthProvider persistKey={persistKey}>
                 <OrgProvider>

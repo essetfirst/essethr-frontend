@@ -1,47 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  makeStyles,
-  Paper,
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  TablePagination,
-  FormControlLabel,
-  Box,
-  Slide,
-  Switch,
-  Typography,
-  colors,
-} from "@material-ui/core";
+import { Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TableRow, TablePagination, FormControlLabel, Box, Slide, Switch, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-import { Ballot as EmptyTableIcon } from "@material-ui/icons";
-// import EmptyTableIcon from "../../icons/EmptyTable";
-import { ThreeDots } from "react-loading-icons";
+import { Ballot as EmptyTableIcon } from "@mui/icons-material";
+import { Skeleton } from "@mui/lab";
 
 import ErrorBoxComponent from "../ErrorBoxComponent";
-
 import Head from "./Head";
 import Toolbar from "./Toolbar";
 import Row from "./Row";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
+const StyledRoot = styled("div")(({ theme }) => ({
+  width: "100%",
+}));
 
-  paper: {
-    width: "100%",
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  width: "100%",
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(2),
+  overflow: "hidden",
+}));
 
-  table: {
-    width: "100%",
-  },
+const StyledTable = styled("div")(({ theme }) => ({
+  width: "100%",
 }));
 
 // const initialState = { data: [], loading: false, error: null };
@@ -75,7 +58,6 @@ const TableComponent = ({
 
   ...rest
 }) => {
-  const classes = useStyles();
   const [selected, setSelected] = React.useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("id");
@@ -152,6 +134,9 @@ const TableComponent = ({
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
+  const skeletonRowCount = Math.min(rowsPerPage, 5);
+  const skeletonRowHeight = dense ? 33 : 53;
+
   /*********************************************************************************************/
 
   /**************************** RENDERING DATA ROWS ********************************************/
@@ -169,8 +154,8 @@ const TableComponent = ({
   }, [data]);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <StyledRoot>
+      <StyledPaper variant="outlined" elevation={0}>
         <TableContainer>
           <Toolbar
             selected={selected}
@@ -203,31 +188,25 @@ const TableComponent = ({
             />
             <TableBody>
               {requesting || isLoading ? (
-                <Slide
-                  direction="left"
-                  in={requesting || isLoading}
-                  mountOnEnter
-                  unmountOnExit
-                >
-                  {/* skeleton for Table Row */}
-                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                    <TableCell colSpan={columns.length + 2}>
-                      <Box
-                        height={"100%"}
-                        width="100%"
-                        display="flex"
-                        justifyContent="center"
-                      >
-                        <ThreeDots
-                          fill="#009688"
-                          stroke={colors.common.white}
-                          width="50"
-                          height="50"
-                        />
-                      </Box>
-                    </TableCell>
+                Array.from({ length: skeletonRowCount }).map((_, i) => (
+                  <TableRow key={`skeleton-${i}`} style={{ height: skeletonRowHeight }}>
+                    {selectionEnabled && (
+                      <TableCell padding="checkbox">
+                        <Skeleton variant="rect" width={18} height={18} />
+                      </TableCell>
+                    )}
+                    {columns.map((col) => (
+                      <TableCell key={col.id || col.field || col.key || col.label}>
+                        <Skeleton variant="text" />
+                      </TableCell>
+                    ))}
+                    {rowActions.length > 0 && (
+                      <TableCell align="right">
+                        <Skeleton variant="rect" width={60} height={24} />
+                      </TableCell>
+                    )}
                   </TableRow>
-                </Slide>
+                ))
               ) : error ? (
                 <Slide
                   direction="left"
@@ -284,7 +263,13 @@ const TableComponent = ({
                       alignItems="center"
                     >
                       {emptyDataText ? (
-                        { emptyDataText }
+                        <Typography
+                          align="center"
+                          variant="body2"
+                          color="textSecondary"
+                        >
+                          {emptyDataText}
+                        </Typography>
                       ) : (
                         <>
                           <span>
@@ -331,8 +316,8 @@ const TableComponent = ({
             />
           </Box>
         )}
-      </Paper>
-    </div>
+      </StyledPaper>
+    </StyledRoot>
   );
 };
 

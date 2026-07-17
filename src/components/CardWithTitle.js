@@ -6,7 +6,7 @@ import {
   CardContent,
   CardHeader,
   Divider,
-} from "@material-ui/core";
+} from "@mui/material";
 
 const CardWithTitle = React.forwardRef(
   (props, ref) =>

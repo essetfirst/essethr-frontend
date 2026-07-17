@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Box, useTheme } from "@material-ui/core";
+import { Box, useTheme } from "@mui/material";
 
 import { Doughnut } from "react-chartjs-2";
 
@@ -39,23 +39,24 @@ const PieChartComponent = ({
   };
 
   const options = {
-    cutoutPercentage: 70,
+    cutout: "70%",
     layout: { padding: 2 },
-    legend: {
-      display: displayLegend,
-    },
     maintainAspectRatio: false,
     responsive: true,
-    tooltips: {
-      backgroundColor: theme.palette.background.default,
-      bodyFontColor: theme.palette.text.secondary,
-      borderColor: theme.palette.divider,
-      borderWidth: 1,
-      enabled: true,
-      footerFontColor: theme.palette.text.secondary,
-      intersect: false,
-      mode: "index",
-      titleFontColor: theme.palette.text.primary,
+    plugins: {
+      legend: {
+        display: displayLegend,
+      },
+      tooltip: {
+        intersect: false,
+        mode: "index",
+        backgroundColor: theme.palette.background.default,
+        titleColor: theme.palette.text.primary,
+        bodyColor: theme.palette.text.secondary,
+        footerColor: theme.palette.text.secondary,
+        borderColor: theme.palette.divider,
+        borderWidth: 1,
+      },
     },
   };
 

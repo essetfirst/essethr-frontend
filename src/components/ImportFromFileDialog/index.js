@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Dialog, DialogContent } from "@material-ui/core";
+import { Box, Dialog, DialogContent } from "@mui/material";
 
 import { DropzoneArea } from "material-ui-dropzone";
 

@@ -1,22 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  Box,
-  Button,
-  CircularProgress,
-  darken,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { darken } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
+import { Alert } from "@mui/lab";
 
 import { Download as DownloadIcon, File as FileIcon } from "react-feather";
 import ExcelFileIcon from "../../../icons/ExcelFileIcon";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    minWidth: "450px",
+const StyledRoot = styled("div")(({ theme }) => ({
+  minWidth: "450px",
     minHeight: "250px",
     display: "flex",
     flexDirection: "column",
@@ -26,15 +20,14 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ccc",
     borderRadius: 5,
     boxSizing: "border-box",
-  },
-  fileDragOver: {
-    background: darken(theme.palette.primary.light, 0.2),
+}));
+
+const StyledFileDragOver = styled("div")(({ theme }) => ({
+  background: darken(theme.palette.primary.light, 0.2),
     border: "2px dotted #CCC",
-  },
 }));
 
 const FileImportForm = ({ acceptedFileTypes, onReadSelectedFile }) => {
-  const classes = useStyles();
 
   const [state, setState] = React.useState({
     isImporting: false,
@@ -81,23 +74,19 @@ const FileImportForm = ({ acceptedFileTypes, onReadSelectedFile }) => {
     // console.log("[ImportDataFile]: Line 81 -> state: ", state);
   };
 
+  const DropZone = state.fileDragOver ? StyledFileDragOver : StyledRoot;
+
   return (
-    <Box
-      className={classes.root}
+    <DropZone
       onDrop={handleFileDrop}
       onFocus={() => setState({ ...state, fileDragOver: false })}
       onDragOver={() => setState({ ...state, fileDragOver: true })}
       onDragEnter={() => setState({ ...state, fileDragOver: true })}
       onDragLeave={() => setState({ ...state, fileDragOver: false })}
-      style={
+      sx={
         state.fileDragOver
-          ? {
-              border: "3px dashed #ccc",
-              background: "lightgray",
-            }
-          : {
-              background: "transparent",
-            }
+          ? { border: "3px dashed #ccc", background: "lightgray" }
+          : { background: "transparent" }
       }
     >
       {!state.isImporting && state.message && (
@@ -160,7 +149,7 @@ const FileImportForm = ({ acceptedFileTypes, onReadSelectedFile }) => {
           </Button>
         </label>
       </Box>
-    </Box>
+    </DropZone>
   );
 };
 

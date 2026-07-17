@@ -1,10 +1,10 @@
 import React from "react";
 
-import { CircularProgress, makeStyles } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100%",
+const StyledRoot = styled("div")(({ theme }) => ({
+  height: "100%",
     width: "100%",
 
     display: "flex",
@@ -13,15 +13,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     padding: theme.spacing(2),
     margin: theme.spacing(2),
-  },
 }));
 
 const LoadingComponent = ({ color = "primary", ...rest }) => {
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <StyledRoot>
       <CircularProgress color={color} {...rest} />
-    </div>
+    </StyledRoot>
   );
 };
 

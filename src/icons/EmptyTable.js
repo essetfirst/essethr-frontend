@@ -1,5 +1,5 @@
 import React from "react";
-import EmptyTableIcon from "../assets/icons/empty_table.png";
+import EmptyTableIcon from "assets/icons/empty_table.png";
 
 const EmptyTable = () => {
   return (

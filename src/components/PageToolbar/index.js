@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, ButtonGroup, Typography } from "@material-ui/core";
+import { Box, ButtonGroup, Typography } from "@mui/material";
 
 const PageToolbar = ({ title, actionButtons }) => {
   return (

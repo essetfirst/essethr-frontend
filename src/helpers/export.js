@@ -1,5 +1,5 @@
-import XLSX from "xlsx";
-import moment from "moment";
+import { fmtNow } from "utils/date";
+import * as XLSX from "xlsx";
 
 /**
  * @desc get table data as json
@@ -29,7 +29,7 @@ export const makeExcel = async (data, filename) => {
   XLSX.utils.book_append_sheet(wb, ws);
   const wopts = { bookType: "xlsx", bookSST: false, type: "array" };
   const wbout = await XLSX.write(wb, wopts);
-  downloadFile(wbout, `${filename}_${moment().format("YYYY-MM-DD")}.xlsx`, {
+  downloadFile(wbout, `${filename}_${fmtNow("yyyy-MM-dd")}.xlsx`, {
     type: "application/octet-stream",
   });
 };

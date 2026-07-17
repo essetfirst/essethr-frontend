@@ -16,7 +16,7 @@
 //     return csv;
 // }
 
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 
 export function processTabularData(dataString) {
   const dataStringLines = dataString.split(/\r\n|\n/);

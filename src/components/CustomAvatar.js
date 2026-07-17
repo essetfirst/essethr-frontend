@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Avatar } from "@material-ui/core";
+import { Avatar } from "@mui/material";
 
 const SIZES = [32, 48, 64, 96, 128, 144, 196];
 

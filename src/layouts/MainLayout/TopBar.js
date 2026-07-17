@@ -2,30 +2,21 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import {
-  AppBar,
-  Toolbar,
-  makeStyles,
-  Typography,
-  Button,
-  Box,
-} from "@material-ui/core";
-import BusinessIcon from "@material-ui/icons/Business";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import BusinessIcon from "@mui/icons-material/Business";
 
-const useStyles = makeStyles({
-  root: {},
-  toolbar: {
-    fontFamily: "Poppins",
-    fontWeight: "bold",
-  },
+const StyledAppBar = styled(AppBar)({});
+
+const StyledToolbar = styled(Toolbar)({
+  fontFamily: "Poppins",
+  fontWeight: "bold",
 });
 
 const TopBar = ({ className, ...rest }) => {
-  const classes = useStyles();
-
   return (
-    <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
-      <Toolbar className={classes.toolbar}>
+    <StyledAppBar className={clsx(className)} elevation={0} {...rest}>
+      <StyledToolbar>
         <RouterLink to="/">
           <BusinessIcon
             style={{ color: "#fff", fontSize: "2rem", marginRight: "10px" }}
@@ -34,9 +25,8 @@ const TopBar = ({ className, ...rest }) => {
         <RouterLink to="/">
           <Typography
             component="span"
-            className={classes.toolbar}
             variant="h4"
-            style={{ color: "#fff" }}
+            style={{ color: "#fff", fontFamily: "Poppins", fontWeight: "bold" }}
           >
             Esset HR
           </Typography>
@@ -72,8 +62,8 @@ const TopBar = ({ className, ...rest }) => {
             </Typography>
           </Button>
         </Box>
-      </Toolbar>
-    </AppBar>
+      </StyledToolbar>
+    </StyledAppBar>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogActions, DialogContent } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent } from "@mui/material";
 
 const EmployeeFormDialog = ({ open, onClose, content, actions }) => {
   return (

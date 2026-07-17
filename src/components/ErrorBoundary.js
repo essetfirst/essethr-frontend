@@ -1,8 +1,8 @@
 import React from "react";
-import { Typography, Box, Grid } from "@material-ui/core";
-import { SentimentVeryDissatisfied } from "@material-ui/icons";
-import Fab from "@material-ui/core/Fab";
-import AutorenewIcon from "@material-ui/icons/Autorenew";
+import { Typography, Box, Grid } from "@mui/material";
+import { SentimentVeryDissatisfied } from "@mui/icons-material";
+import Fab from "@mui/material/Fab";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import PageView from "./PageView";
 
 class ErrorBoundary extends React.Component {
@@ -26,7 +26,7 @@ class ErrorBoundary extends React.Component {
           <Grid
             container
             spacing={2}
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             style={{ marginTop: "2rem" }}
           >
@@ -65,19 +65,23 @@ class ErrorBoundary extends React.Component {
                   <br />
                 </Typography>
               </Box>
-              {/* show error info with a button to reload the page */}
-
-              {/* {this.state.errorInfo && (
+              {import.meta.env.DEV && this.state.errorInfo && (
                 <Typography
-                  variant="h5"
+                  component="pre"
+                  variant="body2"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "monospace",
+                    whiteSpace: "pre-wrap",
+                    padding: "1rem",
+                    maxWidth: "90vw",
+                    overflow: "auto",
+                    backgroundColor: "#fafafa",
                   }}
                   gutterBottom
                 >
                   {this.state.errorInfo.componentStack}
                 </Typography>
-              )} */}
+              )}
 
               <Box display="flex" justifyContent="center" alignItems="center">
                 <Fab

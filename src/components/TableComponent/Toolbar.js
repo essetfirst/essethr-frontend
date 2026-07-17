@@ -1,41 +1,30 @@
 import React from "react";
+import { Box, Button, IconButton, Toolbar as MuiToolbar, Typography, alpha } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-import clsx from "clsx";
-import {
-  Box,
-  Button,
-  IconButton,
-  makeStyles,
-  Toolbar as MuiToolbar,
-  Typography,
-} from "@material-ui/core";
-import { lighten } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  buttonSpacing: {
-    margin: theme.spacing(0, 1),
-  },
-
-  toolbar: {
-    flex: 1,
-    alignItems: "center",
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  toolbarHighlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  toolbarTitle: {
-    flex: "1 1 100%",
-  },
+const StyledButtonSpacing = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(0, 1),
 }));
+
+const StyledIconButtonSpacing = styled(IconButton)(({ theme }) => ({
+  margin: theme.spacing(0, 1),
+}));
+
+const StyledToolbar = styled(MuiToolbar)(({ theme }) => ({
+  flex: 1,
+  alignItems: "center",
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(1),
+  minHeight: 48,
+  color: theme.palette.primary.main,
+  backgroundColor: alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.06 : 0.12),
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const StyledToolbarTitle = styled(Typography)({
+  flex: "1 1 100%",
+  fontWeight: 600,
+});
 
 const Toolbar = ({
   maxCount,
@@ -43,90 +32,46 @@ const Toolbar = ({
   toolbarSelectionTitle = "Selected",
   toolbarActions,
 }) => {
-  const classes = useStyles();
   const selectedCount = selected.length;
   if (selectedCount < 1) {
     return null;
   }
 
   return (
-    <MuiToolbar
-      className={clsx(classes.toolbar, {
-        [classes.toolbarHighlight]: selectedCount > 0,
-      })}
-    >
-      {/* START: Number of selection label */}
-      {selectedCount > 0 ? (
-        <Typography
-          className={classes.toolbarTitle}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {selectedCount === maxCount ? "All" : selectedCount}{" "}
-          {toolbarSelectionTitle}
-        </Typography>
-      ) : null}
-      {/* END */}
+    <StyledToolbar>
+      <StyledToolbarTitle color="inherit" variant="subtitle2" component="div">
+        {selectedCount === maxCount ? "All" : selectedCount} {toolbarSelectionTitle}
+      </StyledToolbarTitle>
 
-      {/* START: Dense view tuning */}
-      {/* <FormControlLabel
-            label="Dense table"
-            control={
-              <Checkbox
-                onClick={handleChangeDense}
-                checked={dense}
-                inputProps={{ "aria-labelledby": "dense view checkbox" }}
-              />
-            }
-          />
-
-          <FormControlLabel
-            control={
-              <Switch checked={dense} onChange={handleChangeDense} />
-            }
-            label="Dense padding"
-          /> */}
-      {/* END */}
-
-      {/* Action Buttons */}
       {selectedCount > 1 && (
-        <Box
-          width="100%"
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-end"
-        >
-          {toolbarActions.map(
-            ({ type, label, icon, handler, ...rest }, index) => {
-              return type === "icon" ? (
-                <IconButton
-                  key={index}
-                  className={classes.buttonSpacing}
-                  onClick={handler(selected)}
-                  aria-label={label}
-                  {...rest}
-                >
-                  {icon}
-                </IconButton>
-              ) : (
-                <Button
-                  key={index}
-                  className={classes.buttonSpacing}
-                  onClick={handler(selected)}
-                  startIcon={icon}
-                  aria-label={label}
-                  variant="outlined"
-                  {...rest}
-                >
-                  {label}
-                </Button>
-              );
-            }
+        <Box width="100%" display="flex" alignItems="center" justifyContent="flex-end">
+          {toolbarActions.map(({ type, label, icon, handler, ...rest }, index) =>
+            type === "icon" ? (
+              <StyledIconButtonSpacing
+                key={index}
+                onClick={handler(selected)}
+                aria-label={label}
+                {...rest}
+              >
+                {icon}
+              </StyledIconButtonSpacing>
+            ) : (
+              <StyledButtonSpacing
+                key={index}
+                onClick={handler(selected)}
+                startIcon={icon}
+                aria-label={label}
+                variant="outlined"
+                size="small"
+                {...rest}
+              >
+                {label}
+              </StyledButtonSpacing>
+            ),
           )}
         </Box>
       )}
-    </MuiToolbar>
+    </StyledToolbar>
   );
 };
 

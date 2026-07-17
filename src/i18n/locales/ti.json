@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "EsseHR",
+    "tagline": "ናይ ሰብ ሃይል ምሕደራ"
+  },
+  "nav": {
+    "dashboard": "ዳሽቦርድ",
+    "manager": "ማኔጅር",
+    "employees": "ሰራሕተኛ",
+    "attendance": "ኣቴንዳንስ",
+    "leaves": "ፍቓድ",
+    "payroll": "ደመወዝ",
+    "approvals": "ፍቓድ",
+    "offboarding": "ዝውጻእ",
+    "onboarding": "ዝኣተወ",
+    "settings": "ቅንብር",
+    "portal": "ፖርታል"
+  },
+  "auth": {
+    "login": "ኣቱ",
+    "logout": "ውጻእ",
+    "email": "ኢመይል",
+    "password": "መሕለፊ",
+    "rememberMe": "ዘክርኒ",
+    "welcomeBack": "እንቋዕ ብደሓን መጻእኩም"
+  },
+  "manager": {
+    "title": "ዳሽቦርድ ማኔጅር",
+    "subtitle": "ናይ ጋንTEAM ስራሕ፣ ዝጽበዩ ፍቓዳትን ሁኔታን።"
+  },
+  "common": {
+    "save": "ዓቅብ",
+    "cancel": "ሰርዝ",
+    "loading": "ይጽዕን…",
+    "error": "ጌጋ ተፈጢሩ",
+    "language": "ቋንቋ",
+    "refresh": "ሓድስ",
+    "viewAll": "ኩሉ ርአ"
+  }
+}

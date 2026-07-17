@@ -12,10 +12,10 @@ import {
   Divider,
   CircularProgress,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { readExcelFile } from "../../../helpers/import";
-import API from "../../../api";
+import { readExcelFile } from "helpers/import";
+import API from "api";
 import FileImportForm from "./FileImportForm";
 
 const FileImportDialog = ({

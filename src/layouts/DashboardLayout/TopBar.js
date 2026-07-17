@@ -1,22 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useTheme } from "../../providers/theme";
-import { Menu as MenuIcon } from "@material-ui/icons";
-import BusinessIcon from "@material-ui/icons/Business";
-import Brightness4Icon from "@material-ui/icons/Brightness4";
-import Brightness7Icon from "@material-ui/icons/Brightness7";
-import useAuth from "../../providers/auth";
-import useOrg from "../../providers/org";
-import API from "../../api";
-import clsx from "clsx";
-import PermIdentityIcon from "@material-ui/icons/PermIdentity";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import PersonIcon from "@material-ui/icons/Person";
-
+import { useTheme as useAppTheme } from "providers/theme";
 import {
-  makeStyles,
+  Menu as MenuIcon,
+  Brightness4 as Brightness4Icon,
+  Brightness7 as Brightness7Icon,
+  PermIdentity as PermIdentityIcon,
+  ExitToApp as ExitToAppIcon,
+  Search as SearchIcon,
+  KeyboardCommandKey as CommandIcon,
+} from "@mui/icons-material";
+import useAuth from "features/auth/providers";
+import useOrg from "features/org/providers";
+import useBranches from "features/org/hooks/useBranches";
+import NotificationBell from "components/NotificationBell";
+import CommandPalette from "components/CommandPalette";
+import KeyboardShortcutsHelp from "components/KeyboardShortcutsHelp";
+import LocaleSwitcher from "components/LocaleSwitcher";
+import useKeyboardShortcuts from "hooks/useKeyboardShortcuts";
+import {
   AppBar,
+  Avatar,
   Box,
   Hidden,
   IconButton,
@@ -25,28 +30,49 @@ import {
   MenuItem,
   Menu,
   TextField,
-} from "@material-ui/core";
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  alpha,
+} from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+}));
 
-  text: {
-    fontFamily: "Poppins",
-    fontWeight: 800,
-    fontSize: "1.1rem",
-  },
-  avatar: {
-    borderRadius: 50,
-  },
-  icon: {
-    animation: `$myEffect 1000ms ${theme.transitions.easing.easeInOut}`,
-  },
-  "@keyframes myEffect": {
-    "100%": {
-      transform: "rotate(360deg)",
-    },
+const LogoMark = styled(Box)(({ theme }) => ({
+  width: 32,
+  height: 32,
+  borderRadius: 8,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 700,
+  fontSize: "0.875rem",
+  color: "#fff",
+  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+}));
+
+const SearchTrigger = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  padding: "6px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  border: `1px solid ${theme.palette.mode === "light" ? alpha("#0f172a", 0.08) : alpha("#fff", 0.1)}`,
+  backgroundColor: theme.palette.mode === "light" ? alpha("#0f172a", 0.02) : alpha("#fff", 0.04),
+  color: theme.palette.text.secondary,
+  minWidth: 180,
+  transition: "border-color 0.15s ease, background-color 0.15s ease",
+  "&:hover": {
+    borderColor: alpha(theme.palette.primary.main, 0.35),
+    backgroundColor: alpha(theme.palette.primary.main, 0.04),
   },
 }));
+
+const BRANCH_SWITCH_ROLES = new Set(["ADMIN", "HR_MANAGER"]);
 
 const TopBar = ({
   className,
@@ -55,61 +81,45 @@ const TopBar = ({
   openMinimize,
   ...rest
 }) => {
-  const classes = useStyles();
-  const { darkMode, toggleDarkMode } = useTheme();
+  const theme = useTheme();
+  const { darkMode, toggleDarkMode } = useAppTheme();
   const { auth, logout } = useAuth();
-  const [orgs, setOrgs] = React.useState([]);
-  const [orgName, setOrgName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const { currentOrg, setCurrentOrg } = useOrg();
+  const [commandOpen, setCommandOpen] = React.useState(false);
+  const [helpOpen, setHelpOpen] = React.useState(false);
+
+  useKeyboardShortcuts({
+    onOpenCommandPalette: () => setCommandOpen(true),
+    onOpenHelp: () => setHelpOpen(true),
+  });
+
+  const { currentOrg, setCurrentOrg, org } = useOrg();
+  const { branches, branchLabel, companyName } = useBranches();
   const navigate = useNavigate();
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const canSwitchBranch = BRANCH_SWITCH_ROLES.has(auth?.user?.role);
+  const activeBranchLabel = branchLabel(currentOrg || org?._id);
+  const userInitials = (auth?.user?.name || "U")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const handleLogout = () => {
+    setAnchorEl(null);
     logout(() => navigate("/login"));
   };
 
-  const fetchOrganizations = React.useCallback(() => {
-    API.orgs
-      .getAll({ query: { createdBy: auth && auth.user && auth.user.email } })
-      .then(({ success, orgs, error }) => {
-        if (success) {
-          if (Array.isArray(orgs) && orgs.length > 0) {
-            setOrgs(orgs);
-            setCurrentOrg(orgs[0]._id);
-            setOrgName(orgs[0].branch || orgs[0].name);
-          }
-        } else {
-          console.warn(error);
-        }
-      })
-      .catch((e) => {
-        console.warn(e.message);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth]);
-
-  React.useEffect(() => {
-    fetchOrganizations();
-  }, [fetchOrganizations]);
-
   return (
-    <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
-      <Toolbar>
+    <StyledAppBar className={className} position="fixed" {...rest}>
+      <Toolbar sx={{ minHeight: 64, gap: 1 }}>
         <Hidden lgUp>
           <IconButton
             color="inherit"
             onClick={onMobileNavOpen}
-            aria-label="open drawer"
+            aria-label="Open navigation"
             edge="start"
-            title="menu"
           >
             <MenuIcon />
           </IconButton>
@@ -117,152 +127,156 @@ const TopBar = ({
         <Hidden mdDown>
           <IconButton
             color="inherit"
-            aria-label="open drawer"
+            aria-label="Toggle sidebar"
             edge="start"
-            title="menu"
-            onClick={() => {
-              setOpenMinimize(!openMinimize);
-            }}
+            onClick={() => setOpenMinimize(!openMinimize)}
           >
             <MenuIcon />
           </IconButton>
         </Hidden>
-        <Hidden smDown>
-          <RouterLink to="/" aria-label="home" name="home">
-            <BusinessIcon
-              aria-label="home"
-              style={{ color: "#fff", fontSize: "2rem", marginRight: "10px" }}
-            />
-          </RouterLink>
-          <RouterLink to="/app/dashboard">
-            <Typography
-              color="inherit"
-              variant="h5"
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: 800,
-                fontSize: "1.1rem",
-                color: "#fff",
-              }}
-            >
-              Esset HR
+
+        <Box component={RouterLink} to="/app/dashboard" display="flex" alignItems="center" gap={1.25}>
+          <LogoMark>E</LogoMark>
+          <Hidden smDown>
+            <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+              EsseHR
             </Typography>
-          </RouterLink>
-        </Hidden>
+          </Hidden>
+        </Box>
+
         <Box flexGrow={1} />
 
-        <Box alignItems="center" display="flex" ml={2}>
-          <IconButton
-            color="inherit"
-            aria-label="dark mode"
-            title="dark mode"
-            onClick={() => {
-              toggleDarkMode();
+        <Hidden xsDown>
+          <SearchTrigger
+            onClick={() => setCommandOpen(true)}
+            role="button"
+            tabIndex={0}
+            aria-label="Open search"
+            onKeyDown={(e) => e.key === "Enter" && setCommandOpen(true)}
+          >
+            <SearchIcon sx={{ fontSize: 18 }} />
+            <Typography variant="body2" color="text.secondary">
+              Search
+            </Typography>
+            <Box flexGrow={1} />
+            <CommandIcon sx={{ fontSize: 14, opacity: 0.6 }} />
+            <Typography variant="caption" color="text.secondary">
+              ⌘K
+            </Typography>
+          </SearchTrigger>
+        </Hidden>
+
+        <Box display="flex" alignItems="center" gap={0.5}>
+          <NotificationBell />
+          <IconButton color="inherit" aria-label="Toggle theme" onClick={toggleDarkMode}>
+            {darkMode ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
+          </IconButton>
+        </Box>
+
+        <Hidden smDown>
+          <Box ml={1}>
+            <LocaleSwitcher />
+          </Box>
+        </Hidden>
+
+        {auth.isAuth && branches.length > 0 && (
+          <Hidden smDown>
+            <Box ml={1}>
+              {canSwitchBranch ? (
+                <TextField
+                  select
+                  label="Branch"
+                  value={currentOrg || org?._id || ""}
+                  onChange={(e) => setCurrentOrg(e.target.value)}
+                  size="small"
+                  sx={{ minWidth: 140 }}
+                >
+                  {branches.map((branch) => (
+                    <MenuItem key={branch._id} value={branch._id}>
+                      {branch.branch || branch.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              ) : (
+                <Box textAlign="right">
+                  <Typography variant="caption" color="text.secondary">
+                    {companyName}
+                  </Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    {activeBranchLabel}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Hidden>
+        )}
+
+        <IconButton
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          aria-label="Account menu"
+          sx={{ ml: 0.5 }}
+        >
+          <Avatar
+            sx={{
+              width: 32,
+              height: 32,
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              bgcolor: alpha(theme.palette.primary.main, 0.12),
+              color: theme.palette.primary.main,
             }}
           >
-            {darkMode ? (
-              <Brightness7Icon className={classes.icon} />
-            ) : (
-              <Brightness4Icon className={classes.icon} />
-            )}
-          </IconButton>
-        </Box>
-        <Box>
-          <IconButton
-            onClick={handleClick}
-            color="inherit"
-            title="menu"
-            style={{ fontSize: "0.8rem" }}
-          >
-            <PersonIcon style={{ color: "#fff" }} />
-          </IconButton>
-          <Box alignItems="center" display="flex" ml={1}>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem
-                onClick={() => {
-                  navigate("/app/account");
-                }}
-              >
-                {" "}
-                <IconButton color="inherit" title="profile">
-                  <PermIdentityIcon style={{ marginRight: "5px" }} />
-                  <Typography color="inherit" variant="body2">
-                    Profile
-                  </Typography>
-                </IconButton>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <IconButton color="inherit" title="logout">
-                  <ExitToAppIcon style={{ marginRight: "5px" }} />
-                  <Typography color="inherit" variant="body2">
-                    LogOut
-                  </Typography>
-                </IconButton>
-              </MenuItem>
-            </Menu>
+            {userInitials}
+          </Avatar>
+        </IconButton>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          <Box px={2} py={1}>
+            <Typography variant="subtitle2" fontWeight={600}>
+              {auth?.user?.name}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {auth?.user?.role}
+            </Typography>
           </Box>
-        </Box>
-        <Hidden smDown>
-          {auth.isAuth &&
-            Array.isArray(orgs) &&
-            orgs.length > 0 &&
-            (auth.user.role === "ADMIN" ? (
-              <TextField
-                select
-                value={currentOrg}
-                onChange={(e) => {
-                  setCurrentOrg(e.target.value);
-                  const org = orgs.find((o) => o._id === e.target.value);
-                  setOrgName(org.branch || org.name);
-                }}
-                variant="outlined"
-                size="small"
-                style={{
-                  marginLeft: "20px",
-                  borderRadius: "8px",
-                }}
-                InputProps={{
-                  style: {
-                    color: "#fff",
-                    "&:hover": {
-                      backgroundColor: "#fff",
-                      color: "#000",
-
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#fff",
-
-                        "&:hover": {
-                          borderColor: "#fff",
-                        },
-                      },
-                    },
-                  },
-                }}
-              >
-                {orgs.map((org) => (
-                  <MenuItem key={org._id} value={org._id}>
-                    {org.branch || org.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            ) : (
-              <Typography variant="subtitle1">{orgName}</Typography>
-            ))}
-        </Hidden>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              setAnchorEl(null);
+              navigate("/app/account");
+            }}
+          >
+            <ListItemIcon>
+              <PermIdentityIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Profile</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <ListItemIcon>
+              <ExitToAppIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Sign out</ListItemText>
+          </MenuItem>
+        </Menu>
       </Toolbar>
-    </AppBar>
+
+      <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
+      <KeyboardShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
+    </StyledAppBar>
   );
 };
 
 TopBar.propTypes = {
   className: PropTypes.string,
   onMobileNavOpen: PropTypes.func,
+  setOpenMinimize: PropTypes.func,
+  openMinimize: PropTypes.bool,
 };
 
 export default TopBar;

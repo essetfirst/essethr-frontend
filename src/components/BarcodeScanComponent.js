@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import BarcodeScanner from "../../helpers/barcode-scanner";
+import BarcodeScanner from "helpers/barcode-scanner";
 
 const BarcodeScanComponent = ({ onBarcodeScanned }) => {
   const [scanned, setScanned] = React.useState("");

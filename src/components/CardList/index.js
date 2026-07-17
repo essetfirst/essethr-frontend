@@ -8,8 +8,8 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Paper,
-} from "@material-ui/core";
-import { KeyboardArrowRight as GoToIcon } from "@material-ui/icons";
+} from "@mui/material";
+import { KeyboardArrowRight as GoToIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 
 const CardList = ({ cards }) => {

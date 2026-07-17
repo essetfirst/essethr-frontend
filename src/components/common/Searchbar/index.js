@@ -9,11 +9,11 @@ import {
   Divider,
   InputAdornment,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   FilterList as FilterIcon,
   Search as SearchIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 
 const Searchbar = ({
   searchTerm,

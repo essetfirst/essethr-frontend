@@ -10,7 +10,7 @@ import {
   TableContainer,
   TableRow,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 const VerticalTableComponent = ({ keys, data = [] }) => {
   const fields = keys ? keys : data.length ? Object.keys(data[0]) : [];

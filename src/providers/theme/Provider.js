@@ -1,43 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useMediaQuery } from "@material-ui/core";
-
+import { useMediaQuery } from "@mui/material";
+import { useThemeStore } from "stores/themeStore";
 import Context from "./Context";
 
+/** Bridges Zustand theme store with legacy Context API consumers. */
 const Provider = ({ children }) => {
-  const [darkMode, setDarkMode] = React.useState(false);
-
+  const darkMode = useThemeStore((s) => s.darkMode);
+  const toggleDarkMode = useThemeStore((s) => s.toggleDarkMode);
+  const setDarkMode = useThemeStore((s) => s.setDarkMode);
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  // Check if the user has already set a preference in localStorage
+
   React.useEffect(() => {
     const lastTheme = localStorage.getItem("theme");
-    const isDarkMode = prefersDarkMode;
-    if (lastTheme === "dark") {
-      setDarkMode(true);
-    } else if (lastTheme === "light") {
-      setDarkMode(false);
-    } else if (isDarkMode) {
-      setDarkMode(true);
-    } else {
-      setDarkMode(false);
-    }
-  }, [prefersDarkMode]);
-
-  // When the user clicks the dark mode toggle, set the theme to dark or light
-  const toggleDarkMode = () => {
-    const theme = localStorage.getItem("theme");
-    if (theme === "light") {
-      localStorage.setItem("theme", "dark");
-      setDarkMode(true);
-    } else if (theme === "dark") {
-      localStorage.setItem("theme", "light");
-      setDarkMode(false);
-    } else {
-      // If the theme is not light or dark, set it to dark by default.
-      localStorage.setItem("theme", "dark");
-      setDarkMode(true);
-    }
-  };
+    if (lastTheme === "dark") setDarkMode(true);
+    else if (lastTheme === "light") setDarkMode(false);
+    else if (prefersDarkMode) setDarkMode(true);
+  }, [prefersDarkMode, setDarkMode]);
 
   return (
     <Context.Provider value={{ darkMode, toggleDarkMode }}>

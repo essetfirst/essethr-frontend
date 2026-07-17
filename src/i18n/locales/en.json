@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "EsseHR",
+    "tagline": "Human Resource Management"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "manager": "Manager",
+    "employees": "Employees",
+    "attendance": "Attendance",
+    "leaves": "Leaves",
+    "payroll": "Payroll",
+    "approvals": "Approvals",
+    "offboarding": "Offboarding",
+    "onboarding": "Onboarding",
+    "settings": "Settings",
+    "portal": "My Portal"
+  },
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "welcomeBack": "Welcome back"
+  },
+  "manager": {
+    "title": "Manager dashboard",
+    "subtitle": "Team operations, pending approvals, and workforce snapshot."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "language": "Language",
+    "refresh": "Refresh",
+    "viewAll": "View all"
+  }
+}

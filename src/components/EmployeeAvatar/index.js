@@ -1,30 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  Avatar,
-  colors,
-  Link,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Avatar, colors, Link, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
+const StyledRoot = styled("div")(({ theme }) => ({
+  display: "flex",
     padding: theme.spacing(2),
-  },
-  avatar: {
-    borderRadius: "5px",
+}));
+
+const StyledAvatar = styled("div")(({ theme }) => ({
+  borderRadius: "5px",
     marginRight: "16px",
     width: "48px",
     height: "48px",
     background: colors.deepPurple[600],
-  },
 }));
 
 const EmployeeAvatar = ({ _id, avatar, name }) => {
-  const classes = useStyles();
 
   const initials = name
     .split(" ")
@@ -32,15 +25,15 @@ const EmployeeAvatar = ({ _id, avatar, name }) => {
     .join("");
 
   return (
-    <div className={classes.root}>
-      <Avatar
+    <StyledRoot>
+      <StyledAvatar
         alt={name}
         variant="square"
         src={avatar}
-        className={classes.avatar}
+       >
       >
         {`${initials}`}
-      </Avatar>
+      </StyledAvatar>
       <div>
         <Typography
           variant="h6"
@@ -49,7 +42,7 @@ const EmployeeAvatar = ({ _id, avatar, name }) => {
         >
           {`${name}`}
         </Typography>
-      </div>
+      </StyledRoot>
     </div>
   );
 };

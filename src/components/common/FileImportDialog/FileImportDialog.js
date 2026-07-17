@@ -2,44 +2,23 @@ import React, { useCallback, useMemo } from "react";
 
 import { useDropzone } from "react-dropzone";
 
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, Divider } from "@mui/material";
 
-import { readExcelFile } from "../../../helpers/import";
+import { readExcelFile } from "helpers/import";
 
-const useStyles = makeStyles((theme) => ({
-  dragStyle: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "20px",
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: "#eeeeee",
-    borderStyle: "dashed",
-    backgroundColor: "#fafafa",
-    color: "#bdbdbd",
-    transition: "border .3s ease-in-out",
-  },
-  activeStyle: {
-    borderColor: "#2196f3",
-  },
-  acceptStyle: {
-    borderColor: "#00e676",
-  },
-  rejectStyle: {
-    borderColor: "#ff1744",
-  },
-}));
+const dropZoneStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "20px",
+  borderWidth: 2,
+  borderRadius: 2,
+  borderColor: "#eeeeee",
+  borderStyle: "dashed",
+  backgroundColor: "#fafafa",
+  color: "#bdbdbd",
+  transition: "border .3s ease-in-out",
+};
 
 const FileImportDialog = ({
   open,
@@ -48,7 +27,6 @@ const FileImportDialog = ({
   title = "File import dialog",
   acceptedFileTypes,
 }) => {
-  const classes = useStyles();
 
   const [selectedFiles, setSelectedFiles] = React.useState(null);
 
@@ -64,20 +42,12 @@ const FileImportDialog = ({
   } = useDropzone({ onDrop, accept: acceptedFileTypes });
   const style = useMemo(
     () => ({
-      ...classes.dragStyle,
-      ...(isDragActive ? classes.activeStyle : {}),
-      ...(isDragAccept ? classes.acceptStyle : {}),
-      ...(isDragReject ? classes.rejectStyle : {}),
+      ...dropZoneStyle,
+      ...(isDragActive ? { borderColor: "#2196f3" } : {}),
+      ...(isDragAccept ? { borderColor: "#00e676" } : {}),
+      ...(isDragReject ? { borderColor: "#ff1744" } : {}),
     }),
-    [
-      classes.dragStyle,
-      classes.activeStyle,
-      classes.acceptStyle,
-      classes.rejectStyle,
-      isDragActive,
-      isDragAccept,
-      isDragReject,
-    ]
+    [isDragActive, isDragAccept, isDragReject],
   );
 
   const handleFileSelect = (e) => {

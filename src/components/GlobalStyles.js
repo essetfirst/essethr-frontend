@@ -1,39 +1,31 @@
-import { createStyles, makeStyles } from "@material-ui/core";
+import { GlobalStyles as MuiGlobalStyles } from "@mui/material";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    "@global": {
-      "*": {
-        boxSizing: "border-box",
-        margin: 0,
-        padding: 0,
-      },
-      html: {
-        "-webkit-font-smoothing": "antialiased",
-        "-moz-osx-font-smoothing": "grayscale",
-        height: "100%",
-        width: "100%",
-      },
-      body: {
-        backgroundColor: "#f4f6f8",
-        height: "100%",
-        width: "100%",
-      },
-      a: {
-        textDecoration: "none",
-      },
-      "#root": {
-        height: "100%",
-        width: "100%",
-      },
-    },
-  })
-);
-
-const GlobalStyles = () => {
-  useStyles();
-
-  return null;
+const globalStyles = {
+  "*": {
+    boxSizing: "border-box",
+    margin: 0,
+    padding: 0,
+  },
+  html: {
+    WebkitFontSmoothing: "antialiased",
+    MozOsxFontSmoothing: "grayscale",
+    height: "100%",
+    width: "100%",
+  },
+  body: {
+    backgroundColor: "#f4f6f8",
+    height: "100%",
+    width: "100%",
+  },
+  a: {
+    textDecoration: "none",
+  },
+  "#root": {
+    height: "100%",
+    width: "100%",
+  },
 };
+
+const GlobalStyles = () => <MuiGlobalStyles styles={globalStyles} />;
 
 export default GlobalStyles;

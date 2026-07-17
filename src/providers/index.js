@@ -33,31 +33,3 @@ export function combineReducers(reducers) {
     return { ...state, ...nextState };
   };
 }
-
-let authContext = require("./auth/Context");
-let configContext = require("./config/Context");
-let localeContext = require("./locale/Context");
-let onlineContext = require("./online/Context");
-let orgContext = require("./org/Context");
-let themeContext = require("./theme/Context");
-
-if (process.env.NODE_ENV !== "production") {
-  module.hot.accept(authContext, () => {
-    authContext = require("./auth/Context");
-  });
-  module.hot.accept(configContext, () => {
-    configContext = require("./config/Context");
-  });
-  module.hot.accept(localeContext, () => {
-    localeContext = require("./locale/Context");
-  });
-  module.hot.accept(onlineContext, () => {
-    onlineContext = require("./online/Context");
-  });
-  module.hot.accept(orgContext, () => {
-    orgContext = require("./org/Context");
-  });
-  module.hot.accept(themeContext, () => {
-    themeContext = require("./theme/Context");
-  });
-}

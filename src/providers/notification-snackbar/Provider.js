@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Box, IconButton, makeStyles } from "@material-ui/core";
+import { Box, IconButton } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import {
   CheckCircleOutlineOutlined as CheckIcon,
@@ -8,20 +9,17 @@ import {
   ErrorOutlineOutlined as WarningIcon,
   WarningOutlined as ErrorIcon,
   RefreshTwoTone as RetryIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 
 import Context from "./Context";
 
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    width: 24,
+const StyledAvatar = styled("div")(({ theme }) => ({
+  width: 24,
     height: 24,
     margin: theme.spacing(1),
-  },
 }));
 
 const Provider = ({ children }) => {
-  const classes = useStyles();
   const notificationSnackbar =
     (enqueueSnackbar, closeSnackbar) =>
     ({ success, message, error, severe, retry }) => {
@@ -29,7 +27,7 @@ const Provider = ({ children }) => {
         <Box display="flex" alignItems="center">
           {
             <span
-              className={classes.avatar}
+              component={StyledAvatar}
               sizes="small"
               style={{ marginRight: "5px" }}
             >
